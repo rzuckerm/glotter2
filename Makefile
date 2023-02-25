@@ -5,12 +5,12 @@ ALL = $(PACKAGE) $(TESTS)
 
 SHELL := bash
 
+VENV := venv
+POETRY := source $(VENV)/bin/activate && poetry
 RUN := $(POETRY) run
 META := .meta
 META_INSTALL := $(META)/.install
-VENV := venv
 
-POETRY := source $(VENV)/bin/activate && poetry
 
 PYTEST_ARGS ?= -vvl \
 	--color=yes \
@@ -34,7 +34,7 @@ $(META): | $(VENV)
 
 $(VENV):
 	@echo "*** Initializing environment ***"
-	virtualenv -p python3.8 $(VENV) >/dev/null || python3 -m venv $(VENV)
+	virtualenv -p python3.8 $(VENV) 2&>1 >/dev/null || python3 -m venv $(VENV)
 	$(VENV)/bin/pip install 'poetry>=1.3.2,<1.4.0'
 	@echo ""
 
