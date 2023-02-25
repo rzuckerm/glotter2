@@ -6,7 +6,13 @@ ALL = $(PACKAGE) $(TESTS)
 SHELL := bash
 
 VENV := venv
+
+ifeq ($(OS),Windows_NT)
+ACT := $(VENV)/bin/activate.bat &&
+else
 ACT := source $(VENV)/bin/activate &&
+endif
+
 POETRY := $(ACT) poetry
 RUN := $(POETRY) run
 META := .meta
