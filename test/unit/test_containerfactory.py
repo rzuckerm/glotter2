@@ -60,7 +60,7 @@ def test_cleanup_removes_volume_dir(source_no_build, factory, no_io, monkeypatch
         assert path == "TEMP_DIR"
         assert ignore_errors
 
-    monkeypatch.setattr("shutil.rmtree", lambda *args, **kwargs: verify_rmtree)
+    monkeypatch.setattr("shutil.rmtree", verify_rmtree)
 
     factory.get_container(source_no_build)
     factory.cleanup(source_no_build)
