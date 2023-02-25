@@ -34,7 +34,7 @@ $(META): | $(VENV)
 
 $(VENV):
 	@echo "*** Initializing environment ***"
-	virtualenv -p python3.8 $(VENV) 2&>1 >/dev/null || python3 -m venv $(VENV)
+	virtualenv -p python3.8 $(VENV) 2>&1 >/dev/null || python -m venv $(VENV)
 	$(VENV)/bin/pip install 'poetry>=1.3.2,<1.4.0'
 	@echo ""
 
