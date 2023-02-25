@@ -7,10 +7,13 @@ SHELL := bash
 
 VENV := venv
 
+
 ifeq ($(OS),Windows_NT)
 ACT := $(VENV)/Scripts/activate &&
+CREATE_VIRTUALENV := if ! virtualenv -p python3.8 2>NUL; then python -m venv $(VENV); fi
 else
 ACT := source $(VENV)/bin/activate &&
+CREATE_VIRTUALENV := if ! virtualenv -p python3.8 $(VENV) 2>/dev/null; then python -m venv $(VENV); fi
 endif
 
 POETRY := $(ACT) poetry
@@ -41,7 +44,7 @@ $(META): | $(VENV)
 
 $(VENV):
 	@echo "*** Initializing environment ***"
-	if ! virtualenv -p python3.8 $(VENV) 2>&1 >/dev/null; then python -m venv $(VENV); fi
+	$(CREATE_VIRTUALENV)
 	$(ACT) pip install 'poetry>=1.3.2,<1.4.0'
 	@echo ""
 
