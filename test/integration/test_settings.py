@@ -1,15 +1,14 @@
 import os
+
 import pytest
 
 from glotter.settings import SettingsParser
 from glotter.project import AcronymScheme
 
-from test.integration.fixtures import tmp_dir, glotter_yml, glotter_yml_projects
-
 
 def setup_settings_parser(tmp_dir, path, contents):
     os.makedirs(os.path.dirname(path), exist_ok=True)
-    with open(path, "w") as f:
+    with open(path, "w", encoding="utf-8") as f:
         f.write(contents)
     return SettingsParser(tmp_dir)
 
@@ -60,7 +59,7 @@ def test_parses_root_when_path_absolute(root_type, tmp_dir):
     path = os.path.join(tmp_dir, ".glotter.yml")
     settings_parser = setup_settings_parser(tmp_dir, path, glotter_yml)
     settings_parser.parse_settings_section()
-    assert settings_parser.__getattribute__(root_type) == expected
+    assert getattr(settings_parser, root_type) == expected
 
 
 @pytest.mark.parametrize("root_type", ["source_root"])
@@ -71,11 +70,11 @@ def test_parses_root_when_path_relative(root_type, tmp_dir):
     path = os.path.join(tmp_dir, "subdir", ".glotter.yml")
     settings_parser = setup_settings_parser(tmp_dir, path, glotter_yml)
     settings_parser.parse_settings_section()
-    assert settings_parser.__getattribute__(root_type) == expected
+    assert getattr(settings_parser, root_type) == expected
 
 
 def test_parse_projects_when_no_projects(tmp_dir):
-    glotter_yml = f'settings:\n  acronym_scheme: "upper"'
+    glotter_yml = 'settings:\n  acronym_scheme: "upper"'
     path = os.path.join(tmp_dir, ".glotter.yml")
     settings_parser = setup_settings_parser(tmp_dir, path, glotter_yml)
     settings_parser.parse_projects_section()

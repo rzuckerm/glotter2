@@ -1,8 +1,8 @@
+from uuid import uuid4 as uuid
+
 import pytest
 
-from uuid import uuid4 as uuid
 from glotter.testinfo import ContainerInfo, FolderInfo, TestInfo
-from glotter.project import NamingScheme
 
 
 @pytest.mark.parametrize(

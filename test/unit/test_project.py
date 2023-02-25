@@ -116,11 +116,11 @@ project_scheme_permutation_map = [
 
 def get_project_scheme_permutations():
     for perm in project_scheme_permutation_map:
-        id = perm["id"]
+        id_ = perm["id"]
         words = perm["words"]
         acronyms = perm["acronyms"]
         for scheme, expected in perm["schemes"].items():
-            yield id, words, acronyms, scheme, expected
+            yield id_, words, acronyms, scheme, expected
 
 
 @pytest.mark.parametrize(

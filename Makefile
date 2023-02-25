@@ -6,7 +6,8 @@ ALL = $(PACKAGE) $(TESTS)
 SHELL := bash
 
 VENV := venv
-POETRY := source $(VENV)/bin/activate && poetry
+ACT := source $(VENV)/bin/activate &&
+POETRY := $(ACT) poetry
 RUN := $(POETRY) run
 META := .meta
 META_INSTALL := $(META)/.install
@@ -35,7 +36,7 @@ $(META): | $(VENV)
 $(VENV):
 	@echo "*** Initializing environment ***"
 	if ! virtualenv -p python3.8 $(VENV) 2>&1 >/dev/null; then python -m venv $(VENV); fi
-	$(VENV)/bin/pip install 'poetry>=1.3.2,<1.4.0'
+	$(ACT) pip install 'poetry>=1.3.2,<1.4.0'
 	@echo ""
 
 $(META_INSTALL): $(CONFIG_FILE) | $(META)
@@ -69,6 +70,7 @@ lint-black: $(META_INSTALL)
 lint-pylint: $(META_INSTALL)
 	@echo "*** Linting with pylint ***"
 	$(RUN) pylint --rcfile $(CONFIG_FILE) $(PACKAGE)
+	$(RUN) pylint --rcfile $(TESTS)/$(CONFIG_FILE) $(TESTS)
 	@echo ""
 
 .PHONY: test

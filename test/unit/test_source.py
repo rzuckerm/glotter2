@@ -1,17 +1,9 @@
 import os
+
 import pytest
 
 from glotter.source import Source
 from glotter.testinfo import TestInfo
-from test.unit.fixtures import (
-    test_info_string_no_build,
-    test_info_string_with_build,
-    factory,
-    docker,
-    no_io,
-    source_no_build,
-    source_with_build,
-)
 
 
 def test_full_path(test_info_string_no_build):
@@ -116,10 +108,7 @@ def test_run_on_non_zero_exit_code_from_exec_raises_no_error(
         "glotter.source.Source._container_exec",
         lambda *args, **kwargs: (1, "error message".encode("utf-8")),
     )
-    try:
-        source_no_build.run()
-    except Exception as e:
-        pytest.fail(f"unexpected exception was thrown: {e}")
+    source_no_build.run()
 
 
 def test_exec_runs_command(factory, source_no_build, no_io):
@@ -140,7 +129,4 @@ def test_exec_on_non_zero_exit_code_raises_no_error(
         "glotter.source.Source._container_exec",
         lambda *args, **kwargs: (1, "error message".encode("utf-8")),
     )
-    try:
-        source_no_build.exec(exec_cmd)
-    except Exception as e:
-        pytest.fail(f"unexpected exception was thrown: {e}")
+    source_no_build.exec(exec_cmd)

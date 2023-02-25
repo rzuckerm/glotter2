@@ -2,14 +2,6 @@ import os
 
 from glotter import source
 
-from test.integration.fixtures import (
-    tmp_dir,
-    test_info_string_no_build,
-    test_info_string_with_build,
-    glotter_yml_projects,
-    mock_projects,
-)
-
 
 def get_hello_world(language):
     return {
@@ -21,10 +13,10 @@ def get_hello_world(language):
 
 def create_files_from_list(files):
     for file_path, contents in files.items():
-        dir = os.path.dirname(file_path)
-        if not os.path.isdir(dir):
-            os.makedirs(dir)
-        with open(file_path, "w") as file:
+        dir_ = os.path.dirname(file_path)
+        if not os.path.isdir(dir_):
+            os.makedirs(dir_)
+        with open(file_path, "w", encoding="utf-8") as file:
             file.write(contents)
 
 

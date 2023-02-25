@@ -1,5 +1,5 @@
-import shutil
 import tempfile
+
 import pytest
 
 from glotter.project import Project
@@ -76,9 +76,8 @@ container:
 
 @pytest.fixture
 def tmp_dir():
-    dir = tempfile.mkdtemp()
-    yield dir
-    shutil.rmtree(dir, ignore_errors=True)
+    with tempfile.TemporaryDirectory() as dir_:
+        yield dir_
 
 
 @pytest.fixture

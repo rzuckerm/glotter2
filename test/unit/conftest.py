@@ -6,7 +6,8 @@ from glotter import containerfactory
 from glotter.project import Project
 from glotter.source import Source
 from glotter.testinfo import ContainerInfo
-from test.unit.mockdocker import DockerMock
+
+from .mockdocker import DockerMock
 
 
 @pytest.fixture
@@ -63,7 +64,7 @@ def source_no_build(test_info_string_no_build):
     iid = uuid().hex
     return Source(
         name=f"sourcename_{iid}",
-        language=f"python",
+        language="python",
         path=f"sourcepath_{iid}",
         test_info_string=test_info_string_no_build,
     )
@@ -74,7 +75,7 @@ def source_with_build(test_info_string_with_build):
     iid = uuid().hex
     return Source(
         name=f"sourcename_{iid}",
-        language=f"go",
+        language="go",
         path=f"sourcepath_{iid}",
         test_info_string=test_info_string_with_build,
     )

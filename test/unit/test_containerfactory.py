@@ -1,12 +1,4 @@
-from test.unit.mockdocker import Containers, Images
-from test.unit.fixtures import (
-    factory,
-    container_info,
-    source_no_build,
-    docker,
-    test_info_string_no_build,
-    no_io,
-)
+from .mockdocker import Containers, Images
 
 
 def test_get_image_returns_image(factory, container_info):
@@ -63,10 +55,12 @@ def test_cleanup_removes_container(source_no_build, factory, no_io):
     assert Containers.container_list[container.name].removed
 
 
-def test_cleanup_removes_volume_dir(source_no_build, factory, no_io):
-    def verify_rmtree(path, ignore_errors=False, *args, **kwargs):
+def test_cleanup_removes_volume_dir(source_no_build, factory, no_io, monkeypatch):
+    def verify_rmtree(path, *args, ignore_errors=False, **kwargs):
         assert path == "TEMP_DIR"
         assert ignore_errors
+
+    monkeypatch.setattr("shutil.rmtree", lambda *args, **kwargs: verify_rmtree)
 
     factory.get_container(source_no_build)
     factory.cleanup(source_no_build)
