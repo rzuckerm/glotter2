@@ -8,7 +8,7 @@ SHELL := bash
 VENV := venv
 
 ifeq ($(OS),Windows_NT)
-ACT := $(VENV)/bin/activate.bat &&
+ACT := $(VENV)/Scripts/activate &&
 else
 ACT := source $(VENV)/bin/activate &&
 endif
