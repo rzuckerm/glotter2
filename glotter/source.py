@@ -55,15 +55,17 @@ class Source:
         return self._test_info
 
     def __repr__(self):
-        return f'Source(name: {self.name}, path: {self.path})'
+        return f"Source(name: {self.name}, path: {self.path})"
 
-    def build(self, params=''):
+    def build(self, params=""):
         if self.test_info.container_info.build is not None:
-            command = f'{self.test_info.container_info.build} {params}'
+            command = f"{self.test_info.container_info.build} {params}"
             result = self._container_exec(command)
             if result[0] != 0:
-                raise RuntimeError(f'unable to build using cmd "{self.test_info.container_info.build} {params}":\n'
-                                   f'{result[1].decode("utf-8")}')
+                raise RuntimeError(
+                    f'unable to build using cmd "{self.test_info.container_info.build} {params}":\n'
+                    f'{result[1].decode("utf-8")}'
+                )
 
     def run(self, params=None):
         """
@@ -72,10 +74,10 @@ class Source:
         :param params: input passed to the source as it's run
         :return: the output of running the source
         """
-        params = params or ''
-        command = f'{self.test_info.container_info.cmd} {params}'
+        params = params or ""
+        command = f"{self.test_info.container_info.cmd} {params}"
         result = self._container_exec(command)
-        return result[1].decode('utf-8')
+        return result[1].decode("utf-8")
 
     def exec(self, command):
         """
@@ -85,7 +87,7 @@ class Source:
         :return:  the output of the command as a string
         """
         result = self._container_exec(command)
-        return result[1].decode('utf-8')
+        return result[1].decode("utf-8")
 
     def _container_exec(self, command):
         """
@@ -98,7 +100,7 @@ class Source:
         return container.exec_run(
             cmd=command,
             detach=False,
-            workdir='/src',
+            workdir="/src",
         )
 
     def cleanup(self):
@@ -113,15 +115,23 @@ def get_sources(path):
     :return: a dict where the key is the ProjectType and the value is a list of all the Source objects of that project
     """
     sources = {k: [] for k in Settings().projects}
-    for root, dirs, files in os.walk(path):
+    for root, _, files in os.walk(path):
         path = os.path.abspath(root)
         if "testinfo.yml" in files:
-            with open(os.path.join(path, 'testinfo.yml'), 'r') as file:
+            with open(
+                os.path.join(path, "testinfo.yml"), "r", encoding="utf-8"
+            ) as file:
                 test_info_string = file.read()
-            folder_info = testinfo.FolderInfo.from_dict(yaml.safe_load(test_info_string)['folder'])
-            folder_project_names = folder_info.get_project_mappings(include_extension=True)
+            folder_info = testinfo.FolderInfo.from_dict(
+                yaml.safe_load(test_info_string)["folder"]
+            )
+            folder_project_names = folder_info.get_project_mappings(
+                include_extension=True
+            )
             for project_type, project_name in folder_project_names.items():
                 if project_name in files:
-                    source = Source(project_name, os.path.basename(path), path, test_info_string)
+                    source = Source(
+                        project_name, os.path.basename(path), path, test_info_string
+                    )
                     sources[project_type].append(source)
     return sources

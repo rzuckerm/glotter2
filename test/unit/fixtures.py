@@ -25,9 +25,9 @@ def factory(docker):
 def container_info():
     iid = uuid().hex
     return ContainerInfo(
-        image=f'image_{iid}',
-        tag=f'tag_{iid}',
-        cmd=f'cmd_{iid}',
+        image=f"image_{iid}",
+        tag=f"tag_{iid}",
+        cmd=f"cmd_{iid}",
     )
 
 
@@ -62,9 +62,9 @@ container:
 def source_no_build(test_info_string_no_build):
     iid = uuid().hex
     return Source(
-        name=f'sourcename_{iid}',
-        language=f'python',
-        path=f'sourcepath_{iid}',
+        name=f"sourcename_{iid}",
+        language=f"python",
+        path=f"sourcepath_{iid}",
         test_info_string=test_info_string_no_build,
     )
 
@@ -73,18 +73,18 @@ def source_no_build(test_info_string_no_build):
 def source_with_build(test_info_string_with_build):
     iid = uuid().hex
     return Source(
-        name=f'sourcename_{iid}',
-        language=f'go',
-        path=f'sourcepath_{iid}',
+        name=f"sourcename_{iid}",
+        language=f"go",
+        path=f"sourcepath_{iid}",
         test_info_string=test_info_string_with_build,
     )
 
 
 @pytest.fixture
 def no_io(monkeypatch):
-    monkeypatch.setattr('tempfile.mkdtemp', lambda *args, **kwargs: 'TEMP_DIR')
-    monkeypatch.setattr('shutil.copy', lambda *args, **kwargs: '')
-    monkeypatch.setattr('shutil.rmtree', lambda *args, **kwargs: '')
+    monkeypatch.setattr("tempfile.mkdtemp", lambda *args, **kwargs: "TEMP_DIR")
+    monkeypatch.setattr("shutil.copy", lambda *args, **kwargs: "")
+    monkeypatch.setattr("shutil.rmtree", lambda *args, **kwargs: "")
 
 
 @pytest.fixture
@@ -95,21 +95,15 @@ def glotter_yml_projects():
             requires_parameters=False,
         ),
         "fileio": Project(
-            words=["file", "io"],
-            requires_parameters=False,
-            acronyms=["io"]
+            words=["file", "io"], requires_parameters=False, acronyms=["io"]
         ),
-        "fibonacci": Project(
-            words=["fibonacci"],
-            requires_parameters=True
-        ),
-        "helloworld": Project(
-            words=["hello", "world"],
-            requires_parameters=False
-        ),
+        "fibonacci": Project(words=["fibonacci"], requires_parameters=True),
+        "helloworld": Project(words=["hello", "world"], requires_parameters=False),
     }
 
 
 @pytest.fixture
 def mock_projects(glotter_yml_projects, monkeypatch):
-    return monkeypatch.setattr('glotter.settings.Settings.projects', glotter_yml_projects)
+    return monkeypatch.setattr(
+        "glotter.settings.Settings.projects", glotter_yml_projects
+    )

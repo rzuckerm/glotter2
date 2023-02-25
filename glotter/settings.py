@@ -1,7 +1,7 @@
 import os
-import yaml
-
 from warnings import warn
+
+import yaml
 
 from glotter.project import Project, AcronymScheme
 from glotter.containerfactory import Singleton
@@ -43,7 +43,7 @@ class Settings(metaclass=Singleton):
 
     def add_test_mapping(self, project_type, func):
         if project_type not in self._projects:
-            raise KeyError(f'Project type {project_type} was not found in glotter.yml')
+            raise KeyError(f"Project type {project_type} was not found in glotter.yml")
 
         if project_type not in self._test_mappings:
             self._test_mappings[project_type] = []
@@ -53,7 +53,9 @@ class Settings(metaclass=Singleton):
         try:
             return name.lower() in self.projects
         except KeyError as e:
-            raise Exception(f'glotter.yml does not contain project name "{name}"', e)
+            raise Exception(  # pylint: disable=broad-exception-raised
+                f'glotter.yml does not contain project name "{name}"'
+            ) from e
 
 
 class SettingsParser:
@@ -106,20 +108,20 @@ class SettingsParser:
         return self._projects
 
     def _parse_acronym_scheme(self):
-        if 'settings' not in self._yml or 'acronym_scheme' not in self._yml['settings']:
-            return
+        if "settings" not in self._yml or "acronym_scheme" not in self._yml["settings"]:
+            return None
 
-        scheme = self._yml['settings']['acronym_scheme'].lower()
+        scheme = self._yml["settings"]["acronym_scheme"].lower()
         return AcronymScheme[scheme]
 
     def _parse_source_root(self):
-        return self._parse_root('source_root')
+        return self._parse_root("source_root")
 
     def _parse_root(self, key):
-        if 'settings' not in self._yml or key not in self._yml['settings']:
-            return
+        if "settings" not in self._yml or key not in self._yml["settings"]:
+            return None
 
-        path = self._yml['settings'][key]
+        path = self._yml["settings"][key]
         if os.path.isabs(path):
             return path
 
@@ -128,29 +130,29 @@ class SettingsParser:
 
     def _parse_projects(self):
         projects = {}
-        if 'projects' in self._yml:
-            for k, v in self._yml['projects'].items():
+        if "projects" in self._yml:
+            for k, v in self._yml["projects"].items():
                 project_name = k.lower()
                 project = Project(
-                    words=v.get('words'),
-                    requires_parameters=v.get('requires_parameters'),
-                    acronyms=v.get('acronyms'),
-                    acronym_scheme=v.get('acronym_scheme') or self._acronym_scheme,
+                    words=v.get("words"),
+                    requires_parameters=v.get("requires_parameters"),
+                    acronyms=v.get("acronyms"),
+                    acronym_scheme=v.get("acronym_scheme") or self._acronym_scheme,
                 )
                 projects[project_name] = project
 
         return projects
 
     def _parse_yml(self):
-        with open(self._yml_path, 'r') as f:
+        with open(self._yml_path, "r", encoding="utf-8") as f:
             contents = f.read()
 
         return yaml.safe_load(contents)
 
     def _locate_yml(self):
-        for root, dirs, files in os.walk(self._project_root):
-            if '.glotter.yml' in files:
+        for root, _, files in os.walk(self._project_root):
+            if ".glotter.yml" in files:
                 path = os.path.abspath(root)
-                return os.path.join(path, '.glotter.yml')
+                return os.path.join(path, ".glotter.yml")
 
         return None

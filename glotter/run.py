@@ -18,7 +18,7 @@ def run(args):
 
 def _prompt_params(project_type):
     if not Settings().projects[project_type].requires_parameters:
-        return ''
+        return ""
     return input(f'input parameters for "{project_type}": ')
 
 
@@ -43,8 +43,10 @@ def _run_all():
 
 
 def _run_language(language):
-    sources_by_type = get_sources(path=os.path.join(Settings().source_root, language[0], language))
-    if all([len(sources) <= 0 for _, sources in sources_by_type.items()]):
+    sources_by_type = get_sources(
+        path=os.path.join(Settings().source_root, language[0], language)
+    )
+    if all(len(sources) <= 0 for sources in sources_by_type.values()):
         _error_and_exit(f'No valid sources found for language: "{language}"')
     for project_type, sources in sources_by_type.items():
         for source in sources:
@@ -68,7 +70,7 @@ def _run_source(source):
     sources_by_type = get_sources(Settings().source_root)
     for project_type, sources in sources_by_type.items():
         for src in sources:
-            if f'{src.name}{src.extension}'.lower() == source.lower():
+            if f"{src.name}{src.extension}".lower() == source.lower():
                 params = _prompt_params(project_type)
                 _build_and_run(src, params)
                 break

@@ -1,7 +1,8 @@
-import pytest
 import functools
 
-from glotter import Settings
+import pytest
+
+from glotter.settings import Settings
 from glotter.source import get_sources
 
 
@@ -21,7 +22,7 @@ def project_test(project_type):
 def project_fixture(project_type):
     sources = get_sources(Settings().source_root).get(project_type)
     return pytest.fixture(
-        scope='module',
+        scope="module",
         params=sources,
         ids=[source.name + source.extension for source in sources],
     )

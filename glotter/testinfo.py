@@ -50,22 +50,19 @@ class ContainerInfo:
         :param dictionary: the dictionary representing ContainerInfo
         :return: a new ContainerInfo
         """
-        image = dictionary['image']
-        tag = dictionary['tag']
-        cmd = dictionary['cmd']
-        build = dictionary['build'] if 'build' in dictionary else None
-        return ContainerInfo(
-            image=image,
-            tag=tag,
-            cmd=cmd,
-            build=build
-        )
+        image = dictionary["image"]
+        tag = dictionary["tag"]
+        cmd = dictionary["cmd"]
+        build = dictionary["build"] if "build" in dictionary else None
+        return ContainerInfo(image=image, tag=tag, cmd=cmd, build=build)
 
     def __eq__(self, other):
-        return self.image == other.image and \
-               self.cmd == other.cmd and \
-               self.tag == other.tag and \
-               self.build == other.build
+        return (
+            self.image == other.image
+            and self.cmd == other.cmd
+            and self.tag == other.tag
+            and self.build == other.build
+        )
 
 
 class FolderInfo:
@@ -81,8 +78,8 @@ class FolderInfo:
         self._extension = extension
         try:
             self._naming = NamingScheme[naming]
-        except KeyError:
-            raise KeyError(f'Unknown naming scheme: "{naming}"')
+        except KeyError as e:
+            raise KeyError(f'Unknown naming scheme: "{naming}"') from e
 
     @property
     def extension(self):
@@ -102,15 +99,14 @@ class FolderInfo:
         :param include_extension: whether to include the extension in the source name
         :return: a dict where the key is a ProjectType and the value is the source name
         """
-        extension = self.extension if include_extension else ''
+        extension = self.extension if include_extension else ""
         return {
-            project_type: f'{project.get_project_name_by_scheme(self.naming)}{extension}'
+            project_type: f"{project.get_project_name_by_scheme(self.naming)}{extension}"
             for project_type, project in Settings().projects.items()
         }
 
     def __eq__(self, other):
-        return self.extension == other.extension and \
-               self.naming == other.naming
+        return self.extension == other.extension and self.naming == other.naming
 
     @classmethod
     def from_dict(cls, dictionary):
@@ -120,11 +116,12 @@ class FolderInfo:
         :param dictionary: the dictionary representing FileInfo
         :return: a new FileInfo
         """
-        return FolderInfo(dictionary['extension'], dictionary['naming'])
+        return FolderInfo(dictionary["extension"], dictionary["naming"])
 
 
 class TestInfo:
     """an object representation of a testinfo file"""
+
     __test__ = False  # Indicate this is not a test
 
     def __init__(self, container_info, file_info):
@@ -156,8 +153,8 @@ class TestInfo:
         :return: a new TestInfo
         """
         return TestInfo(
-            container_info=ContainerInfo.from_dict(dictionary['container']),
-            file_info=FolderInfo.from_dict(dictionary['folder'])
+            container_info=ContainerInfo.from_dict(dictionary["container"]),
+            file_info=FolderInfo.from_dict(dictionary["folder"]),
         )
 
     @classmethod
@@ -175,5 +172,7 @@ class TestInfo:
         return cls.from_dict(info_yaml)
 
     def __eq__(self, other):
-        return self.container_info == other.container_info and \
-               self.file_info == other.file_info
+        return (
+            self.container_info == other.container_info
+            and self.file_info == other.file_info
+        )

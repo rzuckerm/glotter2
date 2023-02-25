@@ -29,11 +29,13 @@ def _get_tests(project_type, all_tests, src=None):
     tests = []
     for test_func in test_functions:
         if src is not None:
-            filename = f'{src.name}{src.extension}'
-            pattern = rf'^(\w/?)*\.py::{test_func}\[{filename}(-.*)?\]$'
+            filename = f"{src.name}{src.extension}"
+            pattern = rf"^(\w/?)*\.py::{test_func}\[{filename}(-.*)?\]$"
         else:
-            pattern = rf'^(\w/?)*\.py::{test_func}\[.+\]$'
-        tests.extend([tst for tst in all_tests if re.fullmatch(pattern, tst) is not None])
+            pattern = rf"^(\w/?)*\.py::{test_func}\[.+\]$"
+        tests.extend(
+            [tst for tst in all_tests if re.fullmatch(pattern, tst) is not None]
+        )
     return tests
 
 
@@ -43,8 +45,8 @@ def _run_all():
 
 def _run_language(language):
     all_tests = _collect_tests()
-    sources_by_type = get_sources(path=os.path.join('archive', language[0], language))
-    if all([len(sources) <= 0 for _, sources in sources_by_type.items()]):
+    sources_by_type = get_sources(path=os.path.join("archive", language[0], language))
+    if all(len(sources) <= 0 for sources in sources_by_type.values()):
         _error_and_exit(f'No valid sources found for language: "{language}"')
     tests = []
     for project_type, sources in sources_by_type.items():
@@ -69,10 +71,10 @@ def _run_project(project):
 
 def _run_source(source):
     all_tests = _collect_tests()
-    sources_by_type = get_sources('archive')
+    sources_by_type = get_sources("archive")
     for project_type, sources in sources_by_type.items():
         for src in sources:
-            filename = f'{src.name}{src.extension}'
+            filename = f"{src.name}{src.extension}"
             if filename.lower() == source.lower():
                 tests = _get_tests(project_type, all_tests, src)
                 try:
@@ -90,11 +92,11 @@ def _run_source(source):
 
 def _verify_test_list_not_empty(tests):
     if not tests:
-        raise KeyError(f'No tests were found')
+        raise KeyError("No tests were found")
 
 
 def _run_pytest_and_exit(*args):
-    args = ['-v'] + list(args)
+    args = ["-v"] + list(args)
     code = pytest.main(args=args)
     sys.exit(code)
 
@@ -106,10 +108,12 @@ class TestCollectionPlugin:
     def pytest_collection_modifyitems(self, items):
         for item in items:
             self.collected.append(item.nodeid)
-            
+
 
 def _collect_tests():
-    print('============================= collect test totals ==============================')
+    print(
+        "============================= collect test totals =============================="
+    )
     plugin = TestCollectionPlugin()
-    pytest.main(['-qq', '--collect-only'], plugins=[plugin])
+    pytest.main(["-qq", "--collect-only"], plugins=[plugin])
     return plugin.collected

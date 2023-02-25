@@ -16,7 +16,9 @@ class AcronymScheme(Enum):
 
 
 class Project:
-    def __init__(self, words, requires_parameters=False, acronyms=None, acronym_scheme=None):
+    def __init__(
+        self, words, requires_parameters=False, acronyms=None, acronym_scheme=None
+    ):
         self._words = words
         self._requires_parameters = requires_parameters
         self._acronyms = [acronym.upper() for acronym in acronyms] if acronyms else []
@@ -58,26 +60,47 @@ class Project:
                 NamingScheme.lower: self._as_lower(),
             }[naming]
         except KeyError as e:
-            raise KeyError(f"Unknown naming scheme '{naming}'", e)
+            raise KeyError(f"Unknown naming scheme '{naming}'") from e
 
     def _as_hyphen(self):
-        return '-'.join([self._try_as_acronym(word, NamingScheme.hyphen) for word in self._words])
+        return "-".join(
+            [self._try_as_acronym(word, NamingScheme.hyphen) for word in self._words]
+        )
 
     def _as_underscore(self):
-        return '_'.join([self._try_as_acronym(word, NamingScheme.underscore) for word in self._words])
+        return "_".join(
+            [
+                self._try_as_acronym(word, NamingScheme.underscore)
+                for word in self._words
+            ]
+        )
 
     def _as_camel(self):
-        return self._words[0].lower() + ''.join([self._try_as_acronym(word.title(), NamingScheme.camel)
-                                                 for word in self.words[1:]])
+        return self._words[0].lower() + "".join(
+            [
+                self._try_as_acronym(word.title(), NamingScheme.camel)
+                for word in self.words[1:]
+            ]
+        )
 
     def _as_pascal(self):
-        return ''.join([self._try_as_acronym(word.title(), NamingScheme.pascal) for word in self._words])
+        return "".join(
+            [
+                self._try_as_acronym(word.title(), NamingScheme.pascal)
+                for word in self._words
+            ]
+        )
 
     def _as_lower(self):
-        return ''.join([word.lower() for word in self._words])
+        return "".join([word.lower() for word in self._words])
 
     def _as_display(self):
-        return ' '.join([self._try_as_acronym(word.title(), NamingScheme.underscore) for word in self._words])
+        return " ".join(
+            [
+                self._try_as_acronym(word.title(), NamingScheme.underscore)
+                for word in self._words
+            ]
+        )
 
     def _is_acronym(self, word):
         return word.upper() in self._acronyms
@@ -89,12 +112,17 @@ class Project:
             elif self._acronym_scheme == AcronymScheme.lower:
                 return word.lower()
             elif self._acronym_scheme == AcronymScheme.two_letter_limit:
-                if len(word) <= 2 and naming_scheme in [NamingScheme.camel, NamingScheme.pascal]:
+                if len(word) <= 2 and naming_scheme in [
+                    NamingScheme.camel,
+                    NamingScheme.pascal,
+                ]:
                     return word.upper()
         return word
 
     def __eq__(self, other):
-        return self._words == other.words and \
-               self._requires_parameters == other.requires_parameters and \
-               self._acronyms == other.acronyms and \
-               self._acronym_scheme == other.acronym_scheme
+        return (
+            self._words == other.words
+            and self._requires_parameters == other.requires_parameters
+            and self._acronyms == other.acronyms
+            and self._acronym_scheme == other.acronym_scheme
+        )

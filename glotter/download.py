@@ -34,10 +34,12 @@ def _download_all():
 
 
 def _download_language(language):
-    sources_by_type = get_sources(path=os.path.join(Settings().source_root, language[0], language))
-    if all([len(sources) <= 0 for _, sources in sources_by_type.items()]):
+    sources_by_type = get_sources(
+        path=os.path.join(Settings().source_root, language[0], language)
+    )
+    if all(len(sources) <= 0 for sources in sources_by_type.values()):
         _error_and_exit(f'No valid sources found for language: "{language}"')
-    for project_type, sources in sources_by_type.items():
+    for sources in sources_by_type.values():
         for source in sources:
             _download_image_from_source(source)
 
@@ -55,9 +57,9 @@ def _download_project(project):
 
 def _download_source(source):
     sources_by_type = get_sources(Settings.source_root)
-    for project_type, sources in sources_by_type.items():
+    for sources in sources_by_type.values():
         for src in sources:
-            if f'{src.name}{src.extension}'.lower() == source.lower():
+            if f"{src.name}{src.extension}".lower() == source.lower():
                 _download_image_from_source(src)
                 break
         else:  # If didn't break inner loop continue

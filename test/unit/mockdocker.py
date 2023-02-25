@@ -26,7 +26,7 @@ class Container:
 
     def exec_run(self, cmd, **kwargs):
         self.execs.append(ContainerExec(cmd, kwargs))
-        return 0, 'executed'.encode('utf-8')
+        return 0, "executed".encode("utf-8")
 
 
 class Containers:
@@ -34,12 +34,12 @@ class Containers:
 
     @classmethod
     def run(cls, image, **kwargs):
-        name = kwargs['name'] if 'name' in kwargs else uuid().hex
+        name = kwargs["name"] if "name" in kwargs else uuid().hex
         info = Container(image, name, kwargs)
         if name not in cls.container_list:
             cls.container_list[name] = info
             return cls.container_list[name]
-        raise EnvironmentError('Container exists')
+        raise EnvironmentError("Container exists")
 
     @classmethod
     def clear(cls):
@@ -69,9 +69,9 @@ class Images:
 class DockerApi:
     @staticmethod
     def pull(repository, **kwargs):
-        tag = kwargs.get('tag') or 'latest'
-        Images.add_image(f'{repository}:{tag}')
-        return Images.list(f'{repository}:{tag}')
+        tag = kwargs.get("tag") or "latest"
+        Images.add_image(f"{repository}:{tag}")
+        return Images.list(f"{repository}:{tag}")
 
 
 class DockerMock:

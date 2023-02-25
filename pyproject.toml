@@ -1,0 +1,57 @@
+[tool.poetry]
+name = "glotter2"
+packages = [{include="glotter"}]
+version = "0.3.0"
+description = "An execution library for scripts written in any language. This is a fork of https://github.com/auroq/glotter"
+authors = ["auroq", "rzuckerm"]
+readme = "README.md"
+license = "LICENSE.txt"
+homepage = "https://github.com/rzuckerm/glotter2"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent"
+]
+
+[tool.poetry.urls]
+"Bug Tracker" = "https://github.com/rzuckerm/glotter2/issues"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+docker = "^6.0.1"
+jinja2 = "^3.1.2"
+pytest = "^7.2.1"
+pyyaml = "^6.0"
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.1.0"
+pylint = "^2.16.2"
+pytest-cov = "^4.0.0"
+coverage = "^7.2.0"
+
+[too.poetry.scripts]
+glotter = "glotter.__main__:main"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pylint.format]
+max-line-length = 100
+
+[tool.pylint.message]
+disable = [
+    "missing-module-docstring",
+    "missing-class-docstring",
+    "missing-function-docstring",
+    "line-too-long",
+    "too-few-public-methods",
+    "no-else-return",
+    "duplicate-code"
+]
+
+[tool.pylint.basic]
+good-names = [
+    "e", "f", "k", "v",
+    "hyphen", "underscore", "camel", "pascal", "lower", "upper", "two_letter_limit"
+]

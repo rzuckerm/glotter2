@@ -1,15 +1,14 @@
-import docker
 import shutil
 import tempfile
-
 from datetime import datetime, timedelta
 from uuid import uuid4 as uuid
+
+import docker
 
 from glotter.singleton import Singleton
 
 
 class ContainerFactory(metaclass=Singleton):
-
     def __init__(self, docker_client=None):
         """
         Initialize a ContainerFactory. This class is a singleton.
@@ -36,13 +35,13 @@ class ContainerFactory(metaclass=Singleton):
         self._volume_dis[key] = tmp_dir
 
         image = self.get_image(source.test_info.container_info)
-        volume_info = {tmp_dir: {'bind': '/src', 'mode': 'rw'}}
+        volume_info = {tmp_dir: {"bind": "/src", "mode": "rw"}}
         if key not in self._containers:
             self._containers[key] = self._client.containers.run(
                 image=image,
-                name=f'{source.name}_{uuid().hex}',
-                command='sleep 1h',
-                working_dir='/src',
+                name=f"{source.name}_{uuid().hex}",
+                command="sleep 1h",
+                working_dir="/src",
                 volumes=volume_info,
                 detach=True,
             )
@@ -56,26 +55,32 @@ class ContainerFactory(metaclass=Singleton):
         :param quiet: whether to print output while downloading
         :return: a docker image
         """
-        images = self._client.images.list(name=f'{container_info.image}:{str(container_info.tag)}')
+        images = self._client.images.list(
+            name=f"{container_info.image}:{str(container_info.tag)}"
+        )
         if len(images) == 1:
             return images[0]
         if not quiet:
-            print(f'Pulling {container_info.image}:{container_info.tag}... ', end='')
+            print(f"Pulling {container_info.image}:{container_info.tag}... ", end="")
         last_update = datetime.now()
         for _ in self._api_client.pull(
-                repository=container_info.image,
-                tag=str(container_info.tag),
-                stream=True,
-                decode=True
+            repository=container_info.image,
+            tag=str(container_info.tag),
+            stream=True,
+            decode=True,
         ):
             if datetime.now() - last_update > timedelta(seconds=5) and not quiet:
-                print('... ', end='')
+                print("... ", end="")
                 last_update = datetime.now()
         if not quiet:
-            print('done')
-        images = self._client.images.list(name=f'{container_info.image}:{str(container_info.tag)}')
+            print("done")
+        images = self._client.images.list(
+            name=f"{container_info.image}:{str(container_info.tag)}"
+        )
         if len(images) == 1:
             return images[0]
+
+        return None
 
     def cleanup(self, source):
         """
