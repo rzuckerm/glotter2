@@ -4,12 +4,13 @@ CONFIG_FILE = pyproject.toml
 ALL = $(PACKAGE) $(TESTS)
 
 SHELL := bash
-POETRY := source venv/bin/activate && poetry
 
 RUN := $(POETRY) run
 META := .meta
 META_INSTALL := $(META)/.install
 VENV := venv
+
+POETRY := source $(VENV)/bin/activate && poetry
 
 PYTEST_ARGS ?= -vvl \
 	--color=yes \
@@ -33,8 +34,8 @@ $(META): | $(VENV)
 
 $(VENV):
 	@echo "*** Initializing environment ***"
-	virtualenv -p python3.8 venv
-	venv/bin/pip install 'poetry>=1.3.2,<1.4.0'
+	virtualenv -p python3.8 $(VENV) >/dev/null || python3 -m venv $(VENV)
+	$(VENV)/bin/pip install 'poetry>=1.3.2,<1.4.0'
 	@echo ""
 
 $(META_INSTALL): $(CONFIG_FILE) | $(META)
@@ -47,7 +48,8 @@ clean:
 		$(TESTS)/__pycache__/ \
 		$(META)/ \
 		.pytest_cache/ \
-		dist
+		dist \
+		venv
 	rm -f .coverage .coverage.*
 
 .PHONY: format
