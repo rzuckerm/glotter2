@@ -9,6 +9,7 @@ POETRY := source venv/bin/activate && poetry
 RUN := $(POETRY) run
 META := .meta
 META_INSTALL := $(META)/.install
+VENV := venv
 
 PYTEST_ARGS ?= -vvl \
 	--color=yes \
@@ -20,9 +21,6 @@ PYTEST_ARGS ?= -vvl \
 
 help:
 	@echo "clean       - Delete output files"
-	@echo "doc         - Create documentation with sphinx"
-	@echo "init        - Initialize project. This should only have"
-	@echo "              to be done once"
 	@echo "format      - Format code with black"
 	@echo "lint        - Lint code with black and pylint"
 	@echo "lint-black  - Lint code with black"
@@ -30,8 +28,14 @@ help:
 	@echo "test        - Run unit tests with pytest."
 	@echo "              Use PYTEST_ARGS to override options"
 
-$(META):
+$(META): | $(VENV)
 	mkdir -p $@
+
+$(VENV):
+	@echo "*** Initializing environment ***"
+	virtualenv -p python3.8 venv
+	venv/bin/pip install 'poetry>=1.3.2,<1.4.0'
+	@echo ""
 
 $(META_INSTALL): $(CONFIG_FILE) | $(META)
 	$(POETRY) install
@@ -47,34 +51,26 @@ clean:
 	rm -f .coverage .coverage.*
 
 .PHONY: format
-format: $(META_INSTALL_LINT)
+format: $(META_INSTALL)
 	$(RUN) black $(ALL)
 
 .PHONY: lint
 lint: lint-black lint-pylint
 
 .PHONY: lint-black
-lint-black: $(META_INSTALL_LINT)
+lint-black: $(META_INSTALL)
 	@echo "*** Linting with black ***"
 	$(RUN) black --check $(ALL)
 	@echo ""
 
 .PHONY: lint-pylint
-lint-pylint: $(META_INSTALL_LINT)
+lint-pylint: $(META_INSTALL)
 	@echo "*** Linting with pylint ***"
 	$(RUN) pylint --rcfile $(CONFIG_FILE) $(PACKAGE)
 	@echo ""
 
 .PHONY: test
-test: $(META_INSTALL_TEST)
+test: $(META_INSTALL)
 	@echo "*** Running tests ***"
 	$(RUN) pytest $(PYTEST_ARGS)
-	@echo ""
-
-.PHONY: init
-init:
-	@echo "*** Initializing environment ***"
-	rm -rf venv
-	virtualenv -p python3.8 venv
-	venv/bin/pip install 'poetry>=1.3.2,<1.4.0'
 	@echo ""

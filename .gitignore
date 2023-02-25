@@ -108,3 +108,6 @@ venv.bak/
 
 # Poetry lock
 !/poetry.lock
+
+# Meta directory
+/.meta
