@@ -9,8 +9,7 @@ VENV := venv
 
 
 ifeq ($(OS),Windows_NT)
-ACT := $(VENV)/Scripts/activate &&
-CREATE_VIRTUALENV := if ! virtualenv -p python3.8 2>NUL; then python -m venv $(VENV); fi
+error "Sorry Windows is not supported :("
 else
 ACT := source $(VENV)/bin/activate &&
 CREATE_VIRTUALENV := if ! virtualenv -p python3.8 $(VENV) 2>/dev/null; then python -m venv $(VENV); fi
