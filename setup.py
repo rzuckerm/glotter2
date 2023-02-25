@@ -1,15 +1,15 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='glotter',
-    version='${VERSION}',
+    name='glotter2',
+    version='0.3.0',
     entry_points={'console_scripts': ['glotter = glotter.__main__:main']},
     packages=find_packages(exclude=('test',)),
     install_requires=[
-        'docker>=4.1.0, <4.2',
-        'Jinja2>=2.10.1, <2.11',
-        'pytest>=5.2.1, <5.3',
-        'PyYAML>=5.1, <5.2'
+        'docker>=6.0.1, <7',
+        'Jinja2>=3.1.2, <4',
+        'pytest>=7.2.1, <8',
+        'PyYAML>=6.0, <7'
     ],
-    python_requires='>=3.5',
+    python_requires='>=3.8',
 )

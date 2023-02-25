@@ -125,6 +125,7 @@ class FolderInfo:
 
 class TestInfo:
     """an object representation of a testinfo file"""
+    __test__ = False  # Indicate this is not a test
 
     def __init__(self, container_info, file_info):
         """
