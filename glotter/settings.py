@@ -147,6 +147,7 @@ class SettingsParser:
         with open(self._yml_path, "r", encoding="utf-8") as f:
             contents = f.read()
 
+        print(contents)
         return yaml.safe_load(contents)
 
     def _locate_yml(self):
