@@ -73,9 +73,6 @@ def _run_source(source):
             if f"{src.name}{src.extension}".lower() == source.lower():
                 params = _prompt_params(project_type)
                 _build_and_run(src, params)
-                break
-        else:  # If didn't break inner loop continue
-            continue
-        break  # Else break this loop as well
-    else:
-        _error_and_exit(f'Source "{source}" could not be found')
+                return
+
+    _error_and_exit(f'Source "{source}" could not be found')

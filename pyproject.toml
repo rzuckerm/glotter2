@@ -46,8 +46,7 @@ disable = [
     "missing-function-docstring",
     "line-too-long",
     "too-few-public-methods",
-    "no-else-return",
-    "duplicate-code"
+    "no-else-return"
 ]
 
 [tool.pylint.basic]

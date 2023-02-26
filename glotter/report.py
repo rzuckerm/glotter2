@@ -1,13 +1,7 @@
 import csv
-import sys
 
 from glotter.source import get_sources
 from glotter.settings import Settings
-
-
-def _error_and_exit(msg):
-    print(msg)
-    sys.exit(1)
 
 
 def report(args):

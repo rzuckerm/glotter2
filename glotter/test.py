@@ -10,13 +10,13 @@ from glotter.settings import Settings
 
 def test(args):
     if args.language:
-        _run_language(args.language)
+        _test_language(args.language)
     elif args.project:
-        _run_project(args.project)
+        _test_project(args.project)
     elif args.source:
-        _run_source(args.source)
+        _test_source(args.source)
     else:
-        _run_all()
+        _test_all()
 
 
 def _error_and_exit(msg):
@@ -29,8 +29,8 @@ def _get_tests(project_type, all_tests, src=None):
     tests = []
     for test_func in test_functions:
         if src is not None:
-            filename = f"{src.name}{src.extension}"
-            pattern = rf"^(\w/?)*\.py::{test_func}\[{filename}(-.*)?\]$"
+            test_id = f"{src.language}/{src.name}{src.extension}"
+            pattern = rf"^(\w/?)*\.py::{test_func}\[{re.escape(test_id)}(-.*)?\]$"
         else:
             pattern = rf"^(\w/?)*\.py::{test_func}\[.+\]$"
         tests.extend(
@@ -39,11 +39,11 @@ def _get_tests(project_type, all_tests, src=None):
     return tests
 
 
-def _run_all():
+def _test_all():
     _run_pytest_and_exit()
 
 
-def _run_language(language):
+def _test_language(language):
     all_tests = _collect_tests()
     sources_by_type = get_sources(path=os.path.join("archive", language[0], language))
     if all(len(sources) <= 0 for sources in sources_by_type.values()):
@@ -59,7 +59,7 @@ def _run_language(language):
         _error_and_exit(f'No tests found for sources in language "{language}"')
 
 
-def _run_project(project):
+def _test_project(project):
     try:
         Settings().verify_project_type(project)
         tests = _get_tests(project, _collect_tests())
@@ -69,7 +69,7 @@ def _run_project(project):
         _error_and_exit(f'Either tests or sources not found for project: "{project}"')
 
 
-def _run_source(source):
+def _test_source(source):
     all_tests = _collect_tests()
     sources_by_type = get_sources("archive")
     for project_type, sources in sources_by_type.items():
@@ -82,12 +82,8 @@ def _run_source(source):
                     _run_pytest_and_exit(*tests)
                 except KeyError:
                     _error_and_exit(f'No tests could be found for source "{source}"')
-                break
-        else:  # If didn't break inner loop continue
-            continue
-        break  # Else break this loop as well
-    else:
-        _error_and_exit(f'Source "{source}" could not be found')
+
+    _error_and_exit(f'Source "{source}" could not be found')
 
 
 def _verify_test_list_not_empty(tests):
