@@ -109,3 +109,9 @@ test: $(META_INSTALL)
 	@echo "*** Running tests ***"
 	$(RUN) pytest $(PYTEST_ARGS)
 	@echo ""
+	@if [ -f .coverage ]; \
+	then \
+	 	echo "*** Creating code coverage badge ***"; \
+		$(RUN) coverage-badge -o $(META)/html_cov/badge.svg; \
+		echo ""; \
+	fi

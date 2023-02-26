@@ -28,6 +28,7 @@ black = "^23.1.0"
 pylint = "^2.16.2"
 pytest-cov = "^4.0.0"
 coverage = "^7.2.0"
+coverage-badge = "^1.1.0"
 
 [tool.poetry.scripts]
 glotter = "glotter.__main__:main"

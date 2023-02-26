@@ -49,3 +49,10 @@ jobs:
 
     - name: Test
       run: make test
+
+    - name: Coverage Report
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        folder: .meta/html_cov
+        token: ${{ secrets.REPO_TOKEN }}
+      if: ${{ github.ref == 'refs/heads/main' && matrix.python-version == '3.8' && matrix.os == 'ubuntu-latest' }}
