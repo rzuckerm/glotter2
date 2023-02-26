@@ -29,7 +29,7 @@ def test_get_sources_when_no_testinfo(
     }
     create_files_from_list(files)
     sources = source.get_sources(tmp_dir)
-    assert not any(v for _, v in sources.items())
+    assert not any(sources.values())
 
 
 def test_get_sources(

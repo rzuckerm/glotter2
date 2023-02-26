@@ -28,7 +28,7 @@ def _error_and_exit(msg):
 
 def _download_all():
     sources_by_type = get_sources(Settings().source_root)
-    for _, sources in sources_by_type.items():
+    for sources in sources_by_type.values():
         for source in sources:
             _download_image_from_source(source)
 
