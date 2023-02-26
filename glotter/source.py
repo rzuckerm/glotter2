@@ -1,4 +1,5 @@
 import os
+from functools import lru_cache
 
 import yaml
 
@@ -107,6 +108,7 @@ class Source:
         ContainerFactory().cleanup(self)
 
 
+@lru_cache
 def get_sources(path):
     """
     Walk through a directory and create Source objects
