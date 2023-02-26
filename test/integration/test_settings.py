@@ -1,4 +1,5 @@
 import os
+import platform
 
 import pytest
 
@@ -55,7 +56,11 @@ def test_parse_acronym_scheme(scheme_str, expected, tmp_dir):
 def test_parses_root_when_path_absolute(root_type, tmp_dir):
     expected = os.path.abspath(os.path.join(tmp_dir, "subdir"))
     os.makedirs(expected)
-    glotter_yml = f'settings:\n  {root_type}: "{expected}"'
+    expected_escaped = expected
+    if "win" in platform.platform().lower():
+        expected_escaped = expected.replace("\\", "\\\\")
+
+    glotter_yml = f'settings:\n  {root_type}: "{expected_escaped}"'
     path = os.path.join(tmp_dir, ".glotter.yml")
     settings_parser = setup_settings_parser(tmp_dir, path, glotter_yml)
     settings_parser.parse_settings_section()
