@@ -9,13 +9,25 @@ VENV := venv
 
 
 ifeq ($(OS),Windows_NT)
-error "Sorry Windows is not supported :("
+	ifneq ($(GITHUB_PATH),)
+		ACT :=
+		CREATE_VIRTUALENV :=
+		POETRY := /c/Users/runneradmin/.local/venv/Scripts/poetry.exe
+	else
+		ACT := $(VENV)/bin/activate
+	endif
 else
-ACT := source $(VENV)/bin/activate &&
-CREATE_VIRTUALENV := if ! virtualenv -p python3.8 $(VENV) 2>/dev/null; then python -m venv $(VENV); fi
+	ifneq ($(GITHUB_PATH),)
+		ACT :=
+		CREATE_VIRTUALENV :=
+		POETRY: = poetry
+	else
+		ACT := source $(VENV)/bin/activate &&
+		CREATE_VIRTUALENV := if ! virtualenv -p python3.8 $(VENV) 2>/dev/null; then python -m venv $(VENV); fi
+		POETRY := $(ACT) poetry
+	endif
 endif
 
-POETRY := $(ACT) poetry
 RUN := $(POETRY) run
 META := .meta
 META_INSTALL := $(META)/.install
@@ -38,14 +50,18 @@ help:
 	@echo "test        - Run unit tests with pytest."
 	@echo "              Use PYTEST_ARGS to override options"
 
+ifneq ($(GITHUB_PATH),)
+$(META):
+else
 $(META): | $(VENV)
 	mkdir -p $@
 
 $(VENV):
 	@echo "*** Initializing environment ***"
 	$(CREATE_VIRTUALENV)
-	$(ACT) pip install 'poetry>=1.3.2,<1.4.0'
+	$(ACT) pip install 'poetry==1.3.2'
 	@echo ""
+endif
 
 $(META_INSTALL): $(CONFIG_FILE) | $(META)
 	$(POETRY) install

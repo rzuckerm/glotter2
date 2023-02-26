@@ -1,6 +1,6 @@
 # Glotter2
 
-[![Build Status](https://github.com/rzuckerm/glotter2/actions/workflows/makefile.yml/badge.svg)](https://github.com/rzuckerm/glotter2/actions/workflows/makefile.yml)
+[![Makefile CI](https://github.com/rzuckerm/glotter2/actions/workflows/makefile.yml/badge.svg)](https://github.com/rzuckerm/glotter2/actions/workflows/makefile.yml)
 
 This is a fork of the original [Glotter](https://github.com/auroq/glotter) repository, which
 appears to be unmaintained.
