@@ -7,7 +7,6 @@ SHELL := bash
 
 VENV := venv
 
-
 ifeq ($(OS),Windows_NT)
 	ifneq ($(GITHUB_PATH),)
 		ACT :=
@@ -20,7 +19,7 @@ else
 	ifneq ($(GITHUB_PATH),)
 		ACT :=
 		CREATE_VIRTUALENV :=
-		POETRY: = poetry
+		POETRY:= poetry
 	else
 		ACT := source $(VENV)/bin/activate &&
 		CREATE_VIRTUALENV := if ! virtualenv -p python3.8 $(VENV) 2>/dev/null; then python -m venv $(VENV); fi
@@ -31,7 +30,6 @@ endif
 RUN := $(POETRY) run
 META := .meta
 META_INSTALL := $(META)/.install
-
 
 PYTEST_ARGS ?= -vvl \
 	--color=yes \
@@ -52,6 +50,7 @@ help:
 
 ifneq ($(GITHUB_PATH),)
 $(META):
+	mkdir -p $@
 else
 $(META): | $(VENV)
 	mkdir -p $@
