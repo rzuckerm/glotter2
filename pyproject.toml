@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "glotter2"
 packages = [{include="glotter"}]
-version = "0.3.0"
+version = "0.4.0"
 description = "An execution library for scripts written in any language. This is a fork of https://github.com/auroq/glotter"
 authors = ["auroq", "rzuckerm"]
 readme = "README.md"
@@ -29,7 +29,7 @@ pylint = "^2.16.2"
 pytest-cov = "^4.0.0"
 coverage = "^7.2.0"
 
-[too.poetry.scripts]
+[tool.poetry.scripts]
 glotter = "glotter.__main__:main"
 
 [build-system]
