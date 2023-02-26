@@ -1,6 +1,10 @@
 # Glotter2
 
 [![Makefile CI](https://github.com/rzuckerm/glotter2/actions/workflows/makefile.yml/badge.svg)](https://github.com/rzuckerm/glotter2/actions/workflows/makefile.yml)
+[![Coverage](https://rzuckerm.github.io/glotter2/badge.svg)](https://rzuckerm.github.io/glotter2)
+[![PyPI version](https://img.shields.io/pypi/v/glotter2)](https://pypi.org/project/glotter2)
+[![Python versions](https://img.shields.io/pypi/pyversions/glotter2)](https://pypi.org/project/glotter2)
+[![Python wheel](https://img.shields.io/pypi/wheel/glotter2)](https://pypi.org/project/glotter2)
 
 This is a fork of the original [Glotter](https://github.com/auroq/glotter) repository, which
 appears to be unmaintained.
