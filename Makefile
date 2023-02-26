@@ -40,6 +40,7 @@ PYTEST_ARGS ?= -vvl \
 	--cov-report=xml:$(META)/coverage.xml
 
 help:
+	@echo "build       - Build package"
 	@echo "clean       - Delete output files"
 	@echo "format      - Format code with black"
 	@echo "lint        - Lint code with black and pylint"
@@ -65,6 +66,13 @@ endif
 $(META_INSTALL): $(CONFIG_FILE) | $(META)
 	$(POETRY) install
 	touch $@
+
+.PHONY: build
+build:
+	@echo "** Building package ***"
+	rm -rf dist
+	$(POETRY) build
+	@echo ""
 
 .PHONY: clean
 clean:
