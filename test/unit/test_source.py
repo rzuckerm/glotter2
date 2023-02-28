@@ -132,6 +132,12 @@ def test_exec_on_non_zero_exit_code_raises_no_error(
     source_no_build.exec(exec_cmd)
 
 
+def test_filter_nothing():
+    args = MockArgs()
+    filtered_sources = filter_sources(args, {})
+    assert not filtered_sources
+
+
 def test_filter_all(mock_sources):
     args = MockArgs()
     filtered_sources = filter_sources(args, mock_sources)
