@@ -187,13 +187,13 @@ def test_filter_source(source, project, indices, mock_sources):
     }
 
 
-def test_filter_source_not_found(mock_sources):
+def test_filter_source_not_found(mock_sources, capsys):
     with pytest.raises(SystemExit) as e:
         args = MockArgs(source="Baklava.foo")
         filter_sources(args, mock_sources)
 
     assert e.value.code != 0
-    assert 'Source "Baklava.foo" could not be found'
+    assert 'Source "Baklava.foo" could not be found' in capsys.readouterr().out
 
 
 class MockArgs:

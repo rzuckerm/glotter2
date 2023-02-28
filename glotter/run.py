@@ -1,5 +1,4 @@
 import os
-import sys
 
 from glotter.source import get_sources
 from glotter.settings import Settings
