@@ -1,4 +1,5 @@
 from uuid import uuid4 as uuid
+import os
 
 import pytest
 
@@ -117,13 +118,13 @@ def mock_sources(test_info_string_no_build):
             Source(
                 name="baklava.b",
                 language="bar",
-                path="archive/b/bar/baklava.b",
+                path=os.path.join("archive", "b", "bar", "baklava.b"),
                 test_info_string=test_info_string_no_build,
             ),
             Source(
                 name="baklava.b",
                 language="bart",
-                path="archive/b/bart/baklava.b",
+                path=os.path.join("archive", "b", "bart", "baklava.b"),
                 test_info_string=test_info_string_no_build,
             ),
         ],
@@ -131,7 +132,7 @@ def mock_sources(test_info_string_no_build):
             Source(
                 name="file-input-output.b",
                 language="bart",
-                path="archive/b/bart/file-input-output.b",
+                path=os.path.join("archive", "b", "bart", "file-input-output.b"),
                 test_info_string=test_info_string_no_build,
             ),
         ],
@@ -139,19 +140,19 @@ def mock_sources(test_info_string_no_build):
             Source(
                 name="quine.b",
                 language="bar",
-                path="archive/b/bar/quine.b",
+                path=os.path.join("archive", "b", "bar", "quine.b"),
                 test_info_string=test_info_string_no_build,
             ),
             Source(
                 name="quine.b",
                 language="bart",
-                path="archive/b/bart/quine.b",
+                path=os.path.join("archive", "b", "bart", "quine.b"),
                 test_info_string=test_info_string_no_build,
             ),
             Source(
                 name="Quine.cl",
                 language="cool",
-                path="archive/c/cool/Quine.cl",
+                path=os.path.join("archive", "c", "cool", "Quine.cl"),
                 test_info_string=test_info_string_no_build,
             ),
         ],
