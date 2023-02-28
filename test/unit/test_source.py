@@ -176,13 +176,15 @@ def test_filter_language_not_found(mock_sources, capsys):
     [
         ("quine.b", "quine", [0, 1]),
         ("BakLava.b", "baklava", [0, 1]),
-        ("File-Input-Output.B", "fileinputoutput", [0])
-    ]
+        ("File-Input-Output.B", "fileinputoutput", [0]),
+    ],
 )
 def test_filter_source(source, project, indices, mock_sources):
     args = MockArgs(source=source)
     filtered_sources = filter_sources(args, mock_sources)
-    assert filtered_sources == {project: [mock_sources[project][index] for index in indices]}
+    assert filtered_sources == {
+        project: [mock_sources[project][index] for index in indices]
+    }
 
 
 def test_filter_source_not_found(mock_sources):
@@ -192,6 +194,7 @@ def test_filter_source_not_found(mock_sources):
 
     assert e.value.code != 0
     assert 'Source "Baklava.foo" could not be found'
+
 
 class MockArgs:
     def __init__(self, project="", language="", source=""):
