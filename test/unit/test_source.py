@@ -202,6 +202,18 @@ def test_filter_source_not_found(mock_sources, capsys):
     assert 'Source "Baklava.foo" could not be found' in capsys.readouterr().out
 
 
+def test_filter_language_and_source(mock_sources):
+    args = MockArgs(language="bart", source="baklava.b")
+    filtered_sources = filter_sources(args, mock_sources)
+    assert filtered_sources == {"baklava": [mock_sources["baklava"][1]]}
+
+
+def test_filter_project_and_language(mock_sources):
+    args = MockArgs(project="quine", language="bar")
+    filtered_sources = filter_sources(args, mock_sources)
+    assert filtered_sources == {"quine": [mock_sources["quine"][0]]}
+
+
 class MockArgs:
     def __init__(self, project="", language="", source=""):
         self.project = project

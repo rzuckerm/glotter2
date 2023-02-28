@@ -35,7 +35,7 @@ If you'd like to contribute to Glotter2, read our [contributing guidelines](./CO
 
 ### Original Glotter releases
 
-* 0.2.x Add reporting verb to output discovered sources as a table in stdout or to a csv
-* 0.1.x Initial release of working code.
+* 0.2.x: Add reporting verb to output discovered sources as a table in stdout or to a csv
+* 0.1.x: Initial release of working code.
 
 [sample-programs]: https://github.com/TheRenegadeCoder/sample-programs
