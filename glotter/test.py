@@ -6,6 +6,7 @@ import pytest
 
 from glotter.source import get_sources
 from glotter.settings import Settings
+from glotter.utils import error_and_exit
 
 
 def test(args):
@@ -17,11 +18,6 @@ def test(args):
         _test_source(args.source)
     else:
         _test_all()
-
-
-def _error_and_exit(msg):
-    print(msg)
-    sys.exit(1)
 
 
 def _get_tests(project_type, all_tests, src=None):
@@ -46,8 +42,8 @@ def _test_all():
 def _test_language(language):
     all_tests = _collect_tests()
     sources_by_type = get_sources(path=os.path.join("archive", language[0], language))
-    if all(len(sources) <= 0 for sources in sources_by_type.values()):
-        _error_and_exit(f'No valid sources found for language: "{language}"')
+    if not any(sources_by_type.values()):
+        error_and_exit(f'No valid sources found for language: "{language}"')
     tests = []
     for project_type, sources in sources_by_type.items():
         for src in sources:
@@ -56,7 +52,7 @@ def _test_language(language):
         _verify_test_list_not_empty(tests)
         _run_pytest_and_exit(*tests)
     except KeyError:
-        _error_and_exit(f'No tests found for sources in language "{language}"')
+        error_and_exit(f'No tests found for sources in language "{language}"')
 
 
 def _test_project(project):
@@ -66,7 +62,7 @@ def _test_project(project):
         _verify_test_list_not_empty(tests)
         _run_pytest_and_exit(*tests)
     except KeyError:
-        _error_and_exit(f'Either tests or sources not found for project: "{project}"')
+        error_and_exit(f'Either tests or sources not found for project: "{project}"')
 
 
 def _test_source(source):
@@ -81,9 +77,9 @@ def _test_source(source):
                     _verify_test_list_not_empty(tests)
                     _run_pytest_and_exit(*tests)
                 except KeyError:
-                    _error_and_exit(f'No tests could be found for source "{source}"')
+                    error_and_exit(f'No tests could be found for source "{source}"')
 
-    _error_and_exit(f'Source "{source}" could not be found')
+    error_and_exit(f'Source "{source}" could not be found')
 
 
 def _verify_test_list_not_empty(tests):

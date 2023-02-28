@@ -3,6 +3,7 @@ import sys
 
 from glotter.source import get_sources
 from glotter.settings import Settings
+from glotter.utils import error_and_exit
 
 
 def run(args):
@@ -29,11 +30,6 @@ def _build_and_run(source, params):
     print(source.run(params))
 
 
-def _error_and_exit(msg):
-    print(msg)
-    sys.exit(1)
-
-
 def _run_all():
     sources_by_type = get_sources(Settings().source_root)
     for project_type, sources in sources_by_type.items():
@@ -46,8 +42,8 @@ def _run_language(language):
     sources_by_type = get_sources(
         path=os.path.join(Settings().source_root, language[0], language)
     )
-    if all(len(sources) <= 0 for sources in sources_by_type.values()):
-        _error_and_exit(f'No valid sources found for language: "{language}"')
+    if not any(sources_by_type.values()):
+        error_and_exit(f'No valid sources found for language: "{language}"')
     for project_type, sources in sources_by_type.items():
         for source in sources:
             params = _prompt_params(project_type)
@@ -63,7 +59,7 @@ def _run_project(project):
         for source in sources:
             _build_and_run(source, params)
     except KeyError:
-        _error_and_exit(f'No valid sources found for project: "{project}"')
+        error_and_exit(f'No valid sources found for project: "{project}"')
 
 
 def _run_source(source):
@@ -75,4 +71,4 @@ def _run_source(source):
                 _build_and_run(src, params)
                 return
 
-    _error_and_exit(f'Source "{source}" could not be found')
+    error_and_exit(f'Source "{source}" could not be found')

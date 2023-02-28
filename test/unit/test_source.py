@@ -2,7 +2,7 @@ import os
 
 import pytest
 
-from glotter.source import Source
+from glotter.source import Source, filter_sources
 from glotter.testinfo import TestInfo
 
 
@@ -130,3 +130,71 @@ def test_exec_on_non_zero_exit_code_raises_no_error(
         lambda *args, **kwargs: (1, "error message".encode("utf-8")),
     )
     source_no_build.exec(exec_cmd)
+
+
+def test_filter_all(mock_sources):
+    args = MockArgs()
+    filtered_sources = filter_sources(args, mock_sources)
+    assert filtered_sources == mock_sources
+
+
+def test_filter_project(mock_sources):
+    args = MockArgs(project="baklava")
+    filtered_sources = filter_sources(args, mock_sources)
+    assert filtered_sources == {"baklava": mock_sources["baklava"]}
+
+
+def test_filter_project_not_found(mock_sources, capsys):
+    with pytest.raises(SystemExit) as e:
+        args = MockArgs(project="bogus")
+        filter_sources(args, mock_sources)
+
+    assert e.value.code != 0
+    assert 'No valid sources found for project: "bogus"' in capsys.readouterr().out
+
+
+def test_filter_language(mock_sources):
+    args = MockArgs(language="bar")
+    filtered_sources = filter_sources(args, mock_sources)
+    assert filtered_sources == {
+        "baklava": [mock_sources["baklava"][0]],
+        "quine": [mock_sources["quine"][0]],
+    }
+
+
+def test_filter_language_not_found(mock_sources, capsys):
+    with pytest.raises(SystemExit) as e:
+        args = MockArgs(language="foo")
+        filter_sources(args, mock_sources)
+
+    assert e.value.code != 0
+    assert 'No valid sources found for language: "foo"' in capsys.readouterr().out
+
+
+@pytest.mark.parametrize(
+    "source,project,indices",
+    [
+        ("quine.b", "quine", [0, 1]),
+        ("BakLava.b", "baklava", [0, 1]),
+        ("File-Input-Output.B", "fileinputoutput", [0])
+    ]
+)
+def test_filter_source(source, project, indices, mock_sources):
+    args = MockArgs(source=source)
+    filtered_sources = filter_sources(args, mock_sources)
+    assert filtered_sources == {project: [mock_sources[project][index] for index in indices]}
+
+
+def test_filter_source_not_found(mock_sources):
+    with pytest.raises(SystemExit) as e:
+        args = MockArgs(source="Baklava.foo")
+        filter_sources(args, mock_sources)
+
+    assert e.value.code != 0
+    assert 'Source "Baklava.foo" could not be found'
+
+class MockArgs:
+    def __init__(self, project="", language="", source=""):
+        self.project = project
+        self.language = language
+        self.source = source

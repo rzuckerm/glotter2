@@ -1,9 +1,9 @@
 import os
-import sys
 
 from glotter.source import get_sources
 from glotter.settings import Settings
 from glotter.containerfactory import ContainerFactory
+from glotter.utils import error_and_exit
 
 
 def download(args):
@@ -21,11 +21,6 @@ def _download_image_from_source(source):
     ContainerFactory().get_image(source.test_info.container_info)
 
 
-def _error_and_exit(msg):
-    print(msg)
-    sys.exit(1)
-
-
 def _download_all():
     sources_by_type = get_sources(Settings().source_root)
     for sources in sources_by_type.values():
@@ -37,8 +32,8 @@ def _download_language(language):
     sources_by_type = get_sources(
         path=os.path.join(Settings().source_root, language[0], language)
     )
-    if all(len(sources) <= 0 for sources in sources_by_type.values()):
-        _error_and_exit(f'No valid sources found for language: "{language}"')
+    if not any(sources_by_type.values()):
+        error_and_exit(f'No valid sources found for language: "{language}"')
     for sources in sources_by_type.values():
         for source in sources:
             _download_image_from_source(source)
@@ -52,7 +47,7 @@ def _download_project(project):
         for source in sources:
             _download_image_from_source(source)
     except KeyError:
-        _error_and_exit(f'No valid sources found for project: "{project}"')
+        error_and_exit(f'No valid sources found for project: "{project}"')
 
 
 def _download_source(source):
@@ -63,4 +58,4 @@ def _download_source(source):
                 _download_image_from_source(src)
                 return
 
-    _error_and_exit(f'Source "{source}" could not be found')
+    error_and_exit(f'Source "{source}" could not be found')

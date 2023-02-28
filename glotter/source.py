@@ -1,4 +1,5 @@
 import os
+import sys
 from functools import lru_cache
 
 import yaml
@@ -137,3 +138,52 @@ def get_sources(path):
                     )
                     sources[project_type].append(source)
     return sources
+
+
+def filter_sources(args, sources):
+    """
+    Filter sources based language, project, and/or source
+
+    :param args: Arguments indicating what to filter on
+    :param sources: a dict where the key is the ProjectType and the value is a list of all the Source objects of that project
+    :return: a dict where the key is the ProjectType and the value is a list of all the Source objects of that project
+        that match the filter
+    """
+
+    if args.project:
+        if args.project not in sources:
+            _error_and_exit(f'No valid sources found for project: "{args.project}"')
+
+        sources = {args.project: sources[args.project]}
+
+    filtered_sources_by_type = {}
+    for project_type, sources_by_type in sources.items():
+        filtered_sources = [
+            source for source in sources_by_type if _matches_source(args, source)
+        ]
+        if filtered_sources:
+            filtered_sources_by_type[project_type] = filtered_sources
+
+    if not filtered_sources_by_type:
+        if args.language:
+            _error_and_exit(f'No valid sources found for language: "{args.language}"')
+
+        if args.source:
+            _error_and_exit(f'Source "{args.source}" could not be found')
+
+    return filtered_sources_by_type
+
+
+def _matches_source(args, source):
+    if args.language and source.language.lower() != args.language.lower():
+        return False
+
+    return (
+        not args.source
+        or f"{source.name}{source.extension}".lower() == args.source.lower()
+    )
+
+
+def _error_and_exit(msg):
+    print(msg)
+    sys.exit(1)

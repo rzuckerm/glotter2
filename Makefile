@@ -112,7 +112,7 @@ test: $(META_INSTALL)
 	@if [ -f .coverage ]; \
 	then \
 	 	echo "*** Creating code coverage badge ***"; \
-		rm -f $(META)/html_cov/.gitignore; \
+		rm -f $(META)/html_cov/.gitignore $(META)/html_cov/badge.svg; \
 		$(RUN) coverage-badge -o $(META)/html_cov/badge.svg; \
 		echo ""; \
 	fi

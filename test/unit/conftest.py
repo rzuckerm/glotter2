@@ -108,3 +108,51 @@ def mock_projects(glotter_yml_projects, monkeypatch):
     return monkeypatch.setattr(
         "glotter.settings.Settings.projects", glotter_yml_projects
     )
+
+
+@pytest.fixture
+def mock_sources(test_info_string_no_build):
+    yield {
+        "baklava": [
+            Source(
+                name="baklava.b",
+                language="bar",
+                path="archive/b/bar/baklava.b",
+                test_info_string=test_info_string_no_build,
+            ),
+            Source(
+                name="baklava.b",
+                language="bart",
+                path="archive/b/bart/baklava.b",
+                test_info_string=test_info_string_no_build,
+            ),
+        ],
+        "fileinputoutput": [
+            Source(
+                name="file-input-output.b",
+                language="bart",
+                path="archive/b/bart/file-input-output.b",
+                test_info_string=test_info_string_no_build,
+            ),
+        ],
+        "quine": [
+            Source(
+                name="quine.b",
+                language="bar",
+                path="archive/b/bar/quine.b",
+                test_info_string=test_info_string_no_build,
+            ),
+            Source(
+                name="quine.b",
+                language="bart",
+                path="archive/b/bart/quine.b",
+                test_info_string=test_info_string_no_build,
+            ),
+            Source(
+                name="Quine.cl",
+                language="cool",
+                path="archive/c/cool/Quine.cl",
+                test_info_string=test_info_string_no_build,
+            ),
+        ],
+    }
