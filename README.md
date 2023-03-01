@@ -23,6 +23,8 @@ If you'd like to contribute to Glotter2, read our [contributing guidelines](./CO
   * Change test ID from `<filename>` to `<language>/<filename>`
   * Speed up test collection by about 1 min and total test time by about
     5 min in [sample-programs][sample-programs] by caching list of sources
+  * Modify `download`, `run`, and `test` commands so that `-p`, `-l`, and
+    `-s` are no longer mutually exclusive
 * 0.3.0:
   * Fix crash when running tests for [sample-programs][sample-programs]
     with glotter 0.2.x
