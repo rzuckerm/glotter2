@@ -1,12 +1,10 @@
 import re
-import os
 import sys
 
 import pytest
 
 from glotter.source import get_sources, filter_sources
 from glotter.settings import Settings
-from glotter.utils import error_and_exit
 
 
 def test(args):
@@ -21,7 +19,7 @@ def test(args):
             tests += _get_tests(project_type, all_tests, source)
 
     if not tests:
-        _exit_and_error("No tests were found")
+        _error_and_exit("No tests were found")
 
     _run_pytest_and_exit(*tests)
 
