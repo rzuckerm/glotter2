@@ -40,14 +40,15 @@ PYTEST_ARGS ?= -vvl \
 	--cov-report=xml:$(META)/coverage.xml
 
 help:
-	@echo "build       - Build package"
-	@echo "clean       - Delete output files"
-	@echo "format      - Format code with black"
-	@echo "lint        - Lint code with black and pylint"
-	@echo "lint-black  - Lint code with black"
-	@echo "lint-pylint - Lint code with pylint"
-	@echo "test        - Run unit tests with pytest."
-	@echo "              Use PYTEST_ARGS to override options"
+	@echo "build          - Build package"
+	@echo "clean          - Delete output files"
+	@echo "coverage-badge - Make coverage badge"
+	@echo "format         - Format code with black"
+	@echo "lint           - Lint code with black and pylint"
+	@echo "lint-black     - Lint code with black"
+	@echo "lint-pylint    - Lint code with pylint"
+	@echo "test           - Run unit tests with pytest."
+	@echo "                 Use PYTEST_ARGS to override options"
 
 ifneq ($(GITHUB_PATH),)
 $(META):
@@ -84,6 +85,14 @@ clean:
 		venv
 	rm -f .coverage .coverage.*
 
+.PHONY: coverage-badge
+coverage-badge:
+	echo "*** Creating code coverage badge ***"
+	rm -f $(META)/html_cov/.gitignore $(META)/html_cov/badge.svg
+	[ -f .coverage ]
+	$(RUN) coverage-badge -o $(META)/html_cov/badge.svg
+	echo ""
+
 .PHONY: format
 format: $(META_INSTALL)
 	$(RUN) black $(ALL)
@@ -109,10 +118,3 @@ test: $(META_INSTALL)
 	@echo "*** Running tests ***"
 	$(RUN) pytest $(PYTEST_ARGS)
 	@echo ""
-	@if [ -f .coverage ]; \
-	then \
-	 	echo "*** Creating code coverage badge ***"; \
-		rm -f $(META)/html_cov/.gitignore $(META)/html_cov/badge.svg; \
-		$(RUN) coverage-badge -o $(META)/html_cov/badge.svg; \
-		echo ""; \
-	fi

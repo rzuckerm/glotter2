@@ -50,6 +50,10 @@ jobs:
     - name: Test
       run: make test
 
+    - name: Coverage Badge
+      run: make coverage-badge
+      if: ${{ github.ref == 'refs/heads/main' && matrix.python-version == '3.8' && matrix.os == 'ubuntu-latest' }}
+
     - name: Coverage Report
       uses: JamesIves/github-pages-deploy-action@v4
       with:
