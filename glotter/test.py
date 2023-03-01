@@ -4,20 +4,26 @@ import sys
 
 import pytest
 
-from glotter.source import get_sources
+from glotter.source import get_sources, filter_sources
 from glotter.settings import Settings
 from glotter.utils import error_and_exit
 
 
 def test(args):
-    if args.language:
-        _test_language(args.language)
-    elif args.project:
-        _test_project(args.project)
-    elif args.source:
-        _test_source(args.source)
-    else:
-        _test_all()
+    if not (args.language or args.project or args.source):
+        _run_pytest_and_exit()
+
+    all_tests = _collect_tests()
+    sources_by_type = filter_sources(args, get_sources(Settings().source_root))
+    tests = []
+    for project_type, sources in sources_by_type.items():
+        for source in sources:
+            tests += _get_tests(project_type, all_tests, source)
+
+    if not tests:
+        _exit_and_error("No tests were found")
+
+    _run_pytest_and_exit(*tests)
 
 
 def _get_tests(project_type, all_tests, src=None):
@@ -35,62 +41,15 @@ def _get_tests(project_type, all_tests, src=None):
     return tests
 
 
-def _test_all():
-    _run_pytest_and_exit()
-
-
-def _test_language(language):
-    all_tests = _collect_tests()
-    sources_by_type = get_sources(path=os.path.join("archive", language[0], language))
-    if not any(sources_by_type.values()):
-        error_and_exit(f'No valid sources found for language: "{language}"')
-    tests = []
-    for project_type, sources in sources_by_type.items():
-        for src in sources:
-            tests.extend(_get_tests(project_type, all_tests, src))
-    try:
-        _verify_test_list_not_empty(tests)
-        _run_pytest_and_exit(*tests)
-    except KeyError:
-        error_and_exit(f'No tests found for sources in language "{language}"')
-
-
-def _test_project(project):
-    try:
-        Settings().verify_project_type(project)
-        tests = _get_tests(project, _collect_tests())
-        _verify_test_list_not_empty(tests)
-        _run_pytest_and_exit(*tests)
-    except KeyError:
-        error_and_exit(f'Either tests or sources not found for project: "{project}"')
-
-
-def _test_source(source):
-    all_tests = _collect_tests()
-    sources_by_type = get_sources("archive")
-    for project_type, sources in sources_by_type.items():
-        for src in sources:
-            filename = f"{src.name}{src.extension}"
-            if filename.lower() == source.lower():
-                tests = _get_tests(project_type, all_tests, src)
-                try:
-                    _verify_test_list_not_empty(tests)
-                    _run_pytest_and_exit(*tests)
-                except KeyError:
-                    error_and_exit(f'No tests could be found for source "{source}"')
-
-    error_and_exit(f'Source "{source}" could not be found')
-
-
-def _verify_test_list_not_empty(tests):
-    if not tests:
-        raise KeyError("No tests were found")
-
-
 def _run_pytest_and_exit(*args):
     args = ["-v"] + list(args)
     code = pytest.main(args=args)
     sys.exit(code)
+
+
+def _error_and_exit(msg):
+    print(msg)
+    sys.exit(1)
 
 
 class TestCollectionPlugin:

@@ -2,6 +2,7 @@ import shutil
 import tempfile
 from datetime import datetime, timedelta
 from uuid import uuid4 as uuid
+import time
 
 import docker
 
@@ -73,6 +74,7 @@ class ContainerFactory(metaclass=Singleton):
             stream=True,
             decode=True,
         ):
+            time.sleep(0.1)
             if datetime.now() - last_update > timedelta(seconds=5) and not quiet:
                 print("... ", end="", flush=True)
                 last_update = datetime.now()
