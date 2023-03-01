@@ -174,7 +174,10 @@ def test_filter_language_not_found(mock_sources, capsys):
         filter_sources(args, mock_sources)
 
     assert e.value.code != 0
-    assert 'No valid sources found for language: "foo"' in capsys.readouterr().out
+    assert (
+        'No valid sources found for the following combination: language "foo"'
+        in capsys.readouterr().out
+    )
 
 
 @pytest.mark.parametrize(
@@ -199,7 +202,10 @@ def test_filter_source_not_found(mock_sources, capsys):
         filter_sources(args, mock_sources)
 
     assert e.value.code != 0
-    assert 'Source "Baklava.foo" could not be found' in capsys.readouterr().out
+    assert (
+        'No valid sources found for the following combination: source "Baklava.foo"'
+        in capsys.readouterr().out
+    )
 
 
 def test_filter_language_and_source(mock_sources):
@@ -208,10 +214,34 @@ def test_filter_language_and_source(mock_sources):
     assert filtered_sources == {"baklava": [mock_sources["baklava"][1]]}
 
 
+def test_filter_language_and_source_not_found(mock_sources, capsys):
+    with pytest.raises(SystemExit) as e:
+        args = MockArgs(language="bar", source="file-input-output.b")
+        filter_sources(args, mock_sources)
+
+    assert e.value.code != 0
+    assert (
+        'No valid sources found for the following combination: language "bar", '
+        'source "file-input-output.b"' in capsys.readouterr().out
+    )
+
+
 def test_filter_project_and_language(mock_sources):
     args = MockArgs(project="quine", language="bar")
     filtered_sources = filter_sources(args, mock_sources)
     assert filtered_sources == {"quine": [mock_sources["quine"][0]]}
+
+
+def test_filter_project_and_language_not_found(mock_sources, capsys):
+    with pytest.raises(SystemExit) as e:
+        args = MockArgs(project="baklava", language="cool")
+        filter_sources(args, mock_sources)
+
+    assert e.value.code != 0
+    assert (
+        'No valid sources found for the following combination: project "baklava", '
+        'language "cool"' in capsys.readouterr().out
+    )
 
 
 class MockArgs:

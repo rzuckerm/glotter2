@@ -165,11 +165,21 @@ def filter_sources(args, sources):
             filtered_sources_by_type[project_type] = filtered_sources
 
     if not filtered_sources_by_type:
+        errors = []
+        if args.project:
+            errors.append(f'project "{args.project}"')
+
         if args.language:
-            _error_and_exit(f'No valid sources found for language: "{args.language}"')
+            errors.append(f'language "{args.language}"')
 
         if args.source:
-            _error_and_exit(f'Source "{args.source}" could not be found')
+            errors.append(f'source "{args.source}"')
+
+        if errors:
+            error_msg = ", ".join(errors)
+            _error_and_exit(
+                f"No valid sources found for the following combination: {error_msg}"
+            )
 
     return filtered_sources_by_type
 
