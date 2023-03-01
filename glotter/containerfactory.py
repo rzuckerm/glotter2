@@ -61,7 +61,11 @@ class ContainerFactory(metaclass=Singleton):
         if len(images) == 1:
             return images[0]
         if not quiet:
-            print(f"Pulling {container_info.image}:{container_info.tag}... ", end="")
+            print(
+                f"Pulling {container_info.image}:{container_info.tag}... ",
+                end="",
+                flush=True,
+            )
         last_update = datetime.now()
         for _ in self._api_client.pull(
             repository=container_info.image,
@@ -70,10 +74,10 @@ class ContainerFactory(metaclass=Singleton):
             decode=True,
         ):
             if datetime.now() - last_update > timedelta(seconds=5) and not quiet:
-                print("... ", end="")
+                print("... ", end="", flush=True)
                 last_update = datetime.now()
         if not quiet:
-            print("done")
+            print("done", flush=True)
         images = self._client.images.list(
             name=f"{container_info.image}:{str(container_info.tag)}"
         )

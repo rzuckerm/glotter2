@@ -66,22 +66,21 @@ def parse_test():
 
 
 def _parse_args_for_verb(parser):
-    group = parser.add_mutually_exclusive_group()
-    group.add_argument(
+    parser.add_argument(
         "-s",
         "--source",
         metavar="SOURCE.EXT",
         type=str,
         help="source filename (not path) to run",
     )
-    group.add_argument(
+    parser.add_argument(
         "-p",
         "--project",
         metavar="PROJECT",
         type=str,
         help="project to run",
     )
-    group.add_argument(
+    parser.add_argument(
         "-l",
         "--language",
         metavar="LANGUAGE",
@@ -97,8 +96,7 @@ def parse_report():
         prog="glotter",
         description="Output a report of discovered sources for configured projects and languages",
     )
-    group = parser.add_mutually_exclusive_group()
-    group.add_argument(
+    parser.add_argument(
         "-o",
         "--output",
         metavar="REPORT_PATH",
