@@ -41,6 +41,7 @@ def parse_download():
         description="Download images for a source or a group of sources. This command can be filtered by language, "
         "project, or a single source. Only one option may be specified.",
     )
+    _add_parallel_arg(parser, "Download images in parallel")
     args = _parse_args_for_verb(parser)
     download(args)
 
@@ -61,9 +62,15 @@ def parse_test():
         description="Test a source or a group of sources. This command can be filtered by language, project"
         "or a single source. Only one option may be specified.",
     )
+    _add_parallel_arg(parser, "Run tests in parallel")
     args = _parse_args_for_verb(parser)
     test(args)
 
+
+def _add_parallel_arg(parser, help_msg):
+    parser.add_argument(
+        "--parallel", action="store_true", help=help_msg
+    )
 
 def _parse_args_for_verb(parser):
     parser.add_argument(

@@ -48,12 +48,13 @@ class ContainerFactory(metaclass=Singleton):
             )
         return self._containers[key]
 
-    def get_image(self, container_info, quiet=False):
+    def get_image(self, container_info, quiet=False, parallel=False):
         """
         Pull a docker image
 
         :param container_info: metadata about the image to pull
         :param quiet: whether to print output while downloading
+        :param parallel: whether image download is occurring in parallel
         :return: a docker image
         """
         images = self._client.images.list(
@@ -62,9 +63,10 @@ class ContainerFactory(metaclass=Singleton):
         if len(images) == 1:
             return images[0]
         if not quiet:
+            end_char = "\n" if parallel else ""
             print(
                 f"Pulling {container_info.image}:{container_info.tag}... ",
-                end="",
+                end=end_char,
                 flush=True,
             )
         last_update = datetime.now()
@@ -74,12 +76,23 @@ class ContainerFactory(metaclass=Singleton):
             stream=True,
             decode=True,
         ):
-            time.sleep(0.1)
-            if datetime.now() - last_update > timedelta(seconds=5) and not quiet:
+            time.sleep(0.5)
+            if (
+                not quiet
+                and not parallel
+                and datetime.now() - last_update > timedelta(seconds=5)
+            ):
                 print("... ", end="", flush=True)
                 last_update = datetime.now()
         if not quiet:
-            print("done", flush=True)
+            if parallel:
+                print(
+                    f"... done pulling {container_info.image}:{container_info.tag}",
+                    flush=True,
+                )
+            else:
+                print("done", flush=True)
+
         images = self._client.images.list(
             name=f"{container_info.image}:{str(container_info.tag)}"
         )
