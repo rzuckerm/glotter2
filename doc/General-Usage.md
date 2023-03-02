@@ -2,7 +2,7 @@ Glotter2 is an execution library for collections of single file scripts.
 It uses Docker to be able to build and run scripts in any language without having to install a local sdk or development environment.
 
 Before Glotter2 can be used, your project must be configured.
-See [Integrating with Glotter2](Integrating-with-Glotter2) for more information
+See [Integrating with Glotter2](Integrating-with-Glotter2.md) for more information
 
 The Glotter2 CLI has four main commands:
 - [download](#download)
