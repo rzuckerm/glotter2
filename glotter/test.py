@@ -14,12 +14,11 @@ def test(args):
 
     all_tests = _collect_tests()
     sources_by_type = filter_sources(args, get_sources(Settings().source_root))
-    tests = []
     for project_type, sources in sources_by_type.items():
         for source in sources:
             test_args += _get_tests(project_type, all_tests, source)
 
-    if not tests:
+    if not test_args:
         _error_and_exit("No tests were found")
 
     _run_pytest_and_exit(*test_args)
