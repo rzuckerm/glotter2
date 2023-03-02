@@ -19,6 +19,8 @@ If you'd like to contribute to Glotter2, read our [contributing guidelines](./CO
 
 ### Glotter2 releases
 
+* 0.4.3:
+  * Fix bug that would indicate "No tests were found" when filtering tests
 * 0.4.2:
   * Remove call to `time.sleep` when pulling image
 * 0.4.1:
