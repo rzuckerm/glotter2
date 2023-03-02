@@ -10,24 +10,28 @@ The Glotter2 CLI has four main commands:
 - [test](#test)
 - [report](#report)
 
-All of these has a commands optional argument:
+All of these commands have this optional argument:
 
 | Flag | Short Flag | Description |
 | --- | --- | --- |
-| --help | -h | print help text and exit |
+| `--help` | `-h` | Print help text and exit |
 
-While these each perform a different function (described below), the `download`, `run`,
-and `test` has the following optional arguments:
+While the `download`, `run`, and `test` commands serve different functions
+(described below), each has the following optional arguments:
 
 | Flag | Short Flag | Description |
 | --- | --- | --- |
-| --source | -s | perform action using a single source file |
-| --project | -p | perform action using all sources relevant to a certain project key |
-| --language | -l | perform action using all sources of a given language |
+| `--source` | `-s` | Perform action using a single source file |
+| `--project` | `-p` | Perform action using all sources relevant to a certain project key |
+| `--language` | `-l` | Perform action using all sources of a given language |
 
-The Glotter2 CLI has this part:
+These optional arguments can be used together in the event that multiple languages
+have the same filename and extension. For example, suppose that there are two programs
+called `hello_world.e`, one in Eiffel and one in Euphoria. If you want to perforce the
+action on the Eiffel one, you do one of the following:
 
-- Report
+- `-l eiffel -p helloworld`
+- `-l eiffel -s hello_world.e`
 
 ## Download
 
@@ -42,7 +46,7 @@ The `download` command also has the following optional argument:
 
 | Flag | Short Flag | Description |
 | --- | --- | --- |
-| --parallel | | Download images in parallel |
+| `--parallel` | | Download images in parallel |
 
 ## Run
 
@@ -59,7 +63,7 @@ The `test` command also has the following optional argument:
 
 | Flag | Short Flag | Description |
 | --- | --- | --- |
-| --parallel | | Run tests in parallel |
+|  `--parallel` | | Run tests in parallel |
 
 # Report
 
@@ -70,6 +74,6 @@ The `report` command has the following optional argument:
 
 | Flag | Short Flag | Description |
 | --- | --- | --- |
-| -o <REPORT_PATH> | | Output the report as a [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) at <REPORT_PATH> instead of to stdout |
+| `-o` | `--output` | Output the report as a [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) at the specified report path instead of to stdout |
 
 If `-o` is not specified, the report is output as [Markdown](https://www.markdownguide.org/basic-syntax/) to stdout.
