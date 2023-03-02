@@ -76,7 +76,6 @@ class ContainerFactory(metaclass=Singleton):
             stream=True,
             decode=True,
         ):
-            time.sleep(0.5)
             if (
                 not quiet
                 and not parallel

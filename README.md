@@ -19,6 +19,8 @@ If you'd like to contribute to Glotter2, read our [contributing guidelines](./CO
 
 ### Glotter2 releases
 
+* 0.4.2:
+  * Remove call to `time.sleep` when pulling image
 * 0.4.1:
   * Bump version since wrong version pushed to pypi
 * 0.4.0:
