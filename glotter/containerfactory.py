@@ -2,7 +2,6 @@ import shutil
 import tempfile
 from datetime import datetime, timedelta
 from uuid import uuid4 as uuid
-import time
 
 import docker
 
