@@ -68,9 +68,8 @@ def parse_test():
 
 
 def _add_parallel_arg(parser, help_msg):
-    parser.add_argument(
-        "--parallel", action="store_true", help=help_msg
-    )
+    parser.add_argument("--parallel", action="store_true", help=help_msg)
+
 
 def _parse_args_for_verb(parser):
     parser.add_argument(
