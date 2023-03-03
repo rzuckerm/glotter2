@@ -74,6 +74,6 @@ The `report` command has the following optional argument:
 
 | Flag | Short Flag | Description |
 | --- | --- | --- |
-| `-o` | `--output` | Output the report as a [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) at the specified report path instead of to stdout |
+| `--output` | `-o` | Output the report as a [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) at the specified report path instead of to stdout |
 
 If `-o` is not specified, the report is output as [Markdown](https://www.markdownguide.org/basic-syntax/) to stdout.
