@@ -61,10 +61,11 @@ This setting is optional as not all languages require a build step.
 The following values are available.
 
 | Jinja Format | Description |
-| source.name | the name of the source file excluding extension |
-| source.extension | the extension of the source file |
-| source.path | the path to the source file excluding the name of the source and its extension |
-| source.full_path | the full path to the source file including its name and extension |
+| ------------ | ----------- |
+| `source.name` | The name of the source file excluding extension |
+| `source.extension` | The extension of the source file |
+| `source.path` | The path to the source file excluding the name of the source and its extension |
+| `source.full_path` | The full path to the source file including its name and extension |
 
 ## Example
 
