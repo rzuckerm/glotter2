@@ -10,7 +10,7 @@ If you are not familiar with [pytest], it may be helpful to learn the basics fro
 A project fixture follows the same basic idea as a [fixture in pytest][pytest-fixture].
 It is used to "provide a fixed baseline upon which tests can... execute." (from [pytest fixture documentation][pytest-fixture])
 Fixtures in [pytest] can also be parametrized (see [Parametrizing fixtures](pytest-fixture-parametrize]).
-In the case of a project fixture, the "fixed baseline" of the tests is a set of sources that implement a project specified by a ]project key][project-key].
+In the case of a project fixture, the "fixed baseline" of the tests is a set of sources that implement a project specified by a [project key][project-key].
 
 All of this is handled automatically using the `project_fixture` decorator provided by Glotter2.
 
