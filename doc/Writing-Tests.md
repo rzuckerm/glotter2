@@ -1,6 +1,6 @@
 # Writing Tests
 
-<< [Directory Level Configuration](Directory-Level-Configuration) |
+<< [Directory Level Configuration](Directory-Level-Configuration.md) |
 
 Glotter2 uses [pytest] behind the scenes for running tests.
 If you are not familiar with [pytest], it may be helpful to learn the basics from their [documentation][pytest].
@@ -191,4 +191,4 @@ def test_factorial_errors(cli_args, expected, factorial):
 
 [sample-programs]:https://github.com/TheRenegadeCoder/sample-programs
 
-<< [Directory Level Configuration](Directory-Level-Configuration) |
+<< [Directory Level Configuration](Directory-Level-Configuration.md) |
