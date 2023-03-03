@@ -1,3 +1,7 @@
+# Global Glotter2 Configuration
+
+<< [General Usage](General-Usage.md) | [Directory Level Configuration](Directory-Level-Configuration.md) >>
+
 All of Glotter2's global settings are set in a file called `.glotter.yml` using [YAML syntax](https://yaml.org/)
 This file can be placed anywhere in the filesystem of your project, but it is recommended to place it at the root.
 
@@ -124,3 +128,5 @@ projects
       - "world"
     requires_parameters: false
 ```
+
+<< [General Usage](General-Usage.md) | [Directory Level Configuration](Directory-Level-Configuration.md) >>

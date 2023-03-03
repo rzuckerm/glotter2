@@ -1,3 +1,7 @@
+# Directory Level Configuration
+
+<< [Global Glotter2 Configuration](Global-Glotter2-Configuration.md) | [Writing Tests](Writing-Tests.md) >>
+
 Each directory that contains code that you want Glotter2 to recognize requires a file named `testinfo.yml`.
 This file contains settings pertinent only to the current directory but does not affect child directories.
 
@@ -77,3 +81,5 @@ container:
   build: "go build -o {{ source.name }} {{ source.name}}{{ source.extension }}"
   cmd: "./{{ source.name }}"
 ```
+
+<< [Global Glotter2 Configuration](Global-Glotter2-Configuration.md) | [Writing Tests](Writing-Tests.md) >>

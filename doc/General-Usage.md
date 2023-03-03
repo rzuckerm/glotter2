@@ -1,3 +1,7 @@
+# General Usage
+
+<< [Integrating with Glotter2](Integrating-with-Glotter2.md) | [Global Glotter2 Configuration](Global-Glotter2-Configuration.md) >>
+
 Glotter2 is an execution library for collections of single file scripts.
 It uses Docker to be able to build and run scripts in any language without having to install a local sdk or development environment.
 
@@ -77,3 +81,5 @@ The `report` command has the following optional argument:
 | `--output` | `-o` | Output the report as a [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) at the specified report path instead of to stdout |
 
 If `-o` is not specified, the report is output as [Markdown](https://www.markdownguide.org/basic-syntax/) to stdout.
+
+<< [Integrating with Glotter2](Integrating-with-Glotter2.md) | [Global Glotter2 Configuration](Global-Glotter2-Configuration.md) >>
