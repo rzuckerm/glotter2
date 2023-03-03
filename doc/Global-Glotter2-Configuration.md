@@ -11,8 +11,8 @@ The following shows what settings are available and their purpose.
 ### Acronym Scheme
 
 **Required**  
-**Format**: `acronym_scheme: "value"`  
-**Default**: two_letter_limit  
+**Format**: `acronym_scheme: "value"`
+**Default**: `two_letter_limit`
 
 #### Description
 
