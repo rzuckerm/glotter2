@@ -5,7 +5,7 @@
 Glotter2 uses [pytest] behind the scenes for running tests.
 If you are not familiar with [pytest], it may be helpful to learn the basics from their [documentation][pytest].
 
-## Creating a Project Fixture.<a name="project-fixture">
+## Creating a Project Fixture<a name="project-fixture">
 
 A project fixture follows the same basic idea as a [fixture in pytest][pytest-fixture].
 It is used to "provide a fixed baseline upon which tests can... execute." (from [pytest fixture documentation][pytest-fixture])
