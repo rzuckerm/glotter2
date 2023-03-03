@@ -15,8 +15,8 @@ The following shows what settings are available and their purpose.
 ### Acronym Scheme
 
 **Required**  
-**Format**: `acronym_scheme: "value"`
-**Default**: `two_letter_limit`
+**Format**: `acronym_scheme: "value"`  
+**Default**: `two_letter_limit`  
 
 #### Description
 
@@ -24,9 +24,9 @@ The acronym scheme determines how the Glotter2 should handle file names that con
 
 #### Values
 
-`upper` - All acronyms are expected to be upper case.
-`lower` - All acronyms are expected to be lower case
-`two_letter_limit` - If an acronym is two letters or less and the project naming scheme is pascal or camel, the the acronym is expected to be upper case. Otherwise it is expected lower case.
+`upper` - All acronyms are expected to be upper case  
+`lower` - All acronyms are expected to be lower case  
+`two_letter_limit` - If an acronym is two letters or less and the project naming scheme is pascal or camel, the the acronym is expected to be upper case. Otherwise it is expected lower case  
 
 ### Project Root
 
