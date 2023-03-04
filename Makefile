@@ -43,6 +43,7 @@ help:
 	@echo "build          - Build package"
 	@echo "clean          - Delete output files"
 	@echo "coverage-badge - Make coverage badge"
+	@echo "doc            - Make documentation"
 	@echo "format         - Format code with black"
 	@echo "lint           - Lint code with black and pylint"
 	@echo "lint-black     - Lint code with black"
@@ -92,6 +93,12 @@ coverage-badge:
 	[ -f .coverage ]
 	$(RUN) coverage-badge -o $(META)/html_cov/badge.svg
 	echo ""
+
+.PHONY: doc
+doc: $(META_INSTALL)
+	@echo "*** Building docs ***"
+	$(RUN) sphinx-build -b html doc $(META)/doc
+	@echo ""
 
 .PHONY: format
 format: $(META_INSTALL)

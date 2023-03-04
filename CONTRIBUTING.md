@@ -36,11 +36,17 @@ The file structure of Glotter2 looks like the following (with omissions):
 - `test`
   - `integration`
   - `unit`
+- `doc`
 - `Makefile`
 - `pyproject.toml`
 - `poetry.lock`
 
 The `glotter` directory contains all source code for the project.
+
+The `doc` directory contains all the documentation for the project.
+[Sphinx](https://pypi.org/project/sphinx) is used to convert the
+[reStructuredText](https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html)
+to HTML.
 
 The `test` directory contains all tests for the project. It is split into two types: `unit` and
 `integration`. The difference for the sake of this project is that the unit tests are written in
@@ -64,6 +70,7 @@ This project uses `pytest` as its testing library, but it is also a wrapper arou
 Everything associated with this project is done through `make` targets:
 
 * `clean` - Delete output file
+* `doc` - Make documentation
 * `format` - Format the code using `black`
 * `lint` - Lint the code using `black` and `pylint`
 

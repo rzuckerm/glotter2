@@ -50,13 +50,40 @@ jobs:
     - name: Test
       run: make test
 
+  doc:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - uses: actions/setup-python@v4
+      with:
+        python-version: "3.8"
+
+    - uses: snok/install-poetry@v1.3.3
+      with:
+        version: 1.3.2
+        virtualenvs-create: false
+        virtualenvs-in-project: false
+
+    - name: Test
+      run: make test
+
     - name: Coverage Badge
       run: make coverage-badge
-      if: ${{ github.ref == 'refs/heads/main' && matrix.python-version == '3.8' && matrix.os == 'ubuntu-latest' }}
 
-    - name: Coverage Report
+    - name: Doc
+      run: make doc
+
+    - name: Copy code coverage
+      run: cp -r .meta/html_cov .meta/doc
+
+    - name: Move coverage badge
+      run: mv .meta/html_cov/badge.svg .meta/doc
+
+    - name: Publish doc
       uses: JamesIves/github-pages-deploy-action@v4
       with:
-        folder: .meta/html_cov
+        folder: .meta/doc
         token: ${{ secrets.REPO_TOKEN }}
-      if: ${{ github.ref == 'refs/heads/main' && matrix.python-version == '3.8' && matrix.os == 'ubuntu-latest' }}
+      if: ${{ github.ref == 'refs/heads/main' }}
