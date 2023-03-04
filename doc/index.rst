@@ -14,7 +14,7 @@ Integrating with Glotter2
 There are the main parts of integrating with Glotter2:
 
 .. toctree ::
-    :maxdepth: 2
+    :maxdepth: 1
 
     general-usage
     global-glotter2-configuration
