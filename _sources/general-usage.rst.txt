@@ -37,8 +37,8 @@ Flag            Short Flag  Description
 
 These optional arguments can be used together in the event that multiple languages
 have the same filename and extension. For example, suppose that there are two programs
-called `hello_world.e`, one in Eiffel and one in Euphoria. If you want to perforce the
-action on the Eiffel one, you do one of the following:
+called ``hello_world.e``, one in Eiffel and one in Euphoria. If you want to force the
+action on the Eiffel one, you would use one of the following:
 
 - ``-l eiffel -p helloworld``
 - ``-l eiffel -s hello_world.e``
