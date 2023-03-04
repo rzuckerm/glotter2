@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Directory Level Configuration &mdash; glotter2  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Writing Tests" href="writing-tests.html" />
+    <link rel="prev" title="Global Glotter2 Configuration" href="global-glotter2-configuration.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            glotter2
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="general-usage.html">General Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="global-glotter2-configuration.html">Global Glotter2 Configuration</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Directory Level Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#folder">Folder</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#extension">Extension</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#naming">Naming</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#container">Container</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#image">Image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tag">Tag</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#build">Build</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cmd">Cmd</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#templating">Templating</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="writing-tests.html">Writing Tests</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">glotter2</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Directory Level Configuration</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/directory-level-configuration.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="directory-level-configuration">
+<h1>Directory Level Configuration<a class="headerlink" href="#directory-level-configuration" title="Permalink to this heading"></a></h1>
+<p>Each directory that contains code that you want Glotter2 to recognize requires a file named <code class="docutils literal notranslate"><span class="pre">testinfo.yml</span></code>.
+This file contains settings pertinent only to the current directory but does not affect child directories.</p>
+<p>There are two root level sections.</p>
+<section id="folder">
+<h2>Folder<a class="headerlink" href="#folder" title="Permalink to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">folder</span></code> is data about the files in the directory that helps Glotter2 find them.</p>
+<p>It has the following settings.</p>
+<section id="extension">
+<h3>Extension<a class="headerlink" href="#extension" title="Permalink to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">extension</span></code> is the file extension of files that Glotter2 will recognize in this directory.</p>
+</section>
+<section id="naming">
+<h3>Naming<a class="headerlink" href="#naming" title="Permalink to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">naming</span></code> refers to the naming scheme that Glotter2 will use to find files in this directory.</p>
+<p>The following are valid values.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Example</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">hyphen</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">hello-world</span></code></p></td>
+<td><p>Hyphen-separated</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">underscore</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">hello_world</span></code></p></td>
+<td><p>Underscore-separated</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">camel</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">helloWorld</span></code></p></td>
+<td><p>Each word starts with a capital <strong>excluding</strong> the first, no separation</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pascal</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">HelloWorld</span></code></p></td>
+<td><p>Each word starts with a capital <strong>including</strong> the first, no separation</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">lower</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">helloworld</span></code></p></td>
+<td><p>Lowercase, no separation</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="container">
+<h2>Container<a class="headerlink" href="#container" title="Permalink to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">container</span></code> contains settings that help Glotter2 know how to build and run sources in this directory.</p>
+<p>It has the following settings.</p>
+<section id="image">
+<h3>Image<a class="headerlink" href="#image" title="Permalink to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">image</span></code> is the docker image to use to run the source file.</p>
+</section>
+<section id="tag">
+<h3>Tag<a class="headerlink" href="#tag" title="Permalink to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">tag</span></code> is the specific tag of the docker image to use to run the source file.</p>
+</section>
+<section id="build">
+<span id="id1"></span><h3>Build<a class="headerlink" href="#build" title="Permalink to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">build</span></code> is command that is run inside of docker in order to build the source.
+This setting is optional as not all languages require a build step.</p>
+</section>
+<section id="cmd">
+<h3>Cmd<a class="headerlink" href="#cmd" title="Permalink to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">cmd</span></code> is the command that is run inside of docker in order to run the source (after it is built if necessary).</p>
+</section>
+</section>
+<section id="templating">
+<h2>Templating<a class="headerlink" href="#templating" title="Permalink to this heading"></a></h2>
+<p><a class="reference external" href="https://palletsprojects.com/p/jinja/">Jinja templating</a> can be used in the <code class="docutils literal notranslate"><span class="pre">build</span></code> or <code class="docutils literal notranslate"><span class="pre">cmd</span></code>
+setting of <code class="docutils literal notranslate"><span class="pre">container</span></code> in order to refer to the source by name or extension.</p>
+<p>The following values are available.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Jinja Format</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">source.name</span></code></p></td>
+<td><p>The name of the source file excluding extension</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">source.extension</span></code></p></td>
+<td><p>The extension of the source file</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">source.path</span></code></p></td>
+<td><p>The path to the source file excluding the name of the source and its extension</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">source.full_path</span></code></p></td>
+<td><p>The full path to the source file including its name and extension</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this heading"></a></h2>
+<p>The following is an example <code class="docutils literal notranslate"><span class="pre">testinfo.yml</span></code> file for a directory containing sources in go.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">folder</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">extension</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;.go&quot;</span>
+<span class="w">  </span><span class="nt">naming</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;hyphen&quot;</span>
+
+<span class="nt">container</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;golang&quot;</span>
+<span class="w">  </span><span class="nt">tag</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;1.12-alpine&quot;</span>
+<span class="w">  </span><span class="nt">build</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;go</span><span class="nv"> </span><span class="s">build</span><span class="nv"> </span><span class="s">-o</span><span class="nv"> </span><span class="s">{{</span><span class="nv"> </span><span class="s">source.name</span><span class="nv"> </span><span class="s">}}</span><span class="nv"> </span><span class="s">{{</span><span class="nv"> </span><span class="s">source.name</span><span class="nv"> </span><span class="s">}}{{</span><span class="nv"> </span><span class="s">source.extension</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<span class="w">  </span><span class="nt">cmd</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;./{{</span><span class="nv"> </span><span class="s">source.name</span><span class="nv"> </span><span class="s">}}&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="global-glotter2-configuration.html" class="btn btn-neutral float-left" title="Global Glotter2 Configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="writing-tests.html" class="btn btn-neutral float-right" title="Writing Tests" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Global Glotter2 Configuration &mdash; glotter2  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Directory Level Configuration" href="directory-level-configuration.html" />
+    <link rel="prev" title="General Usage" href="general-usage.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            glotter2
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="general-usage.html">General Usage</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Global Glotter2 Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#settings">Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#acronym-scheme">Acronym Scheme</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#description">Description</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#values">Values</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#project-root">Project Root</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">Description</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#source-root">Source Root</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id2">Description</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#projects">Projects</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#format">Format</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="directory-level-configuration.html">Directory Level Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="writing-tests.html">Writing Tests</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">glotter2</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Global Glotter2 Configuration</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/global-glotter2-configuration.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="global-glotter2-configuration">
+<h1>Global Glotter2 Configuration<a class="headerlink" href="#global-glotter2-configuration" title="Permalink to this heading"></a></h1>
+<p>All of Glotter2’s global settings are set in a file called <code class="docutils literal notranslate"><span class="pre">.glotter.yml</span></code> using <a class="reference external" href="https://yaml.org/">YAML syntax</a>
+This file can be placed anywhere in the filesystem of your project, but it is recommended to place it at the root.</p>
+<p>There are two root level sections.</p>
+<section id="settings">
+<h2>Settings<a class="headerlink" href="#settings" title="Permalink to this heading"></a></h2>
+<p>Settings are generic global settings.
+The following shows what settings are available and their purpose.</p>
+<section id="acronym-scheme">
+<h3>Acronym Scheme<a class="headerlink" href="#acronym-scheme" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Required</strong></p></li>
+<li><p><strong>Format</strong>: <code class="docutils literal notranslate"><span class="pre">acronym_scheme:</span> <span class="pre">&quot;value&quot;</span></code></p></li>
+<li><p><strong>Default</strong>: <code class="docutils literal notranslate"><span class="pre">two_letter_limit</span></code></p></li>
+</ul>
+<section id="description">
+<h4>Description<a class="headerlink" href="#description" title="Permalink to this heading"></a></h4>
+<p>The acronym scheme determines how the Glotter2 should handle file names that contain acronyms.</p>
+</section>
+<section id="values">
+<h4>Values<a class="headerlink" href="#values" title="Permalink to this heading"></a></h4>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">upper</span></code> - All acronyms are expected to be upper case</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lower</span></code> - All acronyms are expected to be lower case</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">two_letter_limit</span></code> - If an acronym is two letters or less and the project naming scheme is
+pascal or camel, the the acronym is expected to be upper case. Otherwise it is expected lower
+case</p></li>
+</ul>
+</section>
+</section>
+<section id="project-root">
+<h3>Project Root<a class="headerlink" href="#project-root" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Optional</strong></p></li>
+<li><p><strong>Format</strong>: <code class="docutils literal notranslate"><span class="pre">project_root:</span> <span class="pre">&quot;path/to/root&quot;</span></code></p></li>
+<li><p><strong>Default</strong>: The directory containing your <code class="docutils literal notranslate"><span class="pre">.glotter.yml</span></code></p></li>
+</ul>
+<section id="id1">
+<h4>Description<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h4>
+<p>Project root is the path to the root of your project.
+It can be absolute or relative from the path of the <code class="docutils literal notranslate"><span class="pre">.glotter.yml</span></code>.
+This is used as the root directory when scanning the filesystem for scripts and tests.</p>
+</section>
+</section>
+<section id="source-root">
+<h3>Source Root<a class="headerlink" href="#source-root" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Optional</strong></p></li>
+<li><p><strong>Format</strong>: <code class="docutils literal notranslate"><span class="pre">source_root:</span> <span class="pre">&quot;path/to/root&quot;</span></code></p></li>
+<li><p><strong>Default</strong>: the value of <cite>project_root`</cite></p></li>
+</ul>
+<section id="id2">
+<h4>Description<a class="headerlink" href="#id2" title="Permalink to this heading"></a></h4>
+<p>Source root is the path to the directory containing all of the scripts to run execute with Glotter2.
+It can be absolute or relative from <code class="docutils literal notranslate"><span class="pre">project_root</span></code>.</p>
+</section>
+</section>
+</section>
+<section id="projects">
+<span id="id3"></span><h2>Projects<a class="headerlink" href="#projects" title="Permalink to this heading"></a></h2>
+<p>The projects section contains all of the information about each “project” that is implemented in your project.
+Each project has:</p>
+<ul class="simple">
+<li><p>a project key</p></li>
+<li><p>a list of words that make up the name of the project depending on naming scheme</p></li>
+<li><p>a list of the words in the word list that are acronyms</p></li>
+<li><p>a flag of whether the project will require command line arguments</p></li>
+</ul>
+<section id="format">
+<h3>Format<a class="headerlink" href="#format" title="Permalink to this heading"></a></h3>
+<p>The format for a project is as follows:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">projectkey</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">words</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;words&quot;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;in&quot;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;project&quot;</span>
+<span class="w">  </span><span class="nt">acronyms</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;acronyms&quot;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;in&quot;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;project&quot;</span>
+<span class="w">  </span><span class="nt">requires_parameters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</pre></div>
+</div>
+<p>So for example. Let’s say I have three projects named FileIO, Factorial, and HelloWorld.
+FileIO contains an acronym.
+Factorial requires parameters.
+My <code class="docutils literal notranslate"><span class="pre">projects</span></code> section would look like this:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">projects</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">fileio</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">words</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;file&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;io&quot;</span>
+<span class="w">    </span><span class="nt">acronyms</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;io&quot;</span>
+<span class="w">    </span><span class="nt">requires_parameters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">  </span><span class="nt">factorial</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">words</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;factorial&quot;</span>
+<span class="w">    </span><span class="nt">requires_parameters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">helloworld</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">words</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;hello&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;world&quot;</span>
+<span class="w">    </span><span class="nt">requires_parameters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this heading"></a></h2>
+<p>The following is an example of a full <code class="docutils literal notranslate"><span class="pre">.glotter.yml</span></code></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">settings</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">acronym_scheme</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;two_letter_limit&quot;</span>
+<span class="w">  </span><span class="nt">project_root</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;./my_project&quot;</span>
+<span class="w">  </span><span class="nt">source_root</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;./sources&quot;</span>
+
+<span class="nt">projects</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">fileio</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">words</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;file&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;io&quot;</span>
+<span class="w">    </span><span class="nt">acronyms</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;io&quot;</span>
+<span class="w">    </span><span class="nt">requires_parameters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">  </span><span class="nt">factorial</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">words</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;factorial&quot;</span>
+<span class="w">    </span><span class="nt">requires_parameters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">helloworld</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">words</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;hello&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;world&quot;</span>
+<span class="w">    </span><span class="nt">requires_parameters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="general-usage.html" class="btn btn-neutral float-left" title="General Usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="directory-level-configuration.html" class="btn btn-neutral float-right" title="Directory Level Configuration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

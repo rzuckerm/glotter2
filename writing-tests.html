@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Writing Tests &mdash; glotter2  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Directory Level Configuration" href="directory-level-configuration.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            glotter2
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="general-usage.html">General Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="global-glotter2-configuration.html">Global Glotter2 Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="directory-level-configuration.html">Directory Level Configuration</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Writing Tests</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#above">Creating a Project Fixture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#writing-a-project-test">Writing a Project Test</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#project-keys">Project Keys</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">glotter2</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Writing Tests</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/writing-tests.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="writing-tests">
+<h1>Writing Tests<a class="headerlink" href="#writing-tests" title="Permalink to this heading"></a></h1>
+<p>Glotter2 uses <a class="reference external" href="https://docs.pytest.org/en/latest/">pytest</a> behind the scenes for running tests.
+If you are not familiar with <a class="reference external" href="https://docs.pytest.org/en/latest/">pytest</a>, it may be helpful to learn the basics from their <a class="reference external" href="https://docs.pytest.org/en/latest/">documentation</a></p>
+<section id="above">
+<span id="creating-a-project-fixture"></span><span id="project-fixture"></span><span id="id1"></span><h2>Creating a Project Fixture<a class="headerlink" href="#above" title="Permalink to this heading"></a></h2>
+<p>A project fixture follows the same basic idea as a <a class="reference external" href="https://docs.pytest.org/en/latest/fixture.html">fixture in pytest</a>.
+It is used to “provide a fixed baseline upon which tests can… execute.” (from <a class="reference external" href="https://docs.pytest.org/en/latest/fixture.html">pytest fixture documentation</a>)
+Fixtures in <a class="reference external" href="https://docs.pytest.org/en/latest/">pytest</a> can also be parametrized (see <a class="reference external" href="https://docs.pytest.org/en/latest/how-to/fixtures.html#fixture-parametrize">Parametrizing fixtures</a>).
+In the case of a project fixture, the “fixed baseline” of the tests is a set of sources that implement a project
+specified by a <a class="reference internal" href="#project-key">project key</a>.</p>
+<p>All of this is handled automatically using the <a class="reference internal" href="#project-fixture">project fixture</a> decorator provided by Glotter2.</p>
+<p>Start by importing the decorator: <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">glotter</span> <span class="pre">import</span> <span class="pre">project_test</span></code>.
+Then create a fixture function and decorate it with the decorator.
+The decorator takes a <a class="reference internal" href="#project-key">project key</a> as a parameter. See <a class="reference internal" href="#project-keys-below">Project Keys below</a> for more information.
+The function can be named whatever you like, but I recommend naming it something related to the <a class="reference internal" href="#project-key">project key</a>.
+The function must also take a parameter called <code class="docutils literal notranslate"><span class="pre">request</span></code>.
+This is due to the way <cite>pytest`_</cite> works with parametrizing fixtures. (See
+<a class="reference external" href="https://docs.pytest.org/en/latest/how-to/fixtures.html#fixture-parametrize">pytest parametrize documentation</a> for more information.)</p>
+<p>The body of the function should be three commands:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">request.param.build()</span></code> - Build the source file. (See <a class="reference external" href="directory-level-configuration.html#build">Directory Level Configuration</a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">yield</span> <span class="pre">request.param</span></code> - Provide the source to the test.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">request.param.cleanup()</span></code> - Cleanup after all tests have run.</p></li>
+</ul>
+<p>Altogether, this should look like the following:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@project_fixture</span><span class="p">(</span><span class="s1">&#39;my_project_key&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">my_project_key</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="n">request</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+    <span class="k">yield</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span>
+    <span class="n">request</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>While you may have multiple tests for a given project key, only one fixture is required per
+project key.</p>
+</div>
+</section>
+<section id="writing-a-project-test">
+<h2>Writing a Project Test<a class="headerlink" href="#writing-a-project-test" title="Permalink to this heading"></a></h2>
+<p>As per <a class="reference external" href="https://docs.pytest.org/en/latest/">pytest</a> standards, any functions named starting with <code class="docutils literal notranslate"><span class="pre">test</span></code> will considered tests.
+Start by creating such a function.
+The function must take a parameter with the same name as the <code class="docutils literal notranslate"><span class="pre">project_fixture</span></code> function you defined
+for the test (see <a class="reference internal" href="#creating-a-project-fixture">Creating a Project Fixture</a> above).</p>
+<p>Next decorate the function with the <code class="docutils literal notranslate"><span class="pre">project_test</span></code> decorator provided by Glotter2.
+Don’t forget to import it from glotter. <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">glotter</span> <span class="pre">import</span> <span class="pre">project_test</span></code>
+This decorator also takes <a class="reference internal" href="#project-key">project key</a> as a parameter.
+This project key should must match the project key for the project fixture. See
+<a class="reference internal" href="#project-keys-below">Project Keys below</a> for more information.</p>
+<p>Any other decorators – from pytest or otherwise – can be added as needed after the <code class="docutils literal notranslate"><span class="pre">project_test</span></code>
+decorator.</p>
+<p>How to implement the body of the function is up to you.
+The parameter of the test function named after the project fixture will be of type <code class="docutils literal notranslate"><span class="pre">source</span></code>.
+It has the following methods available.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">build(params='')</span></code> - build the source with optional parameters</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">run(params=None)</span></code> - run the source with optional parameters</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">exec(command)</span></code> - run a command inside of the container where the source exists</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cleanup()</span></code> - cleanup the container where the source exists</p></li>
+</ul>
+<p>In most cases only <code class="docutils literal notranslate"><span class="pre">run()</span></code> should be used in the test. <code class="docutils literal notranslate"><span class="pre">build</span></code> and <code class="docutils literal notranslate"><span class="pre">cleanup</span></code> are called by the
+project fixture as described <a class="reference internal" href="#above">above</a>. However, I can imagine a corner case where
+<code class="docutils literal notranslate"><span class="pre">exec</span></code> could be useful.</p>
+<p>Both <code class="docutils literal notranslate"><span class="pre">run</span></code> and <code class="docutils literal notranslate"><span class="pre">exec</span></code> return the standard output response from the container.
+In other words <code class="docutils literal notranslate"><span class="pre">exec</span></code> will return the response of the command as a string.
+<code class="docutils literal notranslate"><span class="pre">run</span></code> will return as a string the output of the source when run with the provided parameters (if necessary).
+This can be saved off and used for assertions. (See <a class="reference external" href="http://doc.pytest.org/en/latest/assert.html">pytest assertion documentation</a> for more information.)</p>
+<p>Putting this all together a sample test might looks something like the following:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@project_test</span><span class="p">(</span><span class="s1">&#39;my_project_key&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">test_my_script</span><span class="p">(</span><span class="n">my_project_key</span><span class="p">):</span>
+    <span class="n">actual</span> <span class="o">=</span> <span class="n">my_project_key</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">actual</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;script was run&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="project-keys">
+<span id="project-keys-below"></span><span id="project-key"></span><h2>Project Keys<a class="headerlink" href="#project-keys" title="Permalink to this heading"></a></h2>
+<p>A project key is just a string that refers to a single project that can have multiple source files and/or tests.
+Project keys are defined in the <a class="reference external" href="global-glotter2-configuration.html#projects">global Glotter2 configuration</a>.
+In order for tests to run properly the project key used here must refer to a project key specified in the
+<a class="reference external" href="global-glotter2-configuration.html#projects">global Glotter2 configuration</a>. It is case sensitive.</p>
+<p>In order to make things easier and prevent confusing typos, I recommend saving these strings as constants
+somewhere in your project or using an enum with a <code class="docutils literal notranslate"><span class="pre">key</span></code> method as seen below:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ProjectKeys</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">Baklava</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">BubbleSort</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">EvenOdd</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">FileIO</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+    <span class="n">Factorial</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For this example to work, the project keys in your [global Glotter2 configuration][Glotter2-config-projects],
+must match the names of the enum values letter-for-letter.</p>
+</div>
+</section>
+<section id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this heading"></a></h2>
+<p>If we bring this all together, here is an example of a set of tests for a factorial project
+from <a class="reference external" href="https://github.com/TheRenegadeCoder/sample-programs">sample-programs</a>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pytest</span>
+
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">auto</span>
+<span class="kn">from</span> <span class="nn">glotter</span> <span class="kn">import</span> <span class="n">project_test</span><span class="p">,</span> <span class="n">project_fixture</span>
+
+
+<span class="k">class</span> <span class="nc">ProjectKeys</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">Factorial</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+
+<span class="n">error_permutations</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s1">&#39;description, cli_args, expected&#39;</span><span class="p">,</span> <span class="p">[</span>
+        <span class="p">(</span>
+            <span class="s1">&#39;no input&#39;</span><span class="p">,</span>
+            <span class="kc">None</span><span class="p">,</span>
+            <span class="s1">&#39;Please enter an integer&#39;</span>
+        <span class="p">),</span> <span class="p">(</span>
+            <span class="s1">&#39;invalid input: not a number&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;&quot;asdf&quot;&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Please enter an integer&#39;</span>
+        <span class="p">),</span> <span class="p">(</span>
+            <span class="s1">&#39;invalid input: negative&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;&quot;-1&quot;&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Integer must be positive&#39;</span>
+        <span class="p">)</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+
+<span class="n">working_permutations</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s1">&#39;description, cli_args, expected&#39;</span><span class="p">,</span> <span class="p">[</span>
+        <span class="p">(</span>
+            <span class="s1">&#39;sample input: zero&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;&quot;0&quot;&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;1&#39;</span>
+        <span class="p">),</span> <span class="p">(</span>
+            <span class="s1">&#39;sample input: one&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;1&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;1&#39;</span>
+        <span class="p">),</span> <span class="p">(</span>
+            <span class="s1">&#39;sample input: ten&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;10&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;3628800&#39;</span>
+        <span class="p">)</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+
+
+<span class="nd">@project_fixture</span><span class="p">(</span><span class="n">ProjectKeys</span><span class="o">.</span><span class="n">Factorial</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">factorial</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="n">request</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+    <span class="k">yield</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span>
+    <span class="n">request</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+
+
+<span class="nd">@project_test</span><span class="p">(</span><span class="n">ProjectKeys</span><span class="o">.</span><span class="n">Factorial</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span><span class="n">working_permutations</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">working_permutations</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                         <span class="n">ids</span><span class="o">=</span><span class="p">[</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">working_permutations</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+<span class="k">def</span> <span class="nf">test_factorial</span><span class="p">(</span><span class="n">description</span><span class="p">,</span> <span class="n">cli_args</span><span class="p">,</span> <span class="n">expected</span><span class="p">,</span> <span class="n">factorial</span><span class="p">):</span>
+    <span class="n">actual</span> <span class="o">=</span> <span class="n">factorial</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">cli_args</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">actual</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="n">expected</span>
+
+
+
+<span class="nd">@project_test</span><span class="p">(</span><span class="n">ProjectType</span><span class="o">.</span><span class="n">Factorial</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span><span class="n">description</span><span class="p">,</span> <span class="n">error_permutations</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">error_permutations</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                         <span class="n">ids</span><span class="o">=</span><span class="p">[</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">error_permutations</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+<span class="k">def</span> <span class="nf">test_factorial_errors</span><span class="p">(</span><span class="n">cli_args</span><span class="p">,</span> <span class="n">expected</span><span class="p">,</span> <span class="n">factorial</span><span class="p">):</span>
+    <span class="n">actual</span> <span class="o">=</span> <span class="n">factorial</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">cli_args</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">actual</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="n">expected</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="directory-level-configuration.html" class="btn btn-neutral float-left" title="Directory Level Configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

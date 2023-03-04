@@ -1,218 +1,145 @@
 <!DOCTYPE html>
-<html>
+<html class="writer-html5" lang="en" >
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Coverage report</title>
-    <link rel="icon" sizes="32x32" href="favicon_32.png">
-    <link rel="stylesheet" href="style.css" type="text/css">
-    <script type="text/javascript" src="coverage_html.js" defer></script>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Glotter2 &mdash; glotter2  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="General Usage" href="general-usage.html" /> 
 </head>
-<body class="indexfile">
-<header>
-    <div class="content">
-        <h1>Coverage report:
-            <span class="pc_cov">71%</span>
-        </h1>
-        <aside id="help_panel_wrapper">
-            <input id="help_panel_state" type="checkbox">
-            <label for="help_panel_state">
-                <img id="keyboard_icon" src="keybd_closed.png" alt="Show/hide keyboard shortcuts" />
-            </label>
-            <div id="help_panel">
-                <p class="legend">Shortcuts on this page</p>
-                <div class="keyhelp">
-                    <p>
-                        <kbd>n</kbd>
-                        <kbd>s</kbd>
-                        <kbd>m</kbd>
-                        <kbd>x</kbd>
-                        <kbd>b</kbd>
-                        <kbd>p</kbd>
-                        <kbd>c</kbd>
-                        &nbsp; change column sorting
-                    </p>
-                    <p>
-                        <kbd>[</kbd>
-                        <kbd>]</kbd>
-                        &nbsp; prev/next file
-                    </p>
-                    <p>
-                        <kbd>?</kbd> &nbsp; show/hide this help
-                    </p>
-                </div>
-            </div>
-        </aside>
-        <form id="filter_container">
-            <input id="filter" type="text" value="" placeholder="filter..." />
-        </form>
-        <p class="text">
-            <a class="nav" href="https://coverage.readthedocs.io">coverage.py v7.2.0</a>,
-            created at 2023-03-03 13:04 +0000
-        </p>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            glotter2
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="general-usage.html">General Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="global-glotter2-configuration.html">Global Glotter2 Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="directory-level-configuration.html">Directory Level Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="writing-tests.html">Writing Tests</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">glotter2</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Glotter2</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="glotter2">
+<h1>Glotter2<a class="headerlink" href="#glotter2" title="Permalink to this heading"></a></h1>
+<p>Welcome to the Glotter2 documentation!</p>
+<p>For using the Glotter2 CLI on an existing Glotter2 project, see <a class="reference internal" href="general-usage.html"><span class="doc">General Usage</span></a>.</p>
+<section id="integrating-with-glotter2">
+<span id="id1"></span><h2>Integrating with Glotter2<a class="headerlink" href="#integrating-with-glotter2" title="Permalink to this heading"></a></h2>
+<p>There are the main parts of integrating with Glotter2:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="general-usage.html">General Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="general-usage.html#download">Download</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general-usage.html#run">Run</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general-usage.html#test">Test</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general-usage.html#report">Report</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="global-glotter2-configuration.html">Global Glotter2 Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="global-glotter2-configuration.html#settings">Settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="global-glotter2-configuration.html#projects">Projects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="global-glotter2-configuration.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="directory-level-configuration.html">Directory Level Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="directory-level-configuration.html#folder">Folder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="directory-level-configuration.html#container">Container</a></li>
+<li class="toctree-l2"><a class="reference internal" href="directory-level-configuration.html#templating">Templating</a></li>
+<li class="toctree-l2"><a class="reference internal" href="directory-level-configuration.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="writing-tests.html">Writing Tests</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="writing-tests.html#above">Creating a Project Fixture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="writing-tests.html#writing-a-project-test">Writing a Project Test</a></li>
+<li class="toctree-l2"><a class="reference internal" href="writing-tests.html#project-keys">Project Keys</a></li>
+<li class="toctree-l2"><a class="reference internal" href="writing-tests.html#example">Example</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="general-usage.html" class="btn btn-neutral float-right" title="General Usage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-</header>
-<main id="index">
-    <table class="index" data-sortable>
-        <thead>
-            <tr class="tablehead" title="Click to sort">
-                <th class="name left" aria-sort="none" data-shortcut="n">Module</th>
-                <th aria-sort="none" data-default-sort-order="descending" data-shortcut="s">statements</th>
-                <th aria-sort="none" data-default-sort-order="descending" data-shortcut="m">missing</th>
-                <th aria-sort="none" data-default-sort-order="descending" data-shortcut="x">excluded</th>
-                <th aria-sort="none" data-default-sort-order="descending" data-shortcut="b">branches</th>
-                <th aria-sort="none" data-default-sort-order="descending" data-shortcut="p">partial</th>
-                <th class="right" aria-sort="none" data-shortcut="c">coverage</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr class="file">
-                <td class="name left"><a href="d_a12795855d0a1bc5___init___py.html">glotter/__init__.py</a></td>
-                <td>3</td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-                <td class="right" data-ratio="3 3">100%</td>
-            </tr>
-            <tr class="file">
-                <td class="name left"><a href="d_a12795855d0a1bc5___main___py.html">glotter/__main__.py</a></td>
-                <td>41</td>
-                <td>27</td>
-                <td>0</td>
-                <td>2</td>
-                <td>1</td>
-                <td class="right" data-ratio="15 43">35%</td>
-            </tr>
-            <tr class="file">
-                <td class="name left"><a href="d_a12795855d0a1bc5_containerfactory_py.html">glotter/containerfactory.py</a></td>
-                <td>48</td>
-                <td>4</td>
-                <td>0</td>
-                <td>16</td>
-                <td>3</td>
-                <td class="right" data-ratio="57 64">89%</td>
-            </tr>
-            <tr class="file">
-                <td class="name left"><a href="d_a12795855d0a1bc5_decorators_py.html">glotter/decorators.py</a></td>
-                <td>15</td>
-                <td>9</td>
-                <td>0</td>
-                <td>2</td>
-                <td>0</td>
-                <td class="right" data-ratio="6 17">35%</td>
-            </tr>
-            <tr class="file">
-                <td class="name left"><a href="d_a12795855d0a1bc5_download_py.html">glotter/download.py</a></td>
-                <td>14</td>
-                <td>8</td>
-                <td>0</td>
-                <td>8</td>
-                <td>0</td>
-                <td class="right" data-ratio="6 22">27%</td>
-            </tr>
-            <tr class="file">
-                <td class="name left"><a href="d_a12795855d0a1bc5_project_py.html">glotter/project.py</a></td>
-                <td>63</td>
-                <td>6</td>
-                <td>0</td>
-                <td>24</td>
-                <td>3</td>
-                <td class="right" data-ratio="76 87">87%</td>
-            </tr>
-            <tr class="file">
-                <td class="name left"><a href="d_a12795855d0a1bc5_report_py.html">glotter/report.py</a></td>
-                <td>63</td>
-                <td>51</td>
-                <td>0</td>
-                <td>28</td>
-                <td>0</td>
-                <td class="right" data-ratio="12 91">13%</td>
-            </tr>
-            <tr class="file">
-                <td class="name left"><a href="d_a12795855d0a1bc5_run_py.html">glotter/run.py</a></td>
-                <td>18</td>
-                <td>13</td>
-                <td>0</td>
-                <td>6</td>
-                <td>0</td>
-                <td class="right" data-ratio="5 24">21%</td>
-            </tr>
-            <tr class="file">
-                <td class="name left"><a href="d_a12795855d0a1bc5_settings_py.html">glotter/settings.py</a></td>
-                <td>115</td>
-                <td>10</td>
-                <td>0</td>
-                <td>28</td>
-                <td>1</td>
-                <td class="right" data-ratio="132 143">92%</td>
-            </tr>
-            <tr class="file">
-                <td class="name left"><a href="d_a12795855d0a1bc5_singleton_py.html">glotter/singleton.py</a></td>
-                <td>7</td>
-                <td>0</td>
-                <td>0</td>
-                <td>2</td>
-                <td>0</td>
-                <td class="right" data-ratio="9 9">100%</td>
-            </tr>
-            <tr class="file">
-                <td class="name left"><a href="d_a12795855d0a1bc5_source_py.html">glotter/source.py</a></td>
-                <td>96</td>
-                <td>3</td>
-                <td>0</td>
-                <td>36</td>
-                <td>0</td>
-                <td class="right" data-ratio="129 132">98%</td>
-            </tr>
-            <tr class="file">
-                <td class="name left"><a href="d_a12795855d0a1bc5_test_py.html">glotter/test.py</a></td>
-                <td>45</td>
-                <td>25</td>
-                <td>0</td>
-                <td>16</td>
-                <td>1</td>
-                <td class="right" data-ratio="25 61">41%</td>
-            </tr>
-            <tr class="file">
-                <td class="name left"><a href="d_a12795855d0a1bc5_testinfo_py.html">glotter/testinfo.py</a></td>
-                <td>74</td>
-                <td>2</td>
-                <td>0</td>
-                <td>2</td>
-                <td>0</td>
-                <td class="right" data-ratio="74 76">97%</td>
-            </tr>
-        </tbody>
-        <tfoot>
-            <tr class="total">
-                <td class="name left">Total</td>
-                <td>602</td>
-                <td>158</td>
-                <td>0</td>
-                <td>170</td>
-                <td>9</td>
-                <td class="right" data-ratio="549 772">71%</td>
-            </tr>
-        </tfoot>
-    </table>
-    <p id="no_rows">
-        No items found using the specified filter.
-    </p>
-</main>
-<footer>
-    <div class="content">
-        <p>
-            <a class="nav" href="https://coverage.readthedocs.io">coverage.py v7.2.0</a>,
-            created at 2023-03-03 13:04 +0000
-        </p>
-    </div>
-    <aside class="hidden">
-        <a id="prevFileLink" class="nav" href="d_a12795855d0a1bc5_testinfo_py.html"/>
-        <a id="nextFileLink" class="nav" href="d_a12795855d0a1bc5___init___py.html"/>
-        <button type="button" class="button_prev_file" data-shortcut="["/>
-        <button type="button" class="button_next_file" data-shortcut="]"/>
-        <button type="button" class="button_show_hide_help" data-shortcut="?"/>
-    </aside>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
 </footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
 </body>
 </html>
