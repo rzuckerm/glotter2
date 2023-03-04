@@ -2,6 +2,11 @@
 Glotter2
 ========
 
+.. figure:: images/glotter2.png
+    :alt: Glotter2 logo
+
+    The programming language icons were downloaded from `pngegg.com <https://www.pngegg.com/>`_
+
 Welcome to the Glotter2 documentation!
 
 For using the Glotter2 CLI on an existing Glotter2 project, see :doc:`general-usage`.

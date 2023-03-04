@@ -25,3 +25,5 @@ pygments_style = "sphinx"
 
 html_theme = "sphinx_rtd_theme"
 html_static_path = []
+html_favicon = "favicon.gif"
+html_logo = "images/glotter2.png"
