@@ -21,6 +21,8 @@ If you'd like to contribute to Glotter2, read our [contributing guidelines](./CO
 
 ### Glotter2 releases
 
+* 0.4.5:
+  * Add link to documentation
 * 0.4.4:
   * Fix bug that would indicate "No tests were found" when filtering tests
 * 0.4.2:
