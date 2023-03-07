@@ -24,6 +24,7 @@ jinja2 = "^3.1.2"
 pytest = "^7.2.1"
 pyyaml = "^6.0"
 pytest-xdist = "^3.2.0"
+black = "^23.1.0"
 
 [tool.poetry.group.dev.dependencies]
 pylint = "^2.16.2"
@@ -32,7 +33,6 @@ coverage = "^7.2.0"
 coverage-badge = "^1.1.0"
 sphinx = "^6.1.3"
 sphinx-rtd-theme = "^1.2.0"
-black = "^23.1.0"
 
 [tool.poetry.scripts]
 glotter = "glotter.__main__:main"
