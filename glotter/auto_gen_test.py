@@ -7,10 +7,12 @@ class AutoGenTest:
 
         :param test_name: Name of auto-generated test
         :param params: List of auto-generated test parameters
+        :param test_output_filters: List of test output filters
         """
 
         self._test_name = test_name
         self._params = [AutoGenParam(param) for param in params]
+        self._test_output_filters = test_output_filters
 
         @property
         def test_name(self):
@@ -50,4 +52,4 @@ class AutoGenParam:
     @property
     def expected_output(self):
         """Return expected output"""
-        return self._output_param
+        return self._expected_output
