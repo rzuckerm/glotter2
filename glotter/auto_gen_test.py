@@ -1,7 +1,7 @@
 class AutoGenTest:
     """Object used for an auto-generated test"""
 
-    def __init__(self, test_name, params):
+    def __init__(self, test_name_, params_, test_output_filters):
         """
         Initialize auto-generated test
 
@@ -10,8 +10,8 @@ class AutoGenTest:
         :param test_output_filters: List of test output filters
         """
 
-        self._test_name = test_name
-        self._params = [AutoGenParam(param) for param in params]
+        self._test_name = test_name_
+        self._params = [AutoGenParam(param) for param in params_]
         self._test_output_filters = test_output_filters
 
         @property
