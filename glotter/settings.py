@@ -138,6 +138,7 @@ class SettingsParser:
                     requires_parameters=v.get("requires_parameters"),
                     acronyms=v.get("acronyms"),
                     acronym_scheme=v.get("acronym_scheme") or self._acronym_scheme,
+                    tests=v.get("tests"),
                 )
                 projects[project_name] = project
 

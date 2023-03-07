@@ -1,5 +1,7 @@
 from enum import Enum, auto
 
+from glotter.auto_gen_test import AutoGenTest
+
 
 class NamingScheme(Enum):
     hyphen = auto()
@@ -17,12 +19,21 @@ class AcronymScheme(Enum):
 
 class Project:
     def __init__(
-        self, words, requires_parameters=False, acronyms=None, acronym_scheme=None
+        self,
+        words,
+        requires_parameters=False,
+        acronyms=None,
+        acronym_scheme=None,
+        tests=None,
     ):
         self._words = words
         self._requires_parameters = requires_parameters
         self._acronyms = [acronym.upper() for acronym in acronyms] if acronyms else []
         self._acronym_scheme = acronym_scheme or AcronymScheme.two_letter_limit
+        self._tests = {
+            test_name: AutoGenTest(test_name, params)
+            for test_name, params in (tests or {}).items()
+        }
 
     @property
     def words(self):
@@ -43,6 +54,10 @@ class Project:
     @property
     def display_name(self):
         return self._as_display()
+
+    @property
+    def tests(self):
+        return self._tests
 
     def get_project_name_by_scheme(self, naming):
         """

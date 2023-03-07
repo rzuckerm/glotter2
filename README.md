@@ -25,6 +25,8 @@ If you'd like to contribute to Glotter2, read our [contributing guidelines](./CO
 
 ### Glotter2 releases
 
+* 0.5.0: wip
+  * Add test generation
 * 0.4.5:
   * Add link to documentation
 * 0.4.4:
