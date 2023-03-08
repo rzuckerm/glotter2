@@ -1,23 +1,16 @@
 class AutoGenTest:
-    """Object used for an auto-generated test"""
+    """Object containing information about an auto-generated test"""
 
-    def __init__(self, test_name_, params_, test_output_filters):
+    def __init__(self, params_, test_output_filters):
         """
-        Initialize auto-generated test
+        Initialize auto-generated test information
 
-        :param test_name: Name of auto-generated test
         :param params: List of auto-generated test parameters
         :param test_output_filters: List of test output filters
         """
 
-        self._test_name = test_name_
         self._params = [AutoGenParam(param) for param in params_]
         self._test_output_filters = test_output_filters
-
-        @property
-        def test_name(self):
-            """Return a test name"""
-            return self._test_name
 
         @property
         def params(self):

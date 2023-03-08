@@ -32,9 +32,7 @@ class Project:
         self._acronyms = [acronym.upper() for acronym in acronyms] if acronyms else []
         self._acronym_scheme = acronym_scheme or AcronymScheme.two_letter_limit
         self._tests = {
-            test_name: AutoGenTest(
-                test_name, params, test_output_filters.get(test_name) or []
-            )
+            test_name: AutoGenTest(params, test_output_filters.get(test_name) or [])
             for test_name, params in (tests or {}).items()
         }
 
