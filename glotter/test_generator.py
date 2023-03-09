@@ -1,6 +1,7 @@
 import os
 import shutil
 from functools import partial
+import warnings
 
 from black import format_str, Mode
 
@@ -52,7 +53,7 @@ class TestGenerator:
         return format_str(test_code, mode=Mode())
 
     def _warning(self, test_name, msg):
-        print(f"WARNING: Project '{self.project_name}', Test '{test_name}': {msg}")
+        warnings.warn(f"Project '{self.project_name}', Test '{test_name}': {msg}")
 
     @staticmethod
     def _get_imports():
@@ -76,8 +77,8 @@ def {self.long_project_name}(request):
         run_param = ""
         if self.project.requires_parameters:
             test_code += self._generate_params(test_obj)
-            func_params = "in_param, expected, "
-            run_param = "param=in_param"
+            func_params = "in_params, expected, "
+            run_param = "params=in_params"
 
         test_code += self._get_test_function_and_run(test_name, func_params, run_param)
         test_code += _indent(self._get_expected_output(test_obj), 4)
@@ -96,7 +97,7 @@ def {self.long_project_name}(request):
         ).strip()
         return f"""\
 @pytest.mark.parametrize(
-    ("in_param", "expected"),
+    ("in_params", "expected"),
     [
         {pytest_params}
     ]
@@ -151,7 +152,7 @@ with open({self.long_project_name}.full_path, "r", encoding="utf-8") as file:
             "strip": partial(_append_method_to_actual, "strip"),
             "splitlines": partial(_append_method_to_actual, "splitlines"),
             "lower": partial(_append_method_to_actual, "lower"),
-            "any_order": partial(_apply_method_to_both, "sorted"),
+            "any_order": _unique_sort,
             "strip_expected": partial(_append_method_to_expected, "strip"),
         }
         dict_transformation_funcs = {
@@ -230,8 +231,8 @@ def _strip_chars(actual_var, expected_var, values):
     return actual_var, expected_var
 
 
-def _apply_method_to_both(method, actual_var, expected_var):
-    return f"{method}({actual_var})", f"{method}({expected_var})"
+def _unique_sort(actual_var, expected_var):
+    return f"sorted(set({actual_var}))", f"sorted(set({expected_var}))"
 
 
 def _get_assert(actual_var, expected_var, expected_output):
@@ -244,4 +245,11 @@ for index in range(len(expected_list)):
     assert actual_list[index] == expected_list[index], f"Item {{index + 1}} is not equal"
 """
 
-    return f"assert {actual_var} == {expected_var}\n"
+    test_code = ""
+    if actual_var != "actual":
+        test_code += f"actual = {actual_var}\n"
+
+    if expected_var != "expected":
+        test_code += f"expected = {expected_var}\n"
+
+    return f"{test_code}assert actual == expected\n"
