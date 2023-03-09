@@ -1,21 +1,26 @@
 class AutoGenTest:
     """Object containing information about an auto-generated test"""
 
-    def __init__(self, params_, test_output_filters):
+    def __init__(self, params, transformations):
         """
         Initialize auto-generated test information
 
         :param params: List of auto-generated test parameters
-        :param test_output_filters: List of test output filters
+        :param transformations: List of output transformations
         """
 
-        self._params = [AutoGenParam(param) for param in params_]
-        self._test_output_filters = test_output_filters
+        self._params = [AutoGenParam(param) for param in params]
+        self._transformations = transformations
 
-        @property
-        def params(self):
-            """return test parameters"""
-            return self._params
+    @property
+    def params(self):
+        """return test parameters"""
+        return self._params
+
+    @property
+    def transformations(self):
+        """return output transformations"""
+        return self._transformations
 
 
 class AutoGenParam:
@@ -30,7 +35,7 @@ class AutoGenParam:
 
         self._name = param.get("name")
         self._input_param = param.get("input")
-        self._expected_output = param.get("expected_output")
+        self._expected_output = param.get("expected")
 
     @property
     def name(self):

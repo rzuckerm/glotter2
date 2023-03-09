@@ -25,15 +25,16 @@ class Project:
         acronyms=None,
         acronym_scheme=None,
         tests=None,
-        test_output_filters=None,
     ):
         self._words = words
         self._requires_parameters = requires_parameters
         self._acronyms = [acronym.upper() for acronym in acronyms] if acronyms else []
         self._acronym_scheme = acronym_scheme or AcronymScheme.two_letter_limit
         self._tests = {
-            test_name: AutoGenTest(params, test_output_filters.get(test_name) or [])
-            for test_name, params in (tests or {}).items()
+            test_name: AutoGenTest(
+                test.get("cases") or {}, test.get("transformations") or []
+            )
+            for test_name, test in tests.items()
         }
 
     @property

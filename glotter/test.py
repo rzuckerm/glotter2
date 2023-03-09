@@ -5,9 +5,11 @@ import pytest
 
 from glotter.source import get_sources, filter_sources
 from glotter.settings import Settings
+from glotter.test_generator import generate_tests
 
 
 def test(args):
+    generate_tests()
     test_args = ["-n", "auto"] if args.parallel else []
     if not (args.language or args.project or args.source):
         _run_pytest_and_exit(*test_args)
