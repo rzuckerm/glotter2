@@ -34,7 +34,7 @@ class Project:
         tests = tests or {}
         self._tests = {
             test_name: AutoGenTest(
-                test.get("cases") or {}, test.get("transformations") or []
+                test.get("params") or {}, test.get("transformations") or []
             )
             for test_name, test in tests.items()
         }

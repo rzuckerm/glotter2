@@ -6,7 +6,7 @@ from black import format_str, Mode
 
 from glotter.settings import Settings
 
-AUTO_GEN_TEST_PATH = ".generated"
+AUTO_GEN_TEST_PATH = "test/generated"
 
 
 def generate_tests():
@@ -36,34 +36,42 @@ class TestGenerator:
     def __init__(self, project_name, project):
         self.project_name = project_name
         self.project = project
+        self.long_project_name = "_".join(self.project.words)
 
     def generate_tests(self):
         if not self.project.tests:
             return ""
 
-        test_code = self._generate_fixture()
+        test_code = self._get_imports() + self._get_project_fixture()
         for test_name, test_obj in self.project.tests.items():
-            test_code += self._generate_test(test_name, test_obj)
+            if test_obj.params:
+                test_code += self._generate_test(test_name, test_obj)
+            else:
+                self._warning(test_name, "No 'params' item... skipping")
 
         return format_str(test_code, mode=Mode())
 
-    def _generate_fixture(self):
-        return f"""\
+    def _warning(self, test_name, msg):
+        print(f"WARNING: Project '{self.project_name}', Test '{test_name}': {msg}")
+
+    @staticmethod
+    def _get_imports():
+        return """\
 from glotter import project_test, project_fixture
-@project_filter("{self.project_name}")
-def {self._get_fixture_name()}(request):
+import pytest
+"""
+
+    def _get_project_fixture(self):
+        return f"""\
+@project_fixture("{self.project_name}")
+def {self.long_project_name}(request):
     request.param.build()
     yield request.param
     request.param.cleanup()
 """
 
-    def _get_fixture_name(self):
-        return "_".join(self.project.words)
-
     def _generate_test(self, test_name, test_obj):
-        test_code = f"""\
-@project_test("{self.project_name}")
-"""
+        test_code = self._get_test_function_decorator()
         func_params = ""
         run_param = ""
         if self.project.requires_parameters:
@@ -71,41 +79,45 @@ def {self._get_fixture_name()}(request):
             func_params = "in_param, expected, "
             run_param = "param=in_param"
 
-        fixture_name = self._get_fixture_name()
-        test_code += f"""\
-def test_{test_name}({func_params}{fixture_name}):
-    actual = {fixture_name}.run({run_param})
-"""
-        test_code += self._get_expected_output(test_obj)
+        test_code += self._get_test_function_and_run(test_name, func_params, run_param)
+        test_code += _indent(self._get_expected_output(test_obj), 4)
         actual_var, expected_var = self._get_transformation_vars(test_name, test_obj)
-        test_code += _get_assert(
-            actual_var, expected_var, test_obj.params[0].expected_output
+        test_code += _indent(
+            _get_assert(actual_var, expected_var, test_obj.params[0].expected_output), 4
         )
         return test_code
 
+    def _get_test_function_decorator(self):
+        return f'@project_test("{self.project_name}")\n'
+
     def _generate_params(self, test_obj):
-        pytest_params = ""
-        for param in test_obj.params:
-            input_param = _quote(param.input_param)
-            expected_output = param.expected
-            if isinstance(expected_output, str):
-                expected_output = _quote(expected_output)
-
-            pytest_params += f"""\
-        pytest.param(
-            "{input_param}",
-            {expected_output},
-            id="{param.name}"
-        ),
-"""
-
+        pytest_params = "".join(
+            _indent(self._generate_param(param), 8) for param in test_obj.params
+        ).strip()
         return f"""\
 @pytest.mark.parametrize(
-    ("in_param", "expected")
+    ("in_param", "expected"),
     [
         {pytest_params}
     ]
 )
+"""
+
+    def _generate_param(self, param):
+        input_param = param.input_param
+        if isinstance(input_param, str):
+            input_param = _quote(input_param)
+
+        expected_output = param.expected_output
+        if isinstance(expected_output, str):
+            expected_output = _quote(expected_output)
+
+        return f'pytest.param({input_param}, {expected_output}, id="{param.name}"),\n'
+
+    def _get_test_function_and_run(self, test_name, func_params, run_param):
+        return f"""\
+def test_{test_name}({func_params}{self.long_project_name}):
+    actual = {self.long_project_name}.run({run_param})
 """
 
     def _get_expected_output(self, test_obj):
@@ -120,22 +132,17 @@ def test_{test_name}({func_params}{fixture_name}):
         else:
             expected_output = str(expected_output)
 
-        return f"""\
-    expected = {expected_output}
-"""
+        return f"expected = {expected_output}\n"
 
     def _generate_expected_file(self, expected_output):
         test_code = ""
-        fixture_name = self._get_fixture_name()
         if "exec" in expected_output:
             script = _quote(expected_output["exec"])
-            test_code = f"""\
-    expected = {fixture_name}.exec({script})
-"""
+            test_code = f"expected = {self.long_project_name}.exec({script})\n"
         elif "self" in expected_output:
             test_code = f"""\
-    with open({fixture_name}.full_path, "r", encoding="utf-8") as file:
-        expected = file.read()
+with open({self.long_project_name}.full_path, "r", encoding="utf-8") as file:
+    expected = file.read()
 """
         return test_code
 
@@ -144,7 +151,7 @@ def test_{test_name}({func_params}{fixture_name}):
             "strip": partial(_append_method_to_actual, "strip"),
             "splitlines": partial(_append_method_to_actual, "splitlines"),
             "lower": partial(_append_method_to_actual, "lower"),
-            "any_order": partial(_apply_method_to_both, "set"),
+            "any_order": partial(_apply_method_to_both, "sorted"),
             "strip_expected": partial(_append_method_to_expected, "strip"),
         }
         dict_transformation_funcs = {
@@ -157,7 +164,6 @@ def test_{test_name}({func_params}{fixture_name}):
         for transformation in test_obj.transformations:
             bad_key = ""
             if isinstance(transformation, str):
-                key = transformation
                 try:
                     actual_var, expected_var = scalar_transformation_funcs[
                         transformation
@@ -174,25 +180,32 @@ def test_{test_name}({func_params}{fixture_name}):
                     bad_key = key
 
             if bad_key:
-                print(
-                    f"WARNING: Invalid transformation '{key}' for project {self.project_name}, "
-                    f"test case {test_name}"
-                )
+                self._warning(test_name, f"Invalid transformation '{key}'... ignoring")
 
         return actual_var, expected_var
 
     def write_tests(self, test_code):
         os.makedirs(AUTO_GEN_TEST_PATH, exist_ok=True)
         with open(
-            os.path.join(AUTO_GEN_TEST_PATH, f"{self.project_name}.py"),
+            os.path.join(AUTO_GEN_TEST_PATH, f"test_{self.long_project_name}.py"),
             "w",
             encoding="utf-8",
         ) as f:
             f.write(test_code)
 
 
-def _quote(str_value):
-    return str_value.replace('"', '\\"')
+def _quote(value):
+    if '"' in value:
+        quote = '"""' if "'" in value else "'"
+    else:
+        quote = '"'
+
+    return f"{quote}{value}{quote}"
+
+
+def _indent(str_value, num_spaces):
+    spaces = " " * num_spaces
+    return "".join(f"{spaces}{line}" for line in str_value.splitlines(keepends=True))
 
 
 def _append_method_to_actual(method, actual_var, expected_var):
@@ -218,19 +231,17 @@ def _strip_chars(actual_var, expected_var, values):
 
 
 def _apply_method_to_both(method, actual_var, expected_var):
-    return f"{method}({actual_var}), {method}({expected_var})"
+    return f"{method}({actual_var})", f"{method}({expected_var})"
 
 
 def _get_assert(actual_var, expected_var, expected_output):
-    if isinstance(expected_output, str):
+    if isinstance(expected_output, list):
         return f"""\
-    assert {actual_var} == {expected_var}
+actual_list = {actual_var}
+expected_list = {expected_var}
+assert len(actual_list) == len(expected_list), "Length not equal"
+for index in range(len(expected_list)):
+    assert actual_list[index] == expected_list[index], f"Item {{index + 1}} is not equal"
 """
 
-    return f"""\
-    actual_list = {actual_var}
-    expected_list = {expected_var}
-    assert len(actual_list) == len(expected_list), "Length not equal"
-    for index in range(len(expected_list)):
-        assert actual_list[index] == expected_list[index], f"Item {{index + 1}} is not equal"
-"""
+    return f"assert {actual_var} == {expected_var}\n"
