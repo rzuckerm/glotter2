@@ -30,6 +30,8 @@ class Project:
         self._requires_parameters = requires_parameters
         self._acronyms = [acronym.upper() for acronym in acronyms] if acronyms else []
         self._acronym_scheme = acronym_scheme or AcronymScheme.two_letter_limit
+
+        tests = tests or {}
         self._tests = {
             test_name: AutoGenTest(
                 test.get("cases") or {}, test.get("transformations") or []

@@ -26,11 +26,13 @@ def generate_tests():
         if test_code:
             test_codes[project_name] = test_code
 
-    for project_name, test_code in test_codes.item():
+    for project_name, test_code in test_codes.items():
         test_generators[project_name].write_tests(test_code)
 
 
 class TestGenerator:
+    __test__ = False  # Indicate this is not a test
+
     def __init__(self, project_name, project):
         self.project_name = project_name
         self.project = project
