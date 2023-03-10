@@ -25,6 +25,7 @@ class Project:
         acronyms=None,
         acronym_scheme=None,
         tests=None,
+        use_tests=None,
     ):
         self._words = words
         self._requires_parameters = requires_parameters
@@ -32,9 +33,13 @@ class Project:
         self._acronym_scheme = acronym_scheme or AcronymScheme.two_letter_limit
 
         tests = tests or {}
+        use_tests = use_tests or {}
+        search = use_tests.get("search") or ""
+        replace = use_tests.get("replace") or ""
         self._tests = {
-            test_name: AutoGenTest(
-                test.get("params") or {}, test.get("transformations") or []
+            test_name.replace(search, replace): AutoGenTest(
+                test.get("params") or {},
+                test.get("transformations") or [],
             )
             for test_name, test in tests.items()
         }

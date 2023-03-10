@@ -131,18 +131,72 @@ class SettingsParser:
     def _parse_projects(self):
         projects = {}
         if "projects" in self._yml:
-            for k, v in self._yml["projects"].items():
-                project_name = k.lower()
-                project = Project(
-                    words=v.get("words"),
-                    requires_parameters=v.get("requires_parameters"),
-                    acronyms=v.get("acronyms"),
-                    acronym_scheme=v.get("acronym_scheme") or self._acronym_scheme,
-                    tests=v.get("tests") or {},
-                )
-                projects[project_name] = project
+            projects, use_tests_projects = self._parse_projects_without_use_tests()
+            self._update_products_with_use_tests(projects, use_tests_projects)
 
         return projects
+
+    def _parse_projects_without_use_tests(self):
+        projects = {}
+        use_tests_projects = {}
+        for k, v in self._yml["projects"].items():
+            project_name = k.lower()
+            if "use_tests" in v:
+                use_tests_projects[k] = v
+                continue
+
+            project = Project(
+                words=v.get("words"),
+                requires_parameters=v.get("requires_parameters"),
+                acronyms=v.get("acronyms"),
+                acronym_scheme=v.get("acronym_scheme") or self._acronym_scheme,
+                tests=v.get("tests") or {},
+            )
+            projects[project_name] = project
+
+        return projects, use_tests_projects
+
+    def _update_products_with_use_tests(self, projects, use_tests_projects):
+        projects_yml = self._yml["projects"]
+        for k, v in use_tests_projects.items():
+            project_name = k.lower()
+            use_tests = v["use_tests"]
+            use_tests_name = use_tests.get("name")
+            if not use_tests_name:
+                warn(f'Project {project} has a "use_tests" item without a "name" item')
+                continue
+
+            if use_tests_name in use_tests_projects:
+                warn(
+                    f'Project {project_name} has a "use_tests" item that refers to '
+                    f'another "use_test" item "{use_tests_name}"'
+                )
+                continue
+
+            if use_tests_name not in projects:
+                warn(
+                    f'Project {project_name} has a "use_tests" item that refers to a '
+                    f'non-existent project "{use_tests_name}"'
+                )
+                continue
+
+            tests = projects_yml[use_tests_name].get("tests")
+            if not tests:
+                warn(
+                    f'Project {project_name} has a "use_tests" item that refers to project '
+                    f'{use_tests_name}, which has no "tests" item'
+                )
+                continue
+
+            project = Project(
+                words=v.get("words"),
+                requires_parameters=v.get("requires_parameters"),
+                acronyms=v.get("acronyms"),
+                acronym_scheme=v.get("acronym_scheme") or self._acronym_scheme,
+                tests=tests,
+                use_tests=use_tests,
+            )
+            projects[project_name] = project
 
     def _parse_yml(self):
         with open(self._yml_path, "r", encoding="utf-8") as f:
