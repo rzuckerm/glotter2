@@ -55,12 +55,12 @@ class TestGenerator:
     def _warning(self, test_name, msg):
         warnings.warn(f"Project '{self.project_name}', Test '{test_name}': {msg}")
 
-    @staticmethod
-    def _get_imports():
-        return """\
-from glotter import project_test, project_fixture
-import pytest
-"""
+    def _get_imports(self):
+        test_code = "from glotter import project_test, project_fixture\n"
+        if self.project.requires_parameters:
+            test_code += "import pytest\n"
+
+        return test_code
 
     def _get_project_fixture(self):
         return f"""\
