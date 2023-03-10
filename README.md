@@ -6,7 +6,7 @@
 [![Python versions](https://img.shields.io/pypi/pyversions/glotter2)](https://pypi.org/project/glotter2)
 [![Python wheel](https://img.shields.io/pypi/wheel/glotter2)](https://pypi.org/project/glotter2)
 
-[![Glotter2 logo](doc/images/glotter2_small.png)](https://rzuckerm.github.io/glotter2/)
+[![Glotter2 logo](https://rzuckerm.github.io/glotter2/_static/glotter2_small.png)](https://rzuckerm.github.io/glotter2/)
 
 *The programming language icons were downloaded from [pngegg.com](https://www.pngegg.com/)*
 
