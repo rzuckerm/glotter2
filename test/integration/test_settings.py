@@ -14,26 +14,30 @@ def setup_settings_parser(tmp_dir, path, contents):
     return SettingsParser(tmp_dir)
 
 
-def test_locate_yml_when_glotter_yml_does_not_exist(tmp_dir):
+def test_locate_yml_when_glotter_yml_does_not_exist(tmp_dir, recwarn):
     settings_parser = SettingsParser(tmp_dir)
     settings_parser.parse_settings_section()
     assert settings_parser.yml_path is None
+    assert len(recwarn.list) == 1
+    assert ".glotter.yml not found" in str(recwarn.pop(UserWarning).message)
 
 
-def test_locate_yml_when_glotter_yml_does_exist(tmp_dir, glotter_yml):
+def test_locate_yml_when_glotter_yml_does_exist(tmp_dir, glotter_yml, recwarn):
     expected = os.path.join(tmp_dir, ".glotter.yml")
     settings_parser = setup_settings_parser(tmp_dir, expected, glotter_yml)
     settings_parser.parse_settings_section()
     assert settings_parser.yml_path == expected
+    assert len(recwarn.list) == 0
 
 
-def test_locate_yml_when_glotter_yml_is_not_at_root(tmp_dir, glotter_yml):
+def test_locate_yml_when_glotter_yml_is_not_at_root(tmp_dir, glotter_yml, recwarn):
     expected = os.path.join(
         tmp_dir, "this", "is", "a", "few", "levels", "deeper", ".glotter.yml"
     )
     settings_parser = setup_settings_parser(tmp_dir, expected, glotter_yml)
     settings_parser.parse_settings_section()
     assert settings_parser.yml_path == expected
+    assert len(recwarn.list) == 0
 
 
 @pytest.mark.parametrize(
@@ -44,16 +48,17 @@ def test_locate_yml_when_glotter_yml_is_not_at_root(tmp_dir, glotter_yml):
         ("two_letter_limit", AcronymScheme.two_letter_limit),
     ],
 )
-def test_parse_acronym_scheme(scheme_str, expected, tmp_dir):
+def test_parse_acronym_scheme(scheme_str, expected, tmp_dir, recwarn):
     glotter_yml = f'settings:\n  acronym_scheme: "{scheme_str}"'
     path = os.path.join(tmp_dir, ".glotter.yml")
     settings_parser = setup_settings_parser(tmp_dir, path, glotter_yml)
     settings_parser.parse_settings_section()
     assert settings_parser.acronym_scheme == expected
+    assert len(recwarn.list) == 0
 
 
 @pytest.mark.parametrize("root_type", ["source_root"])
-def test_parses_root_when_path_absolute(root_type, tmp_dir):
+def test_parses_root_when_path_absolute(root_type, tmp_dir, recwarn):
     expected = os.path.abspath(os.path.join(tmp_dir, "subdir"))
     os.makedirs(expected)
     expected_escaped = expected
@@ -65,10 +70,11 @@ def test_parses_root_when_path_absolute(root_type, tmp_dir):
     settings_parser = setup_settings_parser(tmp_dir, path, glotter_yml)
     settings_parser.parse_settings_section()
     assert getattr(settings_parser, root_type) == expected
+    assert len(recwarn.list) == 0
 
 
 @pytest.mark.parametrize("root_type", ["source_root"])
-def test_parses_root_when_path_relative(root_type, tmp_dir):
+def test_parses_root_when_path_relative(root_type, tmp_dir, recwarn):
     expected = os.path.abspath(os.path.join(tmp_dir, "src"))
     os.makedirs(expected)
     glotter_yml = f'settings:\n  {root_type}: "../src"'
@@ -76,18 +82,21 @@ def test_parses_root_when_path_relative(root_type, tmp_dir):
     settings_parser = setup_settings_parser(tmp_dir, path, glotter_yml)
     settings_parser.parse_settings_section()
     assert getattr(settings_parser, root_type) == expected
+    assert len(recwarn.list) == 0
 
 
-def test_parse_projects_when_no_projects(tmp_dir):
+def test_parse_projects_when_no_projects(tmp_dir, recwarn):
     glotter_yml = 'settings:\n  acronym_scheme: "upper"'
     path = os.path.join(tmp_dir, ".glotter.yml")
     settings_parser = setup_settings_parser(tmp_dir, path, glotter_yml)
     settings_parser.parse_projects_section()
     assert settings_parser.projects == {}
+    assert len(recwarn.list) == 0
 
 
-def test_parse_projects(tmp_dir, glotter_yml, glotter_yml_projects):
+def test_parse_projects(tmp_dir, glotter_yml, glotter_yml_projects, recwarn):
     path = os.path.join(tmp_dir, ".glotter.yml")
     settings_parser = setup_settings_parser(tmp_dir, path, glotter_yml)
     settings_parser.parse_projects_section()
     assert settings_parser.projects == glotter_yml_projects
+    assert len(recwarn.list) == 0
