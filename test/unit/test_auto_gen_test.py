@@ -120,6 +120,7 @@ def test_auto_gen_test_good(value, expected_value):
     ("value", "expected_error"),
     [
         pytest.param({}, "missing", id="empty"),
+        pytest.param({"params": []}, "at least 1 item", id="empty-params"),
         pytest.param(
             {
                 "requires_parameters": True,
