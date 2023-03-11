@@ -61,11 +61,6 @@ def test_auto_gen_param_bad(value):
     ("value", "expected_value"),
     [
         pytest.param(
-            {},
-            {"requires_parameters": False, "params": [], "transformations": []},
-            id="empty",
-        ),
-        pytest.param(
             {
                 "params": [{"name": "some-name", "expected": "some-str"}],
                 "transformations": ["strip"],
@@ -83,23 +78,60 @@ def test_auto_gen_param_bad(value):
             {
                 "requires_parameters": True,
                 "params": [
-                    {"name": "some-name1", "input": "some-input1", "expected": ["item1", "item2"]},
-                    {"name": "some-name2", "input": "some-input2", "expected": ["item3"]},
+                    {
+                        "name": "some-name1",
+                        "input": "some-input1",
+                        "expected": ["item1", "item2"],
+                    },
+                    {
+                        "name": "some-name2",
+                        "input": "some-input2",
+                        "expected": ["item3"],
+                    },
                 ],
                 "transformations": ["strip", "splitlines"],
             },
             {
                 "requires_parameters": True,
                 "params": [
-                    {"name": "some-name1", "input": "some-input1", "expected": ["item1", "item2"]},
-                    {"name": "some-name2", "input": "some-input2", "expected": ["item3"]},
+                    {
+                        "name": "some-name1",
+                        "input": "some-input1",
+                        "expected": ["item1", "item2"],
+                    },
+                    {
+                        "name": "some-name2",
+                        "input": "some-input2",
+                        "expected": ["item3"],
+                    },
                 ],
                 "transformations": ["strip", "splitlines"],
             },
-            id="muli_param-multi_transformation"
-        )
+            id="muli_param-multi_transformation",
+        ),
     ],
 )
 def test_auto_gen_test_good(value, expected_value):
     test = AutoGenTest(**value)
     assert test.dict() == expected_value
+
+
+@pytest.mark.parametrize(
+    ("value", "expected_error"),
+    [
+        pytest.param({}, "missing", id="empty"),
+        pytest.param(
+            {
+                "requires_parameters": True,
+                "params": [{"name": "some-name", "expected": "some-str"}],
+            },
+            "input",
+            id="missing-input",
+        ),
+    ],
+)
+def test_auto_gen_test_bad(value, expected_error):
+    with pytest.raises(ValidationError) as e:
+        AutoGenTest(**value)
+
+    assert expected_error in str(e.value)

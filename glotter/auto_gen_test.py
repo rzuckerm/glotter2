@@ -2,7 +2,7 @@
 # pylint: disable=E0213,E0611
 from typing import List, Dict, Union, Any
 
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, validator, conlist
 
 TransformationT = List[Union[str, Dict[str, List[str]]]]
 
@@ -19,7 +19,7 @@ class AutoGenTest(BaseModel):
     """Object containing information about an auto-generated test"""
 
     requires_parameters: bool = False
-    params: List[AutoGenParam] = []
+    params: conlist(AutoGenParam, min_items=1)
     transformations: TransformationT = []
 
     @validator("params", each_item=True, pre=True)
