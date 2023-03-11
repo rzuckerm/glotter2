@@ -44,16 +44,13 @@ class TestGenerator:
             return ""
 
         test_code = self._get_imports() + self._get_project_fixture()
-        for test_name, test_obj in self.project.tests.items():
-            if test_obj.params:
-                test_code += self._generate_test(test_name, test_obj)
-            else:
-                self._warning(test_name, "No 'params' item... skipping")
+        for test_obj in self.project.tests:
+            test_code += self._generate_test(test_obj)
 
         return format_str(test_code, mode=Mode())
 
-    def _warning(self, test_name, msg):
-        warnings.warn(f"Project '{self.project_name}', Test '{test_name}': {msg}")
+    def _warning(self, test_obj, msg):
+        warnings.warn(f"Project {self.project_name}, Test {test_obj.name}: {msg}")
 
     def _get_imports(self):
         test_code = "from glotter import project_test, project_fixture\n"
@@ -64,15 +61,16 @@ class TestGenerator:
 
     def _get_project_fixture(self):
         return f"""\
-@project_fixture("{self.project_name}")
+PROJECT_NAME="{self.project_name}"
+@project_fixture(PROJECT_NAME)
 def {self.long_project_name}(request):
     request.param.build()
     yield request.param
     request.param.cleanup()
 """
 
-    def _generate_test(self, test_name, test_obj):
-        test_code = self._get_test_function_decorator()
+    def _generate_test(self, test_obj):
+        test_code = "@project_test(PROJECT_NAME)\n"
         func_params = ""
         run_param = ""
         if self.project.requires_parameters:
@@ -80,16 +78,13 @@ def {self.long_project_name}(request):
             func_params = "in_params, expected, "
             run_param = "params=in_params"
 
-        test_code += self._get_test_function_and_run(test_name, func_params, run_param)
+        test_code += self._get_test_function_and_run(test_obj, func_params, run_param)
         test_code += _indent(self._get_expected_output(test_obj), 4)
-        actual_var, expected_var = self._get_transformation_vars(test_name, test_obj)
+        actual_var, expected_var = self._get_transformation_vars(test_obj)
         test_code += _indent(
             _get_assert(actual_var, expected_var, test_obj.params[0].expected), 4
         )
         return test_code
-
-    def _get_test_function_decorator(self):
-        return f'@project_test("{self.project_name}")\n'
 
     def _generate_params(self, test_obj):
         pytest_params = "".join(
@@ -115,9 +110,9 @@ def {self.long_project_name}(request):
 
         return f'pytest.param({input_param}, {expected_output}, id="{param.name}"),\n'
 
-    def _get_test_function_and_run(self, test_name, func_params, run_param):
+    def _get_test_function_and_run(self, test_obj, func_params, run_param):
         return f"""\
-def test_{test_name}({func_params}{self.long_project_name}):
+def test_{test_obj.name}({func_params}{self.long_project_name}):
     actual = {self.long_project_name}.run({run_param})
 """
 
@@ -147,7 +142,7 @@ with open({self.long_project_name}.full_path, "r", encoding="utf-8") as file:
 """
         return test_code
 
-    def _get_transformation_vars(self, test_name, test_obj):
+    def _get_transformation_vars(self, test_obj):
         scalar_transformation_funcs = {
             "strip": partial(_append_method_to_actual, "strip"),
             "splitlines": partial(_append_method_to_actual, "splitlines"),
@@ -181,7 +176,7 @@ with open({self.long_project_name}.full_path, "r", encoding="utf-8") as file:
                     bad_key = key
 
             if bad_key:
-                self._warning(test_name, f"Invalid transformation '{key}'... ignoring")
+                self._warning(test_obj, f'Invalid transformation "{key}"... ignoring')
 
         return actual_var, expected_var
 

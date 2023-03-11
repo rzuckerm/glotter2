@@ -36,13 +36,14 @@ class Project:
         use_tests = use_tests or {}
         search = use_tests.get("search") or ""
         replace = use_tests.get("replace") or ""
-        self._tests = {
-            test_name.replace(search, replace): AutoGenTest(
+        self._tests = [
+            AutoGenTest(
                 **test,
                 requires_parameters=requires_parameters,
+                name=test_name.replace(search, replace),
             )
             for test_name, test in tests.items()
-        }
+        ]
 
     @property
     def words(self):
