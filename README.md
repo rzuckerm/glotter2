@@ -27,6 +27,7 @@ If you'd like to contribute to Glotter2, read our [contributing guidelines](./CO
 
 * 0.5.0: wip
   * Add test generation
+  * Add `pydantic` dependency
 * 0.4.5:
   * Add link to documentation
 * 0.4.4:

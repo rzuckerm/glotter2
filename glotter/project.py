@@ -38,8 +38,8 @@ class Project:
         replace = use_tests.get("replace") or ""
         self._tests = {
             test_name.replace(search, replace): AutoGenTest(
-                test.get("params") or {},
-                test.get("transformations") or [],
+                **test,
+                requires_parameters=requires_parameters,
             )
             for test_name, test in tests.items()
         }

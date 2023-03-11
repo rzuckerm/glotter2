@@ -1,53 +1,47 @@
-class AutoGenTest:
-    """Object containing information about an auto-generated test"""
+# pylint hates pydantic
+# pylint: disable=E0213,E0611
+from typing import List, Dict, Union, Any
 
-    def __init__(self, params, transformations):
-        """
-        Initialize auto-generated test information
+from pydantic import BaseModel, validator
 
-        :param params: List of auto-generated test parameters
-        :param transformations: List of output transformations
-        """
-
-        self._params = [AutoGenParam(param) for param in params]
-        self._transformations = transformations
-
-    @property
-    def params(self):
-        """return test parameters"""
-        return self._params
-
-    @property
-    def transformations(self):
-        """return output transformations"""
-        return self._transformations
+TransformationT = List[Union[str, Dict[str, List[str]]]]
 
 
-class AutoGenParam:
+class AutoGenParam(BaseModel):
     """Object used for an auto-generated test parameter"""
 
-    def __init__(self, param):
+    name: str
+    input: Union[None, str]
+    expected: Union[str, List[str], Dict[str, str]]
+
+
+class AutoGenTest(BaseModel):
+    """Object containing information about an auto-generated test"""
+
+    requires_parameters: bool = False
+    params: List[AutoGenParam] = []
+    transformations: TransformationT = []
+
+    @validator("params", each_item=True, pre=True)
+    def validate_params(
+        cls, value: Dict[str, Any], values: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """
-        Initialize auto-generated test parameter
+        Validate each parameter
 
-        :param param: Auto-generated test parameter
+        :param value: Parameter to validate
+        :param values: Test item
+        :return: Original parameter if project requires parameters. Otherwise, parameter with
+            an empty "name" and an "input" of `None`
+        :raises: :exc:`ValueError` if project requires parameters but no input
         """
 
-        self._name = param.get("name")
-        self._input_param = param.get("input")
-        self._expected_output = param.get("expected")
+        if values.get("requires_parameters"):
+            if "input" not in value:
+                raise ValueError(
+                    'This project requires parameters, but "input" is not specified'
+                )
 
-    @property
-    def name(self):
-        """Return name of auto-generated test parameter"""
-        return self._name
+            return value
 
-    @property
-    def input_param(self):
-        """Return input parameter"""
-        return self._input_param
-
-    @property
-    def expected_output(self):
-        """Return expected output"""
-        return self._expected_output
+        return {**value, "name": value.get("name") or "", "input": value.get("input")}

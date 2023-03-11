@@ -84,7 +84,7 @@ def {self.long_project_name}(request):
         test_code += _indent(self._get_expected_output(test_obj), 4)
         actual_var, expected_var = self._get_transformation_vars(test_name, test_obj)
         test_code += _indent(
-            _get_assert(actual_var, expected_var, test_obj.params[0].expected_output), 4
+            _get_assert(actual_var, expected_var, test_obj.params[0].expected), 4
         )
         return test_code
 
@@ -105,11 +105,11 @@ def {self.long_project_name}(request):
 """
 
     def _generate_param(self, param):
-        input_param = param.input_param
+        input_param = param.input
         if isinstance(input_param, str):
             input_param = _quote(input_param)
 
-        expected_output = param.expected_output
+        expected_output = param.expected
         if isinstance(expected_output, str):
             expected_output = _quote(expected_output)
 
@@ -125,7 +125,7 @@ def test_{test_name}({func_params}{self.long_project_name}):
         if self.project.requires_parameters:
             return ""
 
-        expected_output = test_obj.params[0].expected_output
+        expected_output = test_obj.params[0].expected
         if isinstance(expected_output, dict):
             return self._generate_expected_file(expected_output)
         elif isinstance(expected_output, str):
