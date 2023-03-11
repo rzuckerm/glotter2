@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "glotter2"
 packages = [{include="glotter"}]
-version = "0.5.0a1"
+version = "0.5.0a2"
 description = "An execution library for scripts written in any language. This is a fork of https://github.com/auroq/glotter"
 authors = ["auroq", "rzuckerm"]
 readme = "README.md"
@@ -16,6 +16,7 @@ classifiers = [
 
 [tool.poetry.urls]
 "Bug Tracker" = "https://github.com/rzuckerm/glotter2/issues"
+"Changelog" = "https://github.com/rzuckerm/glotter2#changelog"
 
 [tool.poetry.dependencies]
 python = "^3.8"
