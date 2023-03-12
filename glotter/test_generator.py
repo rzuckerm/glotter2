@@ -76,7 +76,7 @@ def {self.long_project_name}(request):
 
         test_code += self._get_test_function_and_run(test_obj, func_params, run_param)
         test_code += _indent(self._get_expected_output(test_obj), 4)
-        actual_var, expected_var = self._get_transformation_vars(test_obj)
+        actual_var, expected_var = test_obj.transform_vars()
         test_code += _indent(
             _get_assert(actual_var, expected_var, test_obj.params[0].expected), 4
         )
@@ -137,14 +137,6 @@ with open({self.long_project_name}.full_path, "r", encoding="utf-8") as file:
     expected = file.read()
 """
         return test_code
-
-    def _get_transformation_vars(self, test_obj):
-        actual_var = "actual"
-        expected_var = "expected"
-        for transformation in test_obj.transformations:
-            actual_var, expected_var = transformation(actual_var, expected_var)
-
-        return actual_var, expected_var
 
     def write_tests(self, test_code):
         os.makedirs(AUTO_GEN_TEST_PATH, exist_ok=True)

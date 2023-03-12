@@ -1,4 +1,3 @@
-from unittest.mock import ANY
 import string
 
 import pytest
@@ -79,7 +78,7 @@ def test_auto_gen_param_bad(value):
                 "params": [
                     {"name": "some-name", "input": None, "expected": "some-str"}
                 ],
-                "transformations": [ANY],
+                "transformations": ["strip"],
             },
             id=f"name_{char}-single_param-single_transformation",
         )
@@ -110,7 +109,7 @@ def test_auto_gen_param_bad(value):
                 "params": [
                     {"name": "some-name", "input": None, "expected": "some-str"}
                 ],
-                "transformations": [ANY],
+                "transformations": ["strip"],
             },
             id=f"name_foo_{char}_bar-single_param-single_transformation",
         )
@@ -150,7 +149,7 @@ def test_auto_gen_param_bad(value):
                         "expected": ["item3"],
                     },
                 ],
-                "transformations": [ANY, ANY],
+                "transformations": ["strip", "splitlines"],
             },
             id="muli_param-multi_transformation",
         ),
@@ -214,42 +213,47 @@ def test_auto_gen_test_bad(value, expected_error):
 
 
 @pytest.mark.parametrize(
-    ("transformation", "expected_actual_var", "expected_expected_var"),
+    ("transformations", "expected_actual_var", "expected_expected_var"),
     [
-        pytest.param("strip", "actual.strip()", "expected", id="strip-scalar"),
-        pytest.param("splitlines", "actual.splitlines()", "expected", id="splitlines"),
-        pytest.param("lower", "actual.lower()", "expected", id="lower"),
+        pytest.param(["strip"], "actual.strip()", "expected", id="strip-scalar"),
         pytest.param(
-            "any_order", "sorted(set(actual))", "sorted(set(expected))", id="any_order"
+            ["splitlines"], "actual.splitlines()", "expected", id="splitlines"
+        ),
+        pytest.param(["lower"], "actual.lower()", "expected", id="lower"),
+        pytest.param(
+            ["any_order"],
+            "sorted(set(actual))",
+            "sorted(set(expected))",
+            id="any_order",
         ),
         pytest.param(
-            "strip_expected", "actual", "expected.strip()", id="strip_expected"
+            ["strip_expected"], "actual", "expected.strip()", id="strip_expected"
         ),
         pytest.param(
-            {"remove": ["x", "y", '"']},
+            [{"remove": ["x", "y", '"']}],
             """actual.replace("x", "").replace("y", "").replace('"', "")""",
             "expected",
             id="remove",
         ),
         pytest.param(
-            {"strip": ["a", "'"]},
+            [{"strip": ["a", "'"]}],
             """actual.strip("a").strip("'")""",
             "expected",
             id="strip-dict",
         ),
     ],
 )
-def test_auto_gen_good_transformations(
-    transformation, expected_actual_var, expected_expected_var
+def test_auto_gen_transform_vars(
+    transformations, expected_actual_var, expected_expected_var
 ):
     value = {
         "name": "some_name",
         "params": [{"name": "some-param", "expected": "some-output"}],
-        "transformations": [transformation],
+        "transformations": transformations,
     }
     test = AutoGenTest(**value)
 
-    actual_var, expected_var = test.transformations[0]("actual", "expected")
+    actual_var, expected_var = test.transform_vars()
     assert actual_var == expected_actual_var
     assert expected_var == expected_expected_var
 
