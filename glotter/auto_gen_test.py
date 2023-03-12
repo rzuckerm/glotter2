@@ -7,6 +7,8 @@ from pydantic import BaseModel, validator, constr, conlist
 
 from glotter.utils import quote, indent
 
+ExpectedT = Union[str, List[str], Dict[str, str]]
+
 TransformationT = Union[str, Dict[str, List[str]]]
 TransformationScalarFuncT = Callable[[str, str], Tuple[str, str]]
 TransformationDictFuncT = Callable[[List[str], str, str], Tuple[str, str]]
@@ -17,7 +19,33 @@ class AutoGenParam(BaseModel):
 
     name: str = ""
     input: Optional[str] = None
-    expected: Union[str, List[str], Dict[str, str]]
+    expected: ExpectedT
+
+    @validator("expected")
+    def validate_expected(cls, value: ExpectedT) -> ExpectedT:
+        """
+        Validate expected value
+
+        :param value: Expected value
+        :return: Original expected value
+        :raises: :exc:`ValueError` if invalid expected value
+        """
+
+        if isinstance(value, dict):
+            if not value:
+                raise ValueError('Too few "expected" items')
+
+            if len(value) > 1:
+                raise ValueError('Too many "expected" items')
+
+            key, item = tuple(*value.items())
+            if key == "exec":
+                if not item:
+                    raise ValueError('No value for "exec" item in "expected"')
+            elif key != "self":
+                raise ValueError(f'Invalid key "{key}" in "expected" item')
+
+        return value
 
     def get_pytest_param(self) -> str:
         """

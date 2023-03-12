@@ -36,14 +36,27 @@ from glotter.auto_gen_test import AutoGenParam, AutoGenTest
             {
                 "name": "input3",
                 "input": "some-input-str",
-                "expected": {"some-key": "some-value"},
+                "expected": {"exec": "cat output.txt"},
             },
             {
                 "name": "input3",
                 "input": "some-input-str",
-                "expected": {"some-key": "some-value"},
+                "expected": {"exec": "cat output.txt"},
             },
-            id="input_str-expected_dict",
+            id="input_str-expected_exec",
+        ),
+        pytest.param(
+            {
+                "name": "input4",
+                "input": "some-input-str",
+                "expected": {"self": ""},
+            },
+            {
+                "name": "input4",
+                "input": "some-input-str",
+                "expected": {"self": ""},
+            },
+            id="input_str-expected_self",
         ),
     ],
 )
@@ -53,26 +66,51 @@ def test_auto_gen_param_good(value, expected_value):
 
 
 @pytest.mark.parametrize(
-    "value",
+    ("value", "expected_error"),
     [
-        pytest.param({}, id="empty"),
+        pytest.param({}, "expected", id="empty"),
         pytest.param(
             {"name": None, "input": None, "expected": "some-str"},
+            "name",
             id="bad-name",
         ),
         pytest.param(
             {"name": "x", "input": {"some-key": "some-value"}, "expected": "some-str"},
+            "input",
             id="bad-input",
         ),
         pytest.param(
             {"name": "x", "input": "some-str", "expected": None},
+            "none is not an allowed",
             id="bad-expected",
+        ),
+        pytest.param(
+            {"name": "x", "input": "some-str", "expected": {"blah": "y"}},
+            'Invalid key "blah" in "expected"',
+            id="bad-expected-dict",
+        ),
+        pytest.param(
+            {"name": "x", "input": "some-str", "expected": {"self": "", "exec": "foo"}},
+            'Too many "expected" items',
+            id="too-many-expected-dict",
+        ),
+        pytest.param(
+            {"name": "x", "input": "some-str", "expected": {}},
+            'Too few "expected" items',
+            id="too-few-expected-dict",
+        ),
+        pytest.param(
+            {"name": "x", "input": "some-str", "expected": {"exec": ""}},
+            'No value for "exec" item in "expected"',
+            id="empty-expected-exec",
         ),
     ],
 )
-def test_auto_gen_param_bad(value):
-    with pytest.raises(ValidationError):
+def test_auto_gen_param_bad(value, expected_error):
+    with pytest.raises(ValidationError) as e:
         AutoGenParam(**value)
+
+    assert expected_error in str(e.value)
 
 
 @pytest.mark.parametrize(
