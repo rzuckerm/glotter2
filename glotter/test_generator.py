@@ -70,7 +70,7 @@ def {self.long_project_name}(request):
         func_params = ""
         run_param = ""
         if self.project.requires_parameters:
-            test_code += self._generate_params(test_obj)
+            test_code += test_obj.get_pytest_params()
             func_params = "in_params, expected, "
             run_param = "params=in_params"
 
@@ -81,30 +81,6 @@ def {self.long_project_name}(request):
             _get_assert(actual_var, expected_var, test_obj.params[0].expected), 4
         )
         return test_code
-
-    def _generate_params(self, test_obj):
-        pytest_params = "".join(
-            indent(self._generate_param(param), 8) for param in test_obj.params
-        ).strip()
-        return f"""\
-@pytest.mark.parametrize(
-    ("in_params", "expected"),
-    [
-        {pytest_params}
-    ]
-)
-"""
-
-    def _generate_param(self, param):
-        input_param = param.input
-        if isinstance(input_param, str):
-            input_param = quote(input_param)
-
-        expected_output = param.expected
-        if isinstance(expected_output, str):
-            expected_output = quote(expected_output)
-
-        return f'pytest.param({input_param}, {expected_output}, id="{param.name}"),\n'
 
     def _get_test_function_and_run(self, test_obj, func_params, run_param):
         return f"""\

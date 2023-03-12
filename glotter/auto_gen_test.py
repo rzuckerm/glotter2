@@ -1,11 +1,11 @@
 # pylint hates pydantic
 # pylint: disable=E0213,E0611
-from typing import List, Dict, Tuple, Union, Any, Callable, ClassVar
+from typing import Optional, List, Dict, Tuple, Union, Any, Callable, ClassVar
 from functools import partial
 
 from pydantic import BaseModel, validator, constr, conlist
 
-from glotter.utils import quote
+from glotter.utils import quote, indent
 
 TransformationT = Union[str, Dict[str, List[str]]]
 TransformationScalarFuncT = Callable[[str, str], Tuple[str, str]]
@@ -13,11 +13,33 @@ TransformationDictFuncT = Callable[[List[str], str, str], Tuple[str, str]]
 
 
 class AutoGenParam(BaseModel):
-    """Object used for an auto-generated test parameter"""
+    """Object used to auto-generated a test parameter"""
 
-    name: constr(min_length=1)
-    input: Union[None, str]
+    name: str = ""
+    input: Optional[str] = None
     expected: Union[str, List[str], Dict[str, str]]
+
+    def get_pytest_param(self) -> str:
+        """
+        Get pytest parameter string
+
+        :return: pytest parameter string if name is not empty, empty string otherwise
+        """
+
+        if not self.name:
+            return ""
+
+        input_param = self.input
+        if isinstance(input_param, str):
+            input_param = quote(input_param)
+
+        expected_output = self.expected
+        if isinstance(expected_output, str):
+            expected_output = quote(expected_output)
+
+        return (
+            f"pytest.param({input_param}, {expected_output}, id={quote(self.name)}),\n"
+        )
 
 
 def _append_method_to_actual(
@@ -55,7 +77,7 @@ def _unique_sort(actual_var, expected_var):
 
 
 class AutoGenTest(BaseModel):
-    """Object containing information about an auto-generated test"""
+    """Object use to auto-generated a test"""
 
     name: constr(min_length=1, regex="^[a-zA-Z][0-9a-zA-Z_]*$")
     requires_parameters: bool = False
@@ -83,9 +105,9 @@ class AutoGenTest(BaseModel):
 
         :param value: Parameter to validate
         :param values: Test item
-        :return: Original parameter if project requires parameters. Otherwise, parameter with
-            an empty "name" and an "input" of `None`
-        :raises: :exc:`ValueError` if project requires parameters but no input
+        :return: Original parameter
+        :raises: :exc:`ValueError` if project requires parameters but no input, no name,
+            or empty name
         """
 
         if values.get("requires_parameters"):
@@ -94,12 +116,20 @@ class AutoGenTest(BaseModel):
                     'This project requires parameters, but "input" is not specified'
                 )
 
-            return value
+            if "name" not in value:
+                raise ValueError(
+                    'This project requires parameters, but "name" is not specified'
+                )
 
-        return {**value, "name": value.get("name") or "na", "input": value.get("input")}
+            if not value["name"]:
+                raise ValueError(
+                    'This project requires parameters, but "name" is empty'
+                )
+
+        return value
 
     @validator("transformations", each_item=True, pre=True)
-    def validate_transformation(cls, value: TransformationT) -> TransformationT:
+    def validate_transformation(cls, value):
         """
         Validate each transformation
 
@@ -143,3 +173,25 @@ class AutoGenTest(BaseModel):
                 )
 
         return actual_var, expected_var
+
+    def get_pytest_params(self) -> str:
+        """
+        Get pytest parameters
+
+        :return: pytest parameters
+        """
+
+        if not self.requires_parameters:
+            return ""
+
+        pytest_params = "".join(
+            indent(param.get_pytest_param(), 8) for param in self.params
+        ).strip()
+        return f"""\
+@pytest.mark.parametrize(
+    ("in_params", "expected"),
+    [
+        {pytest_params}
+    ]
+)
+"""
