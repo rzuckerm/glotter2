@@ -71,7 +71,7 @@ def test_auto_gen_param_good(value, expected_value):
     ],
 )
 def test_auto_gen_param_bad(value):
-    with pytest.raises(ValidationError) as e:
+    with pytest.raises(ValidationError):
         AutoGenParam(**value)
 
 
