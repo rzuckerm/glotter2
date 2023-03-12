@@ -4,7 +4,7 @@ import shutil
 from black import format_str, Mode
 
 from glotter.settings import Settings
-from glotter.utils import quote, indent
+from glotter.utils import indent
 
 AUTO_GEN_TEST_PATH = "test/generated"
 
@@ -67,51 +67,13 @@ def {self.long_project_name}(request):
 
     def _generate_test(self, test_obj):
         test_code = "@project_test(PROJECT_NAME)\n"
-        func_params = ""
-        run_param = ""
-        if self.project.requires_parameters:
-            test_code += test_obj.get_pytest_params()
-            func_params = "in_params, expected, "
-            run_param = "params=in_params"
-
-        test_code += self._get_test_function_and_run(test_obj, func_params, run_param)
-        test_code += indent(self._get_expected_output(test_obj), 4)
+        test_code += test_obj.get_pytest_params()
+        test_code += test_obj.get_test_function_and_run(self.long_project_name)
+        test_code += indent(test_obj.get_expected_output(self.long_project_name), 4)
         actual_var, expected_var = test_obj.transform_vars()
         test_code += indent(
             _get_assert(actual_var, expected_var, test_obj.params[0].expected), 4
         )
-        return test_code
-
-    def _get_test_function_and_run(self, test_obj, func_params, run_param):
-        return f"""\
-def test_{test_obj.name}({func_params}{self.long_project_name}):
-    actual = {self.long_project_name}.run({run_param})
-"""
-
-    def _get_expected_output(self, test_obj):
-        if self.project.requires_parameters:
-            return ""
-
-        expected_output = test_obj.params[0].expected
-        if isinstance(expected_output, dict):
-            return self._generate_expected_file(expected_output)
-        elif isinstance(expected_output, str):
-            expected_output = quote(expected_output)
-        else:
-            expected_output = str(expected_output)
-
-        return f"expected = {expected_output}\n"
-
-    def _generate_expected_file(self, expected_output):
-        test_code = ""
-        if "exec" in expected_output:
-            script = quote(expected_output["exec"])
-            test_code = f"expected = {self.long_project_name}.exec({script})\n"
-        elif "self" in expected_output:
-            test_code = f"""\
-with open({self.long_project_name}.full_path, "r", encoding="utf-8") as file:
-    expected = file.read()
-"""
         return test_code
 
     def write_tests(self, test_code):

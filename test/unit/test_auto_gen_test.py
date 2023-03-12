@@ -438,6 +438,105 @@ def test_auto_gen_bad_transformations(transformation, expected_error):
         ),
     ],
 )
-def test_auto_gen_get_pytest_params(value, expected_pytest_params):
+def test_auto_gen_test_get_pytest_params(value, expected_pytest_params):
     test = AutoGenTest(**value)
     assert test.get_pytest_params() == expected_pytest_params
+
+
+@pytest.mark.parametrize(
+    ("value", "project_name_underscores", "expected_value"),
+    [
+        pytest.param(
+            {"name": "valid", "params": [{"expected": "foo"}]},
+            "my_project",
+            """\
+def test_valid(my_project):
+    actual = my_project.run()
+""",
+            id="no-requires-params",
+        ),
+        pytest.param(
+            {
+                "name": "something",
+                "requires_parameters": True,
+                "params": [{"name": "blah", "input": "foo", "expected": "bar"}],
+            },
+            "some_project",
+            """\
+def test_something(in_params, expected, some_project):
+    actual = some_project.run(params=in_params)
+""",
+            id="requires-params",
+        ),
+    ],
+)
+def test_auto_gen_test_get_test_function_and_run(
+    value, project_name_underscores, expected_value
+):
+    test = AutoGenTest(**value)
+    assert test.get_test_function_and_run(project_name_underscores) == expected_value
+
+
+@pytest.mark.parametrize(
+    ("value", "project_name_underscores", "expected_value"),
+    [
+        pytest.param(
+            {
+                "name": "foo",
+                "requires_parameters": True,
+                "params": [{"name": "bar", "input": "bar", "expected": "foo"}],
+            },
+            "project1",
+            "",
+            id="requires-params",
+        ),
+        pytest.param(
+            {
+                "name": "name1",
+                "requires_parameters": False,
+                "params": [{"expected": "bar"}],
+            },
+            "project2",
+            'expected = "bar"\n',
+            id="expected-str",
+        ),
+        pytest.param(
+            {
+                "name": "name2",
+                "requires_parameters": False,
+                "params": [{"expected": ["12", "34"]}],
+            },
+            "project3",
+            "expected = ['12', '34']\n",
+            id="expected-list",
+        ),
+        pytest.param(
+            {
+                "name": "name3",
+                "requires_parameters": False,
+                "params": [{"expected": {"exec": "cat output.txt"}}],
+            },
+            "project4",
+            'expected = project4.exec("cat output.txt")\n',
+            id="expected-exec",
+        ),
+        pytest.param(
+            {
+                "name": "name4",
+                "requires_parameters": False,
+                "params": [{"expected": {"self": ""}}],
+            },
+            "project5",
+            """\
+with open(project5.full_path, "r", encoding="utf-8") as file:
+    expected = file.read()
+""",
+            id="expected-self",
+        ),
+    ],
+)
+def test_auto_gen_test_get_expected_output(
+    value, project_name_underscores, expected_value
+):
+    test = AutoGenTest(**value)
+    assert test.get_expected_output(project_name_underscores) == expected_value

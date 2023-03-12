@@ -223,3 +223,55 @@ class AutoGenTest(BaseModel):
     ]
 )
 """
+
+    def get_test_function_and_run(self, project_name_underscores: str) -> str:
+        """
+        Get test function and run command
+
+        :param project_name_underscores: Project name with underscores between each word
+        :return: Test function and run command
+        """
+
+        func_params = ""
+        run_param = ""
+        if self.requires_parameters:
+            func_params = "in_params, expected, "
+            run_param = "params=in_params"
+
+        return f"""\
+def test_{self.name}({func_params}{project_name_underscores}):
+    actual = {project_name_underscores}.run({run_param})
+"""
+
+    def get_expected_output(self, project_name_underscores: str) -> str:
+        """
+        Get test code that gets the expected output
+
+        :param project_name_underscores: Project name with underscores between each word
+        :return: Test code that gets the expected output
+
+        """
+
+        if self.requires_parameters:
+            return ""
+
+        expected_output = self.params[0].expected
+        if isinstance(expected_output, str):
+            expected_output = quote(expected_output)
+        elif isinstance(expected_output, dict):
+            return _get_expected_file(project_name_underscores, expected_output)
+
+        return f"expected = {expected_output}\n"
+
+
+def _get_expected_file(
+    project_name_underscores: str, expected_output: Dict[str, str]
+) -> str:
+    if "exec" in expected_output:
+        script = quote(expected_output["exec"])
+        return f"expected = {project_name_underscores}.exec({script})\n"
+
+    return f"""\
+with open({project_name_underscores}.full_path, "r", encoding="utf-8") as file:
+    expected = file.read()
+"""
