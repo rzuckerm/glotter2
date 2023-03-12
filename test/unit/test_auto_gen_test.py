@@ -1,4 +1,5 @@
 import string
+import os
 
 import pytest
 from pydantic import ValidationError
@@ -540,3 +541,58 @@ def test_auto_gen_test_get_expected_output(
 ):
     test = AutoGenTest(**value)
     assert test.get_expected_output(project_name_underscores) == expected_value
+
+
+@pytest.mark.parametrize(
+    ("value", "project_name_underscores"),
+    [
+        pytest.param(
+            {
+                "name": "hello_world",
+                "requires_params": False,
+                "params": [{"expected": "hello world"}],
+            },
+            "no_requires_params_string",
+            id="project-no-params-string",
+        ),
+        pytest.param(
+            {
+                "name": "number_list",
+                "requires_params": False,
+                "params": [{"expected": ["1", "2"]}],
+                "transformations": ["strip", "splitlines"],
+            },
+            "no_requires_params_list",
+            id="project-no-params-list",
+        ),
+        pytest.param(
+            {
+                "name": "file_io",
+                "requires_params": False,
+                "params": [{"expected": {"exec": "cat output.txt"}}],
+                "transformations": ["strip", "strip_expected"],
+            },
+            "no_requires_params_exec",
+            id="project-no-params-exec",
+        ),
+        pytest.param(
+            {
+                "name": "quine",
+                "requires_params": False,
+                "params": [{"expected": {"self": ""}}],
+                "transformations": ["strip", "strip_expected"],
+            },
+            "no_requires_params_self",
+            id="project-no-params-self",
+        ),
+    ],
+)
+def test_auto_gen_test_generate_test(value, project_name_underscores):
+    test = AutoGenTest(**value)
+
+    with open(
+        os.path.join("test", "unit", "data", project_name_underscores), encoding="utf-8"
+    ) as f:
+        expected_value = f.read()
+
+    assert test.generate_test(project_name_underscores) == expected_value

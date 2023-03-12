@@ -263,6 +263,24 @@ def test_{self.name}({func_params}{project_name_underscores}):
 
         return f"expected = {expected_output}\n"
 
+    def generate_test(self, project_name_underscores: str) -> str:
+        """
+        Generate test code
+
+        :param project_name_underscores: Project name with underscores between each word
+        :return: Test code
+        """
+
+        test_code = "@project_test(PROJECT_NAME)\n"
+        test_code += self.get_pytest_params()
+        test_code += self.get_test_function_and_run(project_name_underscores)
+        test_code += indent(self.get_expected_output(project_name_underscores), 4)
+        actual_var, expected_var = self.transform_vars()
+        test_code += indent(
+            _get_assert(actual_var, expected_var, self.params[0].expected), 4
+        )
+        return test_code
+
 
 def _get_expected_file(
     project_name_underscores: str, expected_output: Dict[str, str]
@@ -275,3 +293,23 @@ def _get_expected_file(
 with open({project_name_underscores}.full_path, "r", encoding="utf-8") as file:
     expected = file.read()
 """
+
+
+def _get_assert(actual_var: str, expected_var: str, expected_output: ExpectedT) -> str:
+    if isinstance(expected_output, list):
+        return f"""\
+actual_list = {actual_var}
+expected_list = {expected_var}
+assert len(actual_list) == len(expected_list), "Length not equal"
+for index in range(len(expected_list)):
+    assert actual_list[index] == expected_list[index], f"Item {{index + 1}} is not equal"
+"""
+
+    test_code = ""
+    if actual_var != "actual":
+        test_code += f"actual = {actual_var}\n"
+
+    if expected_var != "expected":
+        test_code += f"expected = {expected_var}\n"
+
+    return f"{test_code}assert actual == expected\n"

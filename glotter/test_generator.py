@@ -44,7 +44,7 @@ class TestGenerator:
 
         test_code = self._get_imports() + self._get_project_fixture()
         for test_obj in self.project.tests:
-            test_code += self._generate_test(test_obj)
+            test_code += test_obj.generate_test(self.long_project_name)
 
         return format_str(test_code, mode=Mode())
 
@@ -65,17 +65,6 @@ def {self.long_project_name}(request):
     request.param.cleanup()
 """
 
-    def _generate_test(self, test_obj):
-        test_code = "@project_test(PROJECT_NAME)\n"
-        test_code += test_obj.get_pytest_params()
-        test_code += test_obj.get_test_function_and_run(self.long_project_name)
-        test_code += indent(test_obj.get_expected_output(self.long_project_name), 4)
-        actual_var, expected_var = test_obj.transform_vars()
-        test_code += indent(
-            _get_assert(actual_var, expected_var, test_obj.params[0].expected), 4
-        )
-        return test_code
-
     def write_tests(self, test_code):
         os.makedirs(AUTO_GEN_TEST_PATH, exist_ok=True)
         with open(
@@ -84,23 +73,3 @@ def {self.long_project_name}(request):
             encoding="utf-8",
         ) as f:
             f.write(test_code)
-
-
-def _get_assert(actual_var, expected_var, expected_output):
-    if isinstance(expected_output, list):
-        return f"""\
-actual_list = {actual_var}
-expected_list = {expected_var}
-assert len(actual_list) == len(expected_list), "Length not equal"
-for index in range(len(expected_list)):
-    assert actual_list[index] == expected_list[index], f"Item {{index + 1}} is not equal"
-"""
-
-    test_code = ""
-    if actual_var != "actual":
-        test_code += f"actual = {actual_var}\n"
-
-    if expected_var != "expected":
-        test_code += f"expected = {expected_var}\n"
-
-    return f"{test_code}assert actual == expected\n"
