@@ -1,11 +1,10 @@
 import os
 import shutil
-from functools import partial
-import warnings
 
 from black import format_str, Mode
 
 from glotter.settings import Settings
+from glotter.utils import quote
 
 AUTO_GEN_TEST_PATH = "test/generated"
 
@@ -48,9 +47,6 @@ class TestGenerator:
             test_code += self._generate_test(test_obj)
 
         return format_str(test_code, mode=Mode())
-
-    def _warning(self, test_obj, msg):
-        warnings.warn(f"Project {self.project_name}, Test {test_obj.name}: {msg}")
 
     def _get_imports(self):
         test_code = "from glotter import project_test, project_fixture\n"
@@ -102,11 +98,11 @@ def {self.long_project_name}(request):
     def _generate_param(self, param):
         input_param = param.input
         if isinstance(input_param, str):
-            input_param = _quote(input_param)
+            input_param = quote(input_param)
 
         expected_output = param.expected
         if isinstance(expected_output, str):
-            expected_output = _quote(expected_output)
+            expected_output = quote(expected_output)
 
         return f'pytest.param({input_param}, {expected_output}, id="{param.name}"),\n'
 
@@ -124,7 +120,7 @@ def test_{test_obj.name}({func_params}{self.long_project_name}):
         if isinstance(expected_output, dict):
             return self._generate_expected_file(expected_output)
         elif isinstance(expected_output, str):
-            expected_output = _quote(expected_output)
+            expected_output = quote(expected_output)
         else:
             expected_output = str(expected_output)
 
@@ -133,7 +129,7 @@ def test_{test_obj.name}({func_params}{self.long_project_name}):
     def _generate_expected_file(self, expected_output):
         test_code = ""
         if "exec" in expected_output:
-            script = _quote(expected_output["exec"])
+            script = quote(expected_output["exec"])
             test_code = f"expected = {self.long_project_name}.exec({script})\n"
         elif "self" in expected_output:
             test_code = f"""\
@@ -143,40 +139,10 @@ with open({self.long_project_name}.full_path, "r", encoding="utf-8") as file:
         return test_code
 
     def _get_transformation_vars(self, test_obj):
-        scalar_transformation_funcs = {
-            "strip": partial(_append_method_to_actual, "strip"),
-            "splitlines": partial(_append_method_to_actual, "splitlines"),
-            "lower": partial(_append_method_to_actual, "lower"),
-            "any_order": _unique_sort,
-            "strip_expected": partial(_append_method_to_expected, "strip"),
-        }
-        dict_transformation_funcs = {
-            "remove": _remove_chars,
-            "strip": _strip_chars,
-        }
-
         actual_var = "actual"
         expected_var = "expected"
         for transformation in test_obj.transformations:
-            bad_key = ""
-            if isinstance(transformation, str):
-                try:
-                    actual_var, expected_var = scalar_transformation_funcs[
-                        transformation
-                    ](actual_var, expected_var)
-                except KeyError:
-                    bad_key = transformation
-            else:
-                key, value = tuple(*transformation.items())
-                try:
-                    actual_var, expected_var = dict_transformation_funcs[key](
-                        actual_var, expected_var, value
-                    )
-                except KeyError:
-                    bad_key = key
-
-            if bad_key:
-                self._warning(test_obj, f'Invalid transformation "{key}"... ignoring')
+            actual_var, expected_var = transformation(actual_var, expected_var)
 
         return actual_var, expected_var
 
@@ -190,44 +156,9 @@ with open({self.long_project_name}.full_path, "r", encoding="utf-8") as file:
             f.write(test_code)
 
 
-def _quote(value):
-    if '"' in value:
-        quote = '"""' if "'" in value else "'"
-    else:
-        quote = '"'
-
-    return f"{quote}{value}{quote}"
-
-
 def _indent(str_value, num_spaces):
     spaces = " " * num_spaces
     return "".join(f"{spaces}{line}" for line in str_value.splitlines(keepends=True))
-
-
-def _append_method_to_actual(method, actual_var, expected_var):
-    return f"{actual_var}.{method}()", expected_var
-
-
-def _append_method_to_expected(method, actual_var, expected_var):
-    return actual_var, f"{expected_var}.{method}()"
-
-
-def _remove_chars(actual_var, expected_var, values):
-    for value in values:
-        actual_var += f".replace({_quote(value)}, '')"
-
-    return actual_var, expected_var
-
-
-def _strip_chars(actual_var, expected_var, values):
-    for value in values:
-        actual_var += f".strip({_quote(value)})"
-
-    return actual_var, expected_var
-
-
-def _unique_sort(actual_var, expected_var):
-    return f"sorted(set({actual_var}))", f"sorted(set({expected_var}))"
 
 
 def _get_assert(actual_var, expected_var, expected_output):
