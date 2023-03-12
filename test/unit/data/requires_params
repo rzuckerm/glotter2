@@ -1,0 +1,14 @@
+@project_test(PROJECT_NAME)
+@pytest.mark.parametrize(
+    ("in_params", "expected"),
+    [
+        pytest.param("1", "composite", id="one"),
+        pytest.param("2", "prime", id="two"),
+        pytest.param("4", "composite", id="four"),
+        pytest.param("5", "prime", id="five"),
+    ]
+)
+def test_prime(in_params, expected, requires_params):
+    actual = requires_params.run(params=in_params)
+    actual = actual.strip().lower()
+    assert actual == expected

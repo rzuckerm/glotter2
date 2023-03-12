@@ -1,0 +1,7 @@
+@project_test(PROJECT_NAME)
+def test_file_io(no_requires_params_exec):
+    actual = no_requires_params_exec.run()
+    expected = no_requires_params_exec.exec("cat output.txt")
+    actual = actual.strip()
+    expected = expected.strip()
+    assert actual == expected

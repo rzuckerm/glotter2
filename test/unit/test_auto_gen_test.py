@@ -549,7 +549,7 @@ def test_auto_gen_test_get_expected_output(
         pytest.param(
             {
                 "name": "hello_world",
-                "requires_params": False,
+                "requires_parameters": False,
                 "params": [{"expected": "hello world"}],
             },
             "no_requires_params_string",
@@ -558,7 +558,7 @@ def test_auto_gen_test_get_expected_output(
         pytest.param(
             {
                 "name": "number_list",
-                "requires_params": False,
+                "requires_parameters": False,
                 "params": [{"expected": ["1", "2"]}],
                 "transformations": ["strip", "splitlines"],
             },
@@ -568,7 +568,7 @@ def test_auto_gen_test_get_expected_output(
         pytest.param(
             {
                 "name": "file_io",
-                "requires_params": False,
+                "requires_parameters": False,
                 "params": [{"expected": {"exec": "cat output.txt"}}],
                 "transformations": ["strip", "strip_expected"],
             },
@@ -578,12 +578,27 @@ def test_auto_gen_test_get_expected_output(
         pytest.param(
             {
                 "name": "quine",
-                "requires_params": False,
+                "requires_parameters": False,
                 "params": [{"expected": {"self": ""}}],
                 "transformations": ["strip", "strip_expected"],
             },
             "no_requires_params_self",
             id="project-no-params-self",
+        ),
+        pytest.param(
+            {
+                "name": "prime",
+                "requires_parameters": True,
+                "params": [
+                    {"name": "one", "input": "1", "expected": "composite"},
+                    {"name": "two", "input": "2", "expected": "prime"},
+                    {"name": "four", "input": "4", "expected": "composite"},
+                    {"name": "five", "input": "5", "expected": "prime"},
+                ],
+                "transformations": ["strip", "lower"],
+            },
+            "requires_params",
+            id="project-params",
         ),
     ],
 )

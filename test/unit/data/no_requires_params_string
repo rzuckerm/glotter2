@@ -1,0 +1,5 @@
+@project_test(PROJECT_NAME)
+def test_hello_world(no_requires_params_string):
+    actual = no_requires_params_string.run()
+    expected = "hello world"
+    assert actual == expected

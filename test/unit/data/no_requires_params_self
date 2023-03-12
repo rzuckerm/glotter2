@@ -1,0 +1,8 @@
+@project_test(PROJECT_NAME)
+def test_quine(no_requires_params_self):
+    actual = no_requires_params_self.run()
+    with open(no_requires_params_self.full_path, "r", encoding="utf-8") as file:
+        expected = file.read()
+    actual = actual.strip()
+    expected = expected.strip()
+    assert actual == expected

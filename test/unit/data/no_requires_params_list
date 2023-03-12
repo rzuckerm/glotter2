@@ -1,0 +1,9 @@
+@project_test(PROJECT_NAME)
+def test_number_list(no_requires_params_list):
+    actual = no_requires_params_list.run()
+    expected = ['1', '2']
+    actual_list = actual.strip().splitlines()
+    expected_list = expected
+    assert len(actual_list) == len(expected_list), "Length not equal"
+    for index in range(len(expected_list)):
+        assert actual_list[index] == expected_list[index], f"Item {index + 1} is not equal"
