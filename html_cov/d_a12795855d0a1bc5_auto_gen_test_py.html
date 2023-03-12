@@ -55,8 +55,8 @@
             </div>
         </aside>
         <h2>
-            <span class="text">113 statements &nbsp;</span>
-            <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Toggle lines run">113<span class="text"> run</span></button>
+            <span class="text">130 statements &nbsp;</span>
+            <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Toggle lines run">130<span class="text"> run</span></button>
             <button type="button" class="mis show_mis button_toggle_mis" value="mis" data-shortcut="m" title="Toggle lines missing">0<span class="text"> missing</span></button>
             <button type="button" class="exc show_exc button_toggle_exc" value="exc" data-shortcut="x" title="Toggle lines excluded">0<span class="text"> excluded</span></button>
             <button type="button" class="par run show_par button_toggle_par" value="par" data-shortcut="p" title="Toggle lines partially run">0<span class="text"> partial</span></button>
@@ -67,7 +67,7 @@
             <a id="nextFileLink" class="nav" href="d_a12795855d0a1bc5_containerfactory_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.2.1">coverage.py v7.2.1</a>,
-            created at 2023-03-12 20:57 +0000
+            created at 2023-03-12 23:50 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"/>
@@ -347,18 +347,56 @@
     <p class="pln"><span class="n"><a id="t263" href="#t263">263</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t264" href="#t264">264</a></span><span class="t">        <span class="key">return</span> <span class="str">f"expected = {expected_output}\n"</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t265" href="#t265">265</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t266" href="#t266">266</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t267" href="#t267">267</a></span><span class="t"><span class="key">def</span> <span class="nam">_get_expected_file</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t268" href="#t268">268</a></span><span class="t">    <span class="nam">project_name_underscores</span><span class="op">:</span> <span class="nam">str</span><span class="op">,</span> <span class="nam">expected_output</span><span class="op">:</span> <span class="nam">Dict</span><span class="op">[</span><span class="nam">str</span><span class="op">,</span> <span class="nam">str</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t269" href="#t269">269</a></span><span class="t"><span class="op">)</span> <span class="op">-></span> <span class="nam">str</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t270" href="#t270">270</a></span><span class="t">    <span class="key">if</span> <span class="str">"exec"</span> <span class="key">in</span> <span class="nam">expected_output</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t271" href="#t271">271</a></span><span class="t">        <span class="nam">script</span> <span class="op">=</span> <span class="nam">quote</span><span class="op">(</span><span class="nam">expected_output</span><span class="op">[</span><span class="str">"exec"</span><span class="op">]</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t272" href="#t272">272</a></span><span class="t">        <span class="key">return</span> <span class="str">f"expected = {project_name_underscores}.exec({script})\n"</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t266" href="#t266">266</a></span><span class="t">    <span class="key">def</span> <span class="nam">generate_test</span><span class="op">(</span><span class="nam">self</span><span class="op">,</span> <span class="nam">project_name_underscores</span><span class="op">:</span> <span class="nam">str</span><span class="op">)</span> <span class="op">-></span> <span class="nam">str</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t267" href="#t267">267</a></span><span class="t">        <span class="str">"""</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t268" href="#t268">268</a></span><span class="t"><span class="str">        Generate test code</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t269" href="#t269">269</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t270" href="#t270">270</a></span><span class="t"><span class="str">        :param project_name_underscores: Project name with underscores between each word</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t271" href="#t271">271</a></span><span class="t"><span class="str">        :return: Test code</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t272" href="#t272">272</a></span><span class="t"><span class="str">        """</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t273" href="#t273">273</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t274" href="#t274">274</a></span><span class="t">    <span class="key">return</span> <span class="str">f"""\</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t275" href="#t275">275</a></span><span class="t"><span class="str">with open({project_name_underscores}.full_path, "r", encoding="utf-8") as file:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t276" href="#t276">276</a></span><span class="t"><span class="str">    expected = file.read()</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t277" href="#t277">277</a></span><span class="t"><span class="str">"""</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t274" href="#t274">274</a></span><span class="t">        <span class="nam">test_code</span> <span class="op">=</span> <span class="str">"@project_test(PROJECT_NAME)\n"</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t275" href="#t275">275</a></span><span class="t">        <span class="nam">test_code</span> <span class="op">+=</span> <span class="nam">self</span><span class="op">.</span><span class="nam">get_pytest_params</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t276" href="#t276">276</a></span><span class="t">        <span class="nam">test_code</span> <span class="op">+=</span> <span class="nam">self</span><span class="op">.</span><span class="nam">get_test_function_and_run</span><span class="op">(</span><span class="nam">project_name_underscores</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t277" href="#t277">277</a></span><span class="t">        <span class="nam">test_code</span> <span class="op">+=</span> <span class="nam">indent</span><span class="op">(</span><span class="nam">self</span><span class="op">.</span><span class="nam">get_expected_output</span><span class="op">(</span><span class="nam">project_name_underscores</span><span class="op">)</span><span class="op">,</span> <span class="num">4</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t278" href="#t278">278</a></span><span class="t">        <span class="nam">actual_var</span><span class="op">,</span> <span class="nam">expected_var</span> <span class="op">=</span> <span class="nam">self</span><span class="op">.</span><span class="nam">transform_vars</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t279" href="#t279">279</a></span><span class="t">        <span class="nam">test_code</span> <span class="op">+=</span> <span class="nam">indent</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t280" href="#t280">280</a></span><span class="t">            <span class="nam">_get_assert</span><span class="op">(</span><span class="nam">actual_var</span><span class="op">,</span> <span class="nam">expected_var</span><span class="op">,</span> <span class="nam">self</span><span class="op">.</span><span class="nam">params</span><span class="op">[</span><span class="num">0</span><span class="op">]</span><span class="op">.</span><span class="nam">expected</span><span class="op">)</span><span class="op">,</span> <span class="num">4</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t281" href="#t281">281</a></span><span class="t">        <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t282" href="#t282">282</a></span><span class="t">        <span class="key">return</span> <span class="nam">test_code</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t283" href="#t283">283</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t284" href="#t284">284</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t285" href="#t285">285</a></span><span class="t"><span class="key">def</span> <span class="nam">_get_expected_file</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t286" href="#t286">286</a></span><span class="t">    <span class="nam">project_name_underscores</span><span class="op">:</span> <span class="nam">str</span><span class="op">,</span> <span class="nam">expected_output</span><span class="op">:</span> <span class="nam">Dict</span><span class="op">[</span><span class="nam">str</span><span class="op">,</span> <span class="nam">str</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t287" href="#t287">287</a></span><span class="t"><span class="op">)</span> <span class="op">-></span> <span class="nam">str</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t288" href="#t288">288</a></span><span class="t">    <span class="key">if</span> <span class="str">"exec"</span> <span class="key">in</span> <span class="nam">expected_output</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t289" href="#t289">289</a></span><span class="t">        <span class="nam">script</span> <span class="op">=</span> <span class="nam">quote</span><span class="op">(</span><span class="nam">expected_output</span><span class="op">[</span><span class="str">"exec"</span><span class="op">]</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t290" href="#t290">290</a></span><span class="t">        <span class="key">return</span> <span class="str">f"expected = {project_name_underscores}.exec({script})\n"</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t291" href="#t291">291</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t292" href="#t292">292</a></span><span class="t">    <span class="key">return</span> <span class="str">f"""\</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t293" href="#t293">293</a></span><span class="t"><span class="str">with open({project_name_underscores}.full_path, "r", encoding="utf-8") as file:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t294" href="#t294">294</a></span><span class="t"><span class="str">    expected = file.read()</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t295" href="#t295">295</a></span><span class="t"><span class="str">"""</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t296" href="#t296">296</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t297" href="#t297">297</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t298" href="#t298">298</a></span><span class="t"><span class="key">def</span> <span class="nam">_get_assert</span><span class="op">(</span><span class="nam">actual_var</span><span class="op">:</span> <span class="nam">str</span><span class="op">,</span> <span class="nam">expected_var</span><span class="op">:</span> <span class="nam">str</span><span class="op">,</span> <span class="nam">expected_output</span><span class="op">:</span> <span class="nam">ExpectedT</span><span class="op">)</span> <span class="op">-></span> <span class="nam">str</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t299" href="#t299">299</a></span><span class="t">    <span class="key">if</span> <span class="nam">isinstance</span><span class="op">(</span><span class="nam">expected_output</span><span class="op">,</span> <span class="nam">list</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t300" href="#t300">300</a></span><span class="t">        <span class="key">return</span> <span class="str">f"""\</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t301" href="#t301">301</a></span><span class="t"><span class="str">actual_list = {actual_var}</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t302" href="#t302">302</a></span><span class="t"><span class="str">expected_list = {expected_var}</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t303" href="#t303">303</a></span><span class="t"><span class="str">assert len(actual_list) == len(expected_list), "Length not equal"</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t304" href="#t304">304</a></span><span class="t"><span class="str">for index in range(len(expected_list)):</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t305" href="#t305">305</a></span><span class="t"><span class="str">    assert actual_list[index] == expected_list[index], f"Item {{index + 1}} is not equal"</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t306" href="#t306">306</a></span><span class="t"><span class="str">"""</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t307" href="#t307">307</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t308" href="#t308">308</a></span><span class="t">    <span class="nam">test_code</span> <span class="op">=</span> <span class="str">""</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t309" href="#t309">309</a></span><span class="t">    <span class="key">if</span> <span class="nam">actual_var</span> <span class="op">!=</span> <span class="str">"actual"</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t310" href="#t310">310</a></span><span class="t">        <span class="nam">test_code</span> <span class="op">+=</span> <span class="str">f"actual = {actual_var}\n"</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t311" href="#t311">311</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t312" href="#t312">312</a></span><span class="t">    <span class="key">if</span> <span class="nam">expected_var</span> <span class="op">!=</span> <span class="str">"expected"</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t313" href="#t313">313</a></span><span class="t">        <span class="nam">test_code</span> <span class="op">+=</span> <span class="str">f"expected = {expected_var}\n"</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t314" href="#t314">314</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t315" href="#t315">315</a></span><span class="t">    <span class="key">return</span> <span class="str">f"{test_code}assert actual == expected\n"</span>&nbsp;</span><span class="r"></span></p>
 </main>
 <footer>
     <div class="content">
@@ -368,7 +406,7 @@
             <a id="nextFileLink" class="nav" href="d_a12795855d0a1bc5_containerfactory_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.2.1">coverage.py v7.2.1</a>,
-            created at 2023-03-12 20:57 +0000
+            created at 2023-03-12 23:50 +0000
         </p>
     </div>
 </footer>
