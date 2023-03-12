@@ -4,7 +4,6 @@ import shutil
 from black import format_str, Mode
 
 from glotter.settings import Settings
-from glotter.utils import indent
 
 AUTO_GEN_TEST_PATH = "test/generated"
 
