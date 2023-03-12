@@ -18,3 +18,16 @@ def quote(value: str) -> str:
         quote_chars = '"'
 
     return f"{quote_chars}{value}{quote_chars}"
+
+
+def indent(value: str, num_spaces: int) -> str:
+    """
+    Indent each line of a string by a specified number of spaces
+
+    :param value: String to indent
+    :param num_spaces: Number of spaces to indent
+    :return: Indented string
+    """
+
+    spaces = " " * num_spaces
+    return "".join(f"{spaces}{line}" for line in value.splitlines(keepends=True))

@@ -4,7 +4,7 @@ import shutil
 from black import format_str, Mode
 
 from glotter.settings import Settings
-from glotter.utils import quote
+from glotter.utils import quote, indent
 
 AUTO_GEN_TEST_PATH = "test/generated"
 
@@ -75,16 +75,16 @@ def {self.long_project_name}(request):
             run_param = "params=in_params"
 
         test_code += self._get_test_function_and_run(test_obj, func_params, run_param)
-        test_code += _indent(self._get_expected_output(test_obj), 4)
+        test_code += indent(self._get_expected_output(test_obj), 4)
         actual_var, expected_var = test_obj.transform_vars()
-        test_code += _indent(
+        test_code += indent(
             _get_assert(actual_var, expected_var, test_obj.params[0].expected), 4
         )
         return test_code
 
     def _generate_params(self, test_obj):
         pytest_params = "".join(
-            _indent(self._generate_param(param), 8) for param in test_obj.params
+            indent(self._generate_param(param), 8) for param in test_obj.params
         ).strip()
         return f"""\
 @pytest.mark.parametrize(
@@ -146,11 +146,6 @@ with open({self.long_project_name}.full_path, "r", encoding="utf-8") as file:
             encoding="utf-8",
         ) as f:
             f.write(test_code)
-
-
-def _indent(str_value, num_spaces):
-    spaces = " " * num_spaces
-    return "".join(f"{spaces}{line}" for line in str_value.splitlines(keepends=True))
 
 
 def _get_assert(actual_var, expected_var, expected_output):

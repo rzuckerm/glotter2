@@ -1,6 +1,6 @@
 import pytest
 
-from glotter.utils import quote
+from glotter import utils
 
 SINGLE_QUOTE = "'"
 DOUBLE_QUOTE = '"'
@@ -46,4 +46,27 @@ TRIPLE_DOUBLE_QUOTE = DOUBLE_QUOTE * 3
     ],
 )
 def test_quote(value, expected_value):
-    assert quote(value) == expected_value
+    assert utils.quote(value) == expected_value
+
+
+@pytest.mark.parametrize(
+    ("value", "num_spaces", "expected_value"),
+    [
+        pytest.param("Hello", 4, "    Hello", id="single_line-no_newline"),
+        pytest.param("Goodbye\n", 8, "        Goodbye\n", id="single_line-newline"),
+        pytest.param(
+            "Some words\nSome more words",
+            4,
+            "    Some words\n    Some more words",
+            id="multi_line-no_newline",
+        ),
+        pytest.param(
+            "Blah blah\nBlah blah blah\nMore blahs\n",
+            2,
+            "  Blah blah\n  Blah blah blah\n  More blahs\n",
+            id="multi_line-newline",
+        ),
+    ],
+)
+def test_indent(value, num_spaces, expected_value):
+    assert utils.indent(value, num_spaces) == expected_value
