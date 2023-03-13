@@ -6,6 +6,10 @@ from pydantic import ValidationError
 
 from glotter.auto_gen_test import AutoGenParam, AutoGenTest
 
+UNIT_TEST_DATA_PATH = os.path.abspath(
+    os.path.join("test", "unit", "data", "auto_gen_test")
+)
+
 
 @pytest.mark.parametrize(
     ("value", "expected_value"),
@@ -606,7 +610,8 @@ def test_auto_gen_test_generate_test(value, project_name_underscores):
     test = AutoGenTest(**value)
 
     with open(
-        os.path.join("test", "unit", "data", project_name_underscores), encoding="utf-8"
+        os.path.join("test", "unit", "data", "auto_gen_test", project_name_underscores),
+        encoding="utf-8",
     ) as f:
         expected_value = f.read()
 

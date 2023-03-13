@@ -1,0 +1,42 @@
+import pytest
+from glotter import project_test, project_fixture
+
+PROJECT_NAME = "primenumber"
+
+
+@project_fixture(PROJECT_NAME)
+def prime_number(request):
+    request.param.build()
+    yield request.param
+    request.param.cleanup()
+
+
+@project_test(PROJECT_NAME)
+@pytest.mark.parametrize(
+    ("in_params", "expected"),
+    [
+        pytest.param("1", "composite", id="one"),
+        pytest.param("2", "prime", id="two"),
+        pytest.param("4", "composite", id="four"),
+        pytest.param("5", "prime", id="five"),
+    ],
+)
+def test_prime_number_valid(in_params, expected, prime_number):
+    actual = prime_number.run(params=in_params)
+    actual = actual.strip().lower()
+    assert actual == expected
+
+
+@project_test(PROJECT_NAME)
+@pytest.mark.parametrize(
+    ("in_params", "expected"),
+    [
+        pytest.param(None, "some error", id="no input"),
+        pytest.param('""', "some error", id="empty input"),
+        pytest.param('"a"', "some error", id="bad input"),
+    ],
+)
+def test_prime_number_invalid(in_params, expected, prime_number):
+    actual = prime_number.run(params=in_params)
+    actual = actual.strip()
+    assert actual == expected

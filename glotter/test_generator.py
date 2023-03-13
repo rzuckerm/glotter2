@@ -5,7 +5,7 @@ from black import format_str, Mode
 
 from glotter.settings import Settings
 
-AUTO_GEN_TEST_PATH = "test/generated"
+AUTO_GEN_TEST_PATH = os.path.join("test", "generated")
 
 
 def generate_tests():
@@ -48,10 +48,11 @@ class TestGenerator:
         return format_str(test_code, mode=Mode())
 
     def _get_imports(self):
-        test_code = "from glotter import project_test, project_fixture\n"
+        test_code = ""
         if self.project.requires_parameters:
             test_code += "import pytest\n"
 
+        test_code += "from glotter import project_test, project_fixture\n"
         return test_code
 
     def _get_project_fixture(self):

@@ -1,5 +1,6 @@
 from uuid import uuid4 as uuid
 import os
+import tempfile
 
 import pytest
 
@@ -157,3 +158,12 @@ def mock_sources(test_info_string_no_build):
             ),
         ],
     }
+
+
+@pytest.fixture()
+def temp_dir_chdir():
+    curr_cwd = os.getcwd()
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        os.chdir(tmp_dir)
+        yield tmp_dir
+        os.chdir(curr_cwd)
