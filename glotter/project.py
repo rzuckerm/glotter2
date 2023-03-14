@@ -1,3 +1,5 @@
+# pylint hates pydantic
+# pylint: disable=E0213,E0611
 from typing import List, Dict
 from enum import Enum, auto
 
@@ -79,10 +81,7 @@ class Project(BaseModel):
 
     def _as_underscore(self):
         return "_".join(
-            [
-                self._try_as_acronym(word, NamingScheme.underscore)
-                for word in self.words
-            ]
+            [self._try_as_acronym(word, NamingScheme.underscore) for word in self.words]
         )
 
     def _as_camel(self):
