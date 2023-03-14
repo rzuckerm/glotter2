@@ -27,7 +27,7 @@ class Project(BaseModel):
     requires_parameters: bool = False
     acronyms: List[str] = []
     acronym_scheme: AcronymScheme = AcronymScheme.two_letter_limit
-    use_tests: Dict[str, Dict[str, str]] = {}
+    use_tests: Dict[str, str] = {}
     tests: List[AutoGenTest] = []
 
     @validator("acronyms", pre=True)
