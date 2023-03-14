@@ -15,7 +15,7 @@ appears to be unmaintained.
 
 Glotter2 is an execution library for collections of single file scripts. It uses Docker to be able to build, run, and optionally test scripts in any language without having to install a local sdk or development environment.
 
-For getting started with Glotter, refer to our [documentation](https://rzuckerm.github.io/glotter2/).
+For getting started with Glotter2, refer to our [documentation](https://rzuckerm.github.io/glotter2/).
 
 ## Contributing
 

@@ -1,7 +1,11 @@
+# pylint hates pydantic
+# pylint: disable=E0213,E0611
+from typing import Optional
 import os
 from warnings import warn
 
 import yaml
+from pydantic import BaseModel, validator
 
 from glotter.project import Project, AcronymScheme
 from glotter.containerfactory import Singleton
@@ -53,6 +57,27 @@ class Settings(metaclass=Singleton):
         return name.lower() in self.projects
 
 
+class SettingsConfigSettings(BaseModel):
+    acronym_scheme: AcronymScheme
+    yml_path: str
+    source_root: Optional[str] = None
+
+    @validator("acronym_scheme", pre=True)
+    def get_acronym_scheme(cls, value):
+        if not isinstance(value, str):
+            return value
+
+        return value.lower()
+
+    @validator("source_root")
+    def get_source_root(cls, value, values):
+        if os.path.isabs(value):
+            return value
+
+        yml_dir = os.path.dirname(values["yml_path"])
+        return os.path.abspath(os.path.join(yml_dir, value))
+
+
 class SettingsParser:
     def __init__(self, project_root):
         self._project_root = project_root
@@ -70,9 +95,12 @@ class SettingsParser:
             warn(f'.glotter.yml not found in directory "{project_root}"')
 
     def parse_settings_section(self):
-        if self._yml is not None:
-            self._acronym_scheme = self._parse_acronym_scheme()
-            self._source_root = self._parse_source_root()
+        if self._yml is not None and "settings" in self._yml:
+            settings_config = SettingsConfigSettings(
+                **self._yml["settings"], yml_path=self._yml_path
+            )
+            self._acronym_scheme = settings_config.acronym_scheme
+            self._source_root = settings_config.source_root
 
     def parse_projects_section(self):
         if self.yml is not None:
@@ -101,27 +129,6 @@ class SettingsParser:
     @property
     def projects(self):
         return self._projects
-
-    def _parse_acronym_scheme(self):
-        if "settings" not in self._yml or "acronym_scheme" not in self._yml["settings"]:
-            return None
-
-        scheme = self._yml["settings"]["acronym_scheme"].lower()
-        return AcronymScheme[scheme]
-
-    def _parse_source_root(self):
-        return self._parse_root("source_root")
-
-    def _parse_root(self, key):
-        if "settings" not in self._yml or key not in self._yml["settings"]:
-            return None
-
-        path = self._yml["settings"][key]
-        if os.path.isabs(path):
-            return path
-
-        yml_dir = os.path.dirname(self._yml_path)
-        return os.path.abspath(os.path.join(yml_dir, path))
 
     def _parse_projects(self):
         projects = {}

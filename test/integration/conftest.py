@@ -1,3 +1,4 @@
+import os
 import tempfile
 
 import pytest
@@ -77,7 +78,7 @@ container:
 @pytest.fixture
 def tmp_dir():
     with tempfile.TemporaryDirectory() as dir_:
-        yield dir_
+        yield os.path.realpath(dir_)
 
 
 @pytest.fixture
