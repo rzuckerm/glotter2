@@ -1,11 +1,11 @@
 # pylint hates pydantic
 # pylint: disable=E0213,E0611
-from typing import List, Dict
+from typing import List, Optional, ClassVar
 from enum import Enum, auto
 
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, validator, conlist, constr
 
-from glotter.auto_gen_test import AutoGenTest
+from glotter.auto_gen_test import AutoGenTest, AutoGenUseTests
 
 
 class NamingScheme(Enum):
@@ -17,22 +17,24 @@ class NamingScheme(Enum):
 
 
 class AcronymScheme(Enum):
-    lower = auto()
-    upper = auto()
-    two_letter_limit = auto()
+    lower = "lower"
+    upper = "upper"
+    two_letter_limit = "two_letter_limit"
 
 
 class Project(BaseModel):
-    words: List[str]
+    VALID_REGEX: ClassVar[str] = "^[0-9a-zA-Z]+$"
+
+    words: conlist(constr(min_length=1, regex=VALID_REGEX), min_items=1)
     requires_parameters: bool = False
-    acronyms: List[str] = []
+    acronyms: conlist(constr(min_length=1, regex=VALID_REGEX)) = []
     acronym_scheme: AcronymScheme = AcronymScheme.two_letter_limit
-    use_tests: Dict[str, str] = {}
+    use_tests: Optional[AutoGenUseTests] = None
     tests: List[AutoGenTest] = []
 
-    @validator("acronyms", pre=True)
-    def get_acronmyns(cls, value):
-        return [acronym.upper() for acronym in value] if value else []
+    @validator("acronyms", pre=True, each_item=True)
+    def get_acronym(cls, value):
+        return value.upper()
 
     @validator("acronym_scheme", pre=True)
     def get_acronmyn_scheme(cls, value):
@@ -40,9 +42,14 @@ class Project(BaseModel):
 
     @validator("tests", pre=True)
     def get_tests(cls, value, values):
-        use_tests = values.get("use_tests") or {}
-        search = use_tests.get("search") or ""
-        replace = use_tests.get("replace") or ""
+        use_tests = values.get("use_tests")
+        if use_tests:
+            search = use_tests.search
+            replace = use_tests.replace
+        else:
+            search = ""
+            replace = ""
+
         return [
             AutoGenTest(
                 **test,
@@ -72,7 +79,7 @@ class Project(BaseModel):
                 NamingScheme.lower: self._as_lower(),
             }[naming]
         except KeyError as e:
-            raise KeyError(f"Unknown naming scheme '{naming}'") from e
+            raise KeyError(f'Unknown naming scheme "{naming}"') from e
 
     def _as_hyphen(self):
         return "-".join(
@@ -120,7 +127,7 @@ class Project(BaseModel):
                 return word.upper()
             elif self.acronym_scheme == AcronymScheme.lower:
                 return word.lower()
-            elif self.acronym_scheme == AcronymScheme.two_letter_limit:
+            else:
                 if len(word) <= 2 and naming_scheme in [
                     NamingScheme.camel,
                     NamingScheme.pascal,

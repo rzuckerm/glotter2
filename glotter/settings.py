@@ -183,13 +183,11 @@ class SettingsParser:
                 )
                 continue
 
+            acronym_scheme = v.get("acronym_scheme") or self._acronym_scheme
             project = Project(
-                words=v.get("words"),
-                requires_parameters=v.get("requires_parameters"),
-                acronyms=v.get("acronyms"),
-                acronym_scheme=v.get("acronym_scheme") or self._acronym_scheme,
+                **v,
+                acronym_scheme=acronym_scheme,
                 tests=tests,
-                use_tests=use_tests,
             )
             projects[project_name] = project
 

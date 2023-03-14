@@ -3,7 +3,7 @@
 from typing import Optional, List, Dict, Tuple, Union, Any, Callable, ClassVar
 from functools import partial
 
-from pydantic import BaseModel, validator, constr, conlist
+from pydantic import BaseModel, validator, root_validator, constr, conlist
 
 from glotter.utils import quote, indent
 
@@ -22,7 +22,7 @@ class AutoGenParam(BaseModel):
     expected: ExpectedT
 
     @validator("expected")
-    def validate_expected(cls, value: ExpectedT) -> ExpectedT:
+    def validate_expected(cls, value):
         """
         Validate expected value
 
@@ -105,9 +105,9 @@ def _unique_sort(actual_var, expected_var):
 
 
 class AutoGenTest(BaseModel):
-    """Object use to auto-generated a test"""
+    """Object used to auto-generated a test"""
 
-    name: constr(min_length=1, regex="^[a-zA-Z][0-9a-zA-Z_]*$")
+    name: constr(strict=True, min_length=1, regex="^[a-zA-Z][0-9a-zA-Z_]*$")
     requires_parameters: bool = False
     params: conlist(AutoGenParam, min_items=1)
     transformations: List[TransformationT] = []
@@ -125,9 +125,7 @@ class AutoGenTest(BaseModel):
     }
 
     @validator("params", each_item=True, pre=True)
-    def validate_params(
-        cls, value: Dict[str, Any], values: Dict[str, Any]
-    ) -> Dict[str, Any]:
+    def validate_params(cls, value, values):
         """
         Validate each parameter
 
@@ -313,3 +311,29 @@ for index in range(len(expected_list)):
         test_code += f"expected = {expected_var}\n"
 
     return f"{test_code}assert actual == expected\n"
+
+
+class AutoGenUseTests(BaseModel):
+    """Object used to specify what tests to use"""
+
+    name: str
+    search: constr(strict=True, regex="^[0-9a-zA-Z_]*$") = ""
+    replace: constr(strict=True, regex="^[0-9a-zA-Z_]*$") = ""
+
+    @root_validator(pre=True)
+    def validate_search_with_replace(cls, values):
+        """
+        Validate that if either search or replace is specified, both must be specified
+
+        :param values: Values to validate
+        :return: Original values
+        :raise: `exc`:ValueError if either search or replace is specified, both are specified
+        """
+
+        if "search" in values and "replace" not in values:
+            raise ValueError('"search" item specified without "replace" item')
+
+        if "search" not in values and "replace" in values:
+            raise ValueError('"replace" item specified without "search" item')
+
+        return values
