@@ -52,12 +52,8 @@
 <li class="toctree-l4"><a class="reference internal" href="#values">Values</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#project-root">Project Root</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#id1">Description</a></li>
-</ul>
-</li>
 <li class="toctree-l3"><a class="reference internal" href="#source-root">Source Root</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#id2">Description</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id1">Description</a></li>
 </ul>
 </li>
 </ul>
@@ -128,36 +124,22 @@ case</p></li>
 </ul>
 </section>
 </section>
-<section id="project-root">
-<h3>Project Root<a class="headerlink" href="#project-root" title="Permalink to this heading"></a></h3>
-<ul class="simple">
-<li><p><strong>Optional</strong></p></li>
-<li><p><strong>Format</strong>: <code class="docutils literal notranslate"><span class="pre">project_root:</span> <span class="pre">&quot;path/to/root&quot;</span></code></p></li>
-<li><p><strong>Default</strong>: The directory containing your <code class="docutils literal notranslate"><span class="pre">.glotter.yml</span></code></p></li>
-</ul>
-<section id="id1">
-<h4>Description<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h4>
-<p>Project root is the path to the root of your project.
-It can be absolute or relative from the path of the <code class="docutils literal notranslate"><span class="pre">.glotter.yml</span></code>.
-This is used as the root directory when scanning the filesystem for scripts and tests.</p>
-</section>
-</section>
 <section id="source-root">
 <h3>Source Root<a class="headerlink" href="#source-root" title="Permalink to this heading"></a></h3>
 <ul class="simple">
 <li><p><strong>Optional</strong></p></li>
 <li><p><strong>Format</strong>: <code class="docutils literal notranslate"><span class="pre">source_root:</span> <span class="pre">&quot;path/to/root&quot;</span></code></p></li>
-<li><p><strong>Default</strong>: the value of <cite>project_root`</cite></p></li>
+<li><p><strong>Default</strong>: the value of <code class="docutils literal notranslate"><span class="pre">project_root</span></code></p></li>
 </ul>
-<section id="id2">
-<h4>Description<a class="headerlink" href="#id2" title="Permalink to this heading"></a></h4>
+<section id="id1">
+<h4>Description<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h4>
 <p>Source root is the path to the directory containing all of the scripts to run execute with Glotter2.
 It can be absolute or relative from <code class="docutils literal notranslate"><span class="pre">project_root</span></code>.</p>
 </section>
 </section>
 </section>
 <section id="projects">
-<span id="id3"></span><h2>Projects<a class="headerlink" href="#projects" title="Permalink to this heading"></a></h2>
+<span id="id2"></span><h2>Projects<a class="headerlink" href="#projects" title="Permalink to this heading"></a></h2>
 <p>The projects section contains all of the information about each “project” that is implemented in your project.
 Each project has:</p>
 <ul class="simple">

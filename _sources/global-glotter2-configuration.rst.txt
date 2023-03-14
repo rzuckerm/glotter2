@@ -34,26 +34,12 @@ Values
   pascal or camel, the the acronym is expected to be upper case. Otherwise it is expected lower
   case  
 
-Project Root
-------------
-
-- **Optional**
-- **Format**: ``project_root: "path/to/root"``
-- **Default**: The directory containing your ``.glotter.yml``
-
-Description
-^^^^^^^^^^^
-
-Project root is the path to the root of your project.
-It can be absolute or relative from the path of the ``.glotter.yml``.
-This is used as the root directory when scanning the filesystem for scripts and tests.
-
 Source Root
 -----------
 
 - **Optional**
 - **Format**: ``source_root: "path/to/root"``
-- **Default**: the value of `project_root``
+- **Default**: the value of ``project_root``
 
 Description
 ^^^^^^^^^^^
