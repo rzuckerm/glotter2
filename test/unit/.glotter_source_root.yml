@@ -1,0 +1,20 @@
+settings:
+  acronym_scheme: "two_letter_limit"
+  source_root: "./data"
+
+projects:
+  baklava:
+    words:
+      - "baklava"
+    requires_parameters: false
+  fileio:
+    words:
+      - "file"
+      - "io"
+    requires_parameters: false
+    acronyms:
+      - "io"
+  fibonacci:
+    words:
+      - "fibonacci"
+    requires_parameters: true
