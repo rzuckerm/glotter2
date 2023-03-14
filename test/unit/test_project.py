@@ -129,6 +129,6 @@ def get_project_scheme_permutations():
     ids=[f"{perm[0]}_{perm[3]}" for perm in get_project_scheme_permutations()],
 )
 def test_get_project_name_by_scheme(words, acronyms, scheme, expected):
-    project = Project(words, acronyms=acronyms)
+    project = Project(words=words, acronyms=acronyms)
     actual = project.get_project_name_by_scheme(scheme)
     assert actual == expected

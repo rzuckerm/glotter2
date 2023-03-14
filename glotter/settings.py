@@ -145,13 +145,8 @@ class SettingsParser:
                 use_tests_projects[k] = v
                 continue
 
-            project = Project(
-                words=v.get("words"),
-                requires_parameters=v.get("requires_parameters"),
-                acronyms=v.get("acronyms"),
-                acronym_scheme=v.get("acronym_scheme") or self._acronym_scheme,
-                tests=v.get("tests") or {},
-            )
+            acronym_scheme=v.get("acronym_scheme") or self._acronym_scheme
+            project = Project(**v, acronym_scheme=acronym_scheme)
             projects[project_name] = project
 
         return projects, use_tests_projects

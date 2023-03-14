@@ -1,4 +1,7 @@
+from typing import List, Dict
 from enum import Enum, auto
+
+from pydantic import BaseModel, validator
 
 from glotter.auto_gen_test import AutoGenTest
 
@@ -17,57 +20,39 @@ class AcronymScheme(Enum):
     two_letter_limit = auto()
 
 
-class Project:
-    def __init__(
-        self,
-        words,
-        requires_parameters=False,
-        acronyms=None,
-        acronym_scheme=None,
-        tests=None,
-        use_tests=None,
-    ):
-        self._words = words
-        self._requires_parameters = requires_parameters
-        self._acronyms = [acronym.upper() for acronym in acronyms] if acronyms else []
-        self._acronym_scheme = acronym_scheme or AcronymScheme.two_letter_limit
+class Project(BaseModel):
+    words: List[str]
+    requires_parameters: bool = False
+    acronyms: List[str] = []
+    acronym_scheme: AcronymScheme = AcronymScheme.two_letter_limit
+    use_tests: Dict[str, Dict[str, str]] = {}
+    tests: List[AutoGenTest] = []
 
-        tests = tests or {}
-        use_tests = use_tests or {}
+    @validator("acronyms", pre=True)
+    def get_acronmyns(cls, value):
+        return [acronym.upper() for acronym in value] if value else []
+
+    @validator("acronym_scheme", pre=True)
+    def get_acronmyn_scheme(cls, value):
+        return value or AcronymScheme.two_letter_limit
+
+    @validator("tests", pre=True)
+    def get_tests(cls, value, values):
+        use_tests = values.get("use_tests") or {}
         search = use_tests.get("search") or ""
         replace = use_tests.get("replace") or ""
-        self._tests = [
+        return [
             AutoGenTest(
                 **test,
-                requires_parameters=requires_parameters,
+                requires_parameters=values.get("requires_parameters") or False,
                 name=test_name.replace(search, replace),
             )
-            for test_name, test in tests.items()
+            for test_name, test in value.items()
         ]
-
-    @property
-    def words(self):
-        return self._words
-
-    @property
-    def requires_parameters(self):
-        return self._requires_parameters
-
-    @property
-    def acronyms(self):
-        return self._acronyms
-
-    @property
-    def acronym_scheme(self):
-        return self._acronym_scheme
 
     @property
     def display_name(self):
         return self._as_display()
-
-    @property
-    def tests(self):
-        return self._tests
 
     def get_project_name_by_scheme(self, naming):
         """
@@ -89,19 +74,19 @@ class Project:
 
     def _as_hyphen(self):
         return "-".join(
-            [self._try_as_acronym(word, NamingScheme.hyphen) for word in self._words]
+            [self._try_as_acronym(word, NamingScheme.hyphen) for word in self.words]
         )
 
     def _as_underscore(self):
         return "_".join(
             [
                 self._try_as_acronym(word, NamingScheme.underscore)
-                for word in self._words
+                for word in self.words
             ]
         )
 
     def _as_camel(self):
-        return self._words[0].lower() + "".join(
+        return self.words[0].lower() + "".join(
             [
                 self._try_as_acronym(word.title(), NamingScheme.camel)
                 for word in self.words[1:]
@@ -112,31 +97,31 @@ class Project:
         return "".join(
             [
                 self._try_as_acronym(word.title(), NamingScheme.pascal)
-                for word in self._words
+                for word in self.words
             ]
         )
 
     def _as_lower(self):
-        return "".join([word.lower() for word in self._words])
+        return "".join([word.lower() for word in self.words])
 
     def _as_display(self):
         return " ".join(
             [
                 self._try_as_acronym(word.title(), NamingScheme.underscore)
-                for word in self._words
+                for word in self.words
             ]
         )
 
     def _is_acronym(self, word):
-        return word.upper() in self._acronyms
+        return word.upper() in self.acronyms
 
     def _try_as_acronym(self, word, naming_scheme):
         if self._is_acronym(word):
-            if self._acronym_scheme == AcronymScheme.upper:
+            if self.acronym_scheme == AcronymScheme.upper:
                 return word.upper()
-            elif self._acronym_scheme == AcronymScheme.lower:
+            elif self.acronym_scheme == AcronymScheme.lower:
                 return word.lower()
-            elif self._acronym_scheme == AcronymScheme.two_letter_limit:
+            elif self.acronym_scheme == AcronymScheme.two_letter_limit:
                 if len(word) <= 2 and naming_scheme in [
                     NamingScheme.camel,
                     NamingScheme.pascal,
@@ -146,8 +131,8 @@ class Project:
 
     def __eq__(self, other):
         return (
-            self._words == other.words
-            and self._requires_parameters == other.requires_parameters
-            and self._acronyms == other.acronyms
-            and self._acronym_scheme == other.acronym_scheme
+            self.words == other.words
+            and self.requires_parameters == other.requires_parameters
+            and self.acronyms == other.acronyms
+            and self.acronym_scheme == other.acronym_scheme
         )
