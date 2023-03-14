@@ -165,6 +165,7 @@ def mock_sources(test_info_string_no_build):
 def temp_dir_chdir():
     curr_cwd = os.getcwd()
     with tempfile.TemporaryDirectory() as tmp_dir:
+        tmp_dir = os.path.realpath(tmp_dir)
         os.chdir(tmp_dir)
         yield tmp_dir
         os.chdir(curr_cwd)
