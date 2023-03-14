@@ -8,6 +8,7 @@ from glotter import containerfactory
 from glotter.project import Project
 from glotter.source import Source
 from glotter.testinfo import ContainerInfo
+from glotter.singleton import Singleton
 
 from .mockdocker import DockerMock
 
@@ -167,3 +168,10 @@ def temp_dir_chdir():
         os.chdir(tmp_dir)
         yield tmp_dir
         os.chdir(curr_cwd)
+
+
+@pytest.fixture(autouse=True)
+def clear_singleton():
+    Singleton.clear()
+    yield
+    Singleton.clear()
