@@ -50,12 +50,7 @@ class Settings(metaclass=Singleton):
         self._test_mappings[project_type].append(func)
 
     def verify_project_type(self, name):
-        try:
-            return name.lower() in self.projects
-        except KeyError as e:
-            raise Exception(  # pylint: disable=broad-exception-raised
-                f'glotter.yml does not contain project name "{name}"'
-            ) from e
+        return name.lower() in self.projects
 
 
 class SettingsParser:
