@@ -101,7 +101,7 @@ def test_parse_source_root_when_path_absolute(tmp_dir):
 def test_parse_source_root_when_path_relative(tmp_dir):
     expected = os.path.abspath(os.path.join(tmp_dir, "src"))
     os.makedirs(expected)
-    glotter_yml = f'settings:\n  acronym_scheme: lower\n  source_root: "../src"'
+    glotter_yml = 'settings:\n  acronym_scheme: lower\n  source_root: "../src"'
     path = os.path.join(tmp_dir, "subdir", ".glotter.yml")
     settings_parser = setup_settings_parser(tmp_dir, path, glotter_yml)
     settings_parser.parse_settings_section()
