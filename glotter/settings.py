@@ -8,8 +8,7 @@ import yaml
 from pydantic import BaseModel, validator, root_validator
 
 from glotter.project import Project, AcronymScheme
-from glotter.auto_gen_test import AutoGenTest
-from glotter.containerfactory import Singleton
+from glotter.singleton import Singleton
 
 
 class Settings(metaclass=Singleton):
@@ -127,21 +126,13 @@ class SettingsConfig(BaseModel):
                     f'Project {project_name} has a "use_tests" item that refers to project '
                     f'{use_tests_name}, which has no "tests" item'
                 )
-            # Otherwise, store the tests that the "use_tests" refers to with the tests renamed
+            # Otherwise, set the tests that the "use_tests" item refers to with the tests renamed
             else:
-                project.tests = [
-                    AutoGenTest(
-                        **test.dict(exclude={"name"}),
-                        name=test.name.replace(
-                            project.use_tests.search, project.use_tests.replace
-                        ),
-                    )
-                    for test in projects[use_tests_name].tests
-                ]
+                project.set_tests(projects[use_tests_name].tests)
 
         if errors:
             raise ValueError("\n".join(errors))
-        
+
         return values
 
 

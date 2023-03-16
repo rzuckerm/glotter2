@@ -34,30 +34,56 @@ class Project(BaseModel):
 
     @validator("acronyms", pre=True, each_item=True)
     def get_acronym(cls, value):
+        if not isinstance(value, str):
+            return value
+
         return value.upper()
 
     @validator("acronym_scheme", pre=True)
     def get_acronmyn_scheme(cls, value):
-        return value or AcronymScheme.two_letter_limit
+        if value is None:
+            return AcronymScheme.two_letter_limit
+
+        return value
 
     @validator("tests", pre=True)
     def get_tests(cls, value, values):
-        use_tests = values.get("use_tests")
-        if use_tests:
-            search = use_tests.search
-            replace = use_tests.replace
-        else:
-            search = ""
-            replace = ""
+        if not isinstance(value, dict) or not all(
+            isinstance(test, dict) for test in values.items()
+        ):
+            return value
+
+        if values.get("use_tests"):
+            raise ValueError('"tests" and "use_tests" items are mutually exclusive')
 
         return [
-            AutoGenTest(
+            {
                 **test,
-                requires_parameters=values.get("requires_parameters") or False,
-                name=test_name.replace(search, replace),
-            )
+                "requires_parameters": values.get("requires_parameters") or False,
+                "name": test_name,
+            }
             for test_name, test in value.items()
         ]
+
+    def set_tests(self, tests: List[AutoGenTest]):
+        """
+        If there is a "use_tests" item, then set the specified tests, renaming them
+        according to the "use_tests" item. The "use_tests" item is then removed
+
+        :params tests: Test items to add
+        """
+
+        if self.use_tests:
+            self.tests = [
+                AutoGenTest(
+                    **test.dict(exclude={"name"}),
+                    name=test.name.replace(
+                        self.use_tests.search, self.use_tests.replace
+                    ),
+                )
+                for test in tests
+            ]
+            self.use_tests = None
 
     @property
     def display_name(self):

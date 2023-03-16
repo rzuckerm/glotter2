@@ -17,7 +17,6 @@ def setup_settings_parser(tmp_dir, path, contents):
 
 def test_locate_yml_when_glotter_yml_does_not_exist(tmp_dir, recwarn):
     settings_parser = SettingsParser(tmp_dir)
-    settings_parser.parse_settings_section()
     assert settings_parser.yml_path is None
     assert settings_parser.project_root == tmp_dir
     assert len(recwarn.list) == 1
@@ -27,7 +26,6 @@ def test_locate_yml_when_glotter_yml_does_not_exist(tmp_dir, recwarn):
 def test_locate_yml_when_glotter_yml_does_exist(tmp_dir, glotter_yml, recwarn):
     expected = os.path.join(tmp_dir, ".glotter.yml")
     settings_parser = setup_settings_parser(tmp_dir, expected, glotter_yml)
-    settings_parser.parse_settings_section()
     assert settings_parser.yml_path == expected
     assert settings_parser.project_root == tmp_dir
     assert len(recwarn.list) == 0
@@ -38,7 +36,6 @@ def test_locate_yml_when_glotter_yml_is_not_at_root(tmp_dir, glotter_yml, recwar
         tmp_dir, "this", "is", "a", "few", "levels", "deeper", ".glotter.yml"
     )
     settings_parser = setup_settings_parser(tmp_dir, expected, glotter_yml)
-    settings_parser.parse_settings_section()
     assert settings_parser.yml_path == expected
     assert len(recwarn.list) == 0
 
@@ -58,7 +55,6 @@ def test_parse_acronym_scheme(scheme_str, expected, tmp_dir):
     glotter_yml = f'settings:\n  acronym_scheme: "{scheme_str}"'
     path = os.path.join(tmp_dir, ".glotter.yml")
     settings_parser = setup_settings_parser(tmp_dir, path, glotter_yml)
-    settings_parser.parse_settings_section()
     assert settings_parser.acronym_scheme == expected
 
 
@@ -78,8 +74,7 @@ def test_parse_acroynm_scheme_bad(scheme_str, expected_error, tmp_dir):
 def test_parse_acroynm_scheme_no_settings(tmp_dir):
     path = os.path.join(tmp_dir, ".glotter.yml")
     settings_parser = setup_settings_parser(tmp_dir, path, "")
-    settings_parser.parse_settings_section()
-    assert settings_parser.acronym_scheme is None
+    assert settings_parser.acronym_scheme == AcronymScheme.two_letter_limit
 
 
 def test_parse_source_root_when_path_absolute(tmp_dir):
@@ -89,37 +84,30 @@ def test_parse_source_root_when_path_absolute(tmp_dir):
     if "win" in platform.platform().lower():
         expected_escaped = expected.replace("\\", "\\\\")
 
-    glotter_yml = (
-        f'settings:\n  acronym_scheme: lower\n  source_root: "{expected_escaped}"'
-    )
+    glotter_yml = f'settings:\n  source_root: "{expected_escaped}"'
     path = os.path.join(tmp_dir, ".glotter.yml")
     settings_parser = setup_settings_parser(tmp_dir, path, glotter_yml)
-    settings_parser.parse_settings_section()
     assert settings_parser.source_root == expected
 
 
 def test_parse_source_root_when_path_relative(tmp_dir):
     expected = os.path.abspath(os.path.join(tmp_dir, "src"))
     os.makedirs(expected)
-    glotter_yml = 'settings:\n  acronym_scheme: lower\n  source_root: "../src"'
+    glotter_yml = 'settings:\n  source_root: "../src"'
     path = os.path.join(tmp_dir, "subdir", ".glotter.yml")
     settings_parser = setup_settings_parser(tmp_dir, path, glotter_yml)
-    settings_parser.parse_settings_section()
     assert settings_parser.source_root == expected
 
 
 def test_parse_source_root_when_no_source_root(tmp_dir):
     path = os.path.join(tmp_dir, ".glotter.yml")
-    settings_parser = setup_settings_parser(
-        tmp_dir, path, "settings:\n  acronym_scheme: lower"
-    )
-    settings_parser.parse_settings_section()
+    settings_parser = setup_settings_parser(tmp_dir, path, "settings:")
     assert settings_parser.source_root is None
 
 
 @pytest.mark.parametrize("source_root", ["[]", "{}"])
 def test_parse_source_root_when_bad(source_root, tmp_dir):
-    glotter_yml = f"settings:\n  acronym_scheme: lower\n  source_root: {source_root}"
+    glotter_yml = f"settings:\n  source_root: {source_root}"
     path = os.path.join(tmp_dir, ".glotter.yml")
     with pytest.raises(ValidationError) as e:
         setup_settings_parser(tmp_dir, path, glotter_yml)
@@ -129,16 +117,13 @@ def test_parse_source_root_when_bad(source_root, tmp_dir):
 
 def test_parse_projects_when_glotter_yml_does_not_exist(tmp_dir, recwarn):
     settings_parser = SettingsParser(tmp_dir)
-    settings_parser.parse_projects_section()
     assert settings_parser.projects is None
     assert len(recwarn.list) == 1
 
 
 def test_parse_projects_when_no_projects(tmp_dir, recwarn):
-    glotter_yml = 'settings:\n  acronym_scheme: "upper"'
     path = os.path.join(tmp_dir, ".glotter.yml")
-    settings_parser = setup_settings_parser(tmp_dir, path, glotter_yml)
-    settings_parser.parse_projects_section()
+    settings_parser = setup_settings_parser(tmp_dir, path, "")
     assert settings_parser.projects == {}
     assert len(recwarn.list) == 0
 
@@ -146,5 +131,4 @@ def test_parse_projects_when_no_projects(tmp_dir, recwarn):
 def test_parse_projects(tmp_dir, glotter_yml, glotter_yml_projects):
     path = os.path.join(tmp_dir, ".glotter.yml")
     settings_parser = setup_settings_parser(tmp_dir, path, glotter_yml)
-    settings_parser.parse_projects_section()
     assert settings_parser.projects == glotter_yml_projects
