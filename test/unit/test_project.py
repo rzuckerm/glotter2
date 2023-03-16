@@ -234,81 +234,6 @@ def test_get_project_name_by_scheme_bad():
     + [
         pytest.param(
             {
-                "words": ["selection", "sort"],
-                "requires_parameters": True,
-                "tests": {
-                    "bubble_sort_valid": {
-                        "params": [
-                            {
-                                "name": "not sorted",
-                                "input": '"3, 4, 1, 2"',
-                                "expected": "1, 2, 3, 4",
-                            },
-                            {
-                                "name": "sorted",
-                                "input": '"1, 2, 3"',
-                                "expected": "1, 2, 3",
-                            },
-                        ],
-                        "transformations": ["strip"],
-                    },
-                    "bubble_sort_invalid": {
-                        "params": [
-                            {"name": "no input", "input": None, "expected": "usage"},
-                            {"name": "empty input", "input": '""', "expected": "usage"},
-                        ],
-                        "transformations": ["strip"],
-                    },
-                },
-                "use_tests": {
-                    "name": "bubblesort",
-                    "search": "bubble_sort",
-                    "replace": "selection_sort",
-                },
-            },
-            {
-                "words": ["selection", "sort"],
-                "acronyms": [],
-                "acronym_scheme": AcronymScheme.two_letter_limit,
-                "requires_parameters": True,
-                "tests": [
-                    {
-                        "name": "selection_sort_valid",
-                        "requires_parameters": True,
-                        "params": [
-                            {
-                                "name": "not sorted",
-                                "input": '"3, 4, 1, 2"',
-                                "expected": "1, 2, 3, 4",
-                            },
-                            {
-                                "name": "sorted",
-                                "input": '"1, 2, 3"',
-                                "expected": "1, 2, 3",
-                            },
-                        ],
-                        "transformations": ["strip"],
-                    },
-                    {
-                        "name": "selection_sort_invalid",
-                        "requires_parameters": True,
-                        "params": [
-                            {"name": "no input", "input": None, "expected": "usage"},
-                            {"name": "empty input", "input": '""', "expected": "usage"},
-                        ],
-                        "transformations": ["strip"],
-                    },
-                ],
-                "use_tests": {
-                    "name": "bubblesort",
-                    "search": "bubble_sort",
-                    "replace": "selection_sort",
-                },
-            },
-            id="use-tests",
-        ),
-        pytest.param(
-            {
                 "words": ["prime", "number"],
                 "requires_parameters": True,
                 "tests": {
@@ -436,6 +361,34 @@ def test_good_project(value, expected_value):
             "tests",
             id="bad-tests",
         ),
+        pytest.param(
+            {
+                "words": ["foo"],
+                "tests": {"foo": {"params": [{"expected": "blah"}]}},
+                "use_tests": {"name": "bar"},
+            },
+            "mutually exclusive",
+            id="tests-and-use-tests",
+        ),
+        pytest.param(
+            {"words": ["foo"], "tests": 1}, "not a valid list", id="bad-tests-int"
+        ),
+        pytest.param(
+            {
+                "words": ["foo"],
+                "requires_params": True,
+                "tests": {
+                    "blah": {
+                        "params": [
+                            {"name": "whatever", "input": None, "expected": "stuff"}
+                        ]
+                    },
+                    "xyz": 32,
+                },
+            },
+            "not a valid list",
+            id="tests-not-all-dict",
+        ),
     ],
 )
 def test_bad_project(value, expected_error):
@@ -477,3 +430,81 @@ def test_bad_project(value, expected_error):
 def test_get_display_name(value, expected_display_name):
     project = Project(**value)
     assert project.display_name == expected_display_name
+
+
+def test_set_tests():
+    use_tests_project = Project(
+        **{
+            "words": ["selection", "sort"],
+            "requires_parameters": True,
+            "use_tests": {
+                "name": "bubblesort",
+                "search": "bubble_sort",
+                "replace": "selection_sort",
+            },
+        },
+    )
+    project = Project(
+        **{
+            "words": ["bubble", "sort"],
+            "requires_params": True,
+            "tests": {
+                "bubble_sort_valid": {
+                    "params": [
+                        {
+                            "name": "not sorted",
+                            "input": '"3, 4, 1, 2"',
+                            "expected": "1, 2, 3, 4",
+                        },
+                        {
+                            "name": "sorted",
+                            "input": '"1, 2, 3"',
+                            "expected": "1, 2, 3",
+                        },
+                    ],
+                    "transformations": ["strip"],
+                },
+                "bubble_sort_invalid": {
+                    "params": [
+                        {"name": "no input", "input": None, "expected": "usage"},
+                        {"name": "empty input", "input": '""', "expected": "usage"},
+                    ],
+                    "transformations": ["strip"],
+                },
+            },
+        }
+    )
+
+    use_tests_project.set_tests(project.tests)
+
+    expected_project = Project(
+        **{
+            "words": ["selection", "sort"],
+            "requires_parameters": True,
+            "tests": {
+                "selection_sort_valid": {
+                    "params": [
+                        {
+                            "name": "not sorted",
+                            "input": '"3, 4, 1, 2"',
+                            "expected": "1, 2, 3, 4",
+                        },
+                        {
+                            "name": "sorted",
+                            "input": '"1, 2, 3"',
+                            "expected": "1, 2, 3",
+                        },
+                    ],
+                    "transformations": ["strip"],
+                },
+                "selection_sort_invalid": {
+                    "params": [
+                        {"name": "no input", "input": None, "expected": "usage"},
+                        {"name": "empty input", "input": '""', "expected": "usage"},
+                    ],
+                    "transformations": ["strip"],
+                },
+            },
+        },
+    )
+    assert use_tests_project == expected_project

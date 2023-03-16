@@ -49,7 +49,7 @@ class Project(BaseModel):
     @validator("tests", pre=True)
     def get_tests(cls, value, values):
         if not isinstance(value, dict) or not all(
-            isinstance(test, dict) for test in values.items()
+            isinstance(test, dict) for test in value.values()
         ):
             return value
 
