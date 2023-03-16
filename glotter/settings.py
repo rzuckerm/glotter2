@@ -59,8 +59,15 @@ class Settings(metaclass=Singleton):
 
 class SettingsConfigSettings(BaseModel):
     acronym_scheme: AcronymScheme = AcronymScheme.two_letter_limit
-    yml_path: Optional[str] = None
+    yml_path: str
     source_root: Optional[str] = None
+
+    @validator("acronym_scheme", pre=True)
+    def get_acronym_scheme(cls, value):
+        if isinstance(value, str):
+            return value.lower()
+
+        return value
 
     @validator("source_root")
     def get_source_root(cls, value, values):
@@ -73,15 +80,18 @@ class SettingsConfigSettings(BaseModel):
 
 class SettingsConfig(BaseModel):
     yml_path: str
-    settings: SettingsConfigSettings
+    settings: Optional[SettingsConfigSettings] = None
     projects: Dict[str, Project] = {}
 
-    @validator("settings", pre=True)
+    @validator("settings", pre=True, always=True)
     def get_settings(cls, value, values):
-        if not isinstance(value, dict):
-            return value
+        if value is None:
+            return {"yml_path": values["yml_path"]}
 
-        return {**value, "yml_path": values["yml_path"]}
+        if isinstance(value, dict):
+            return {**value, "yml_path": values["yml_path"]}
+
+        return value
 
     @validator("projects", pre=True)
     def get_projects(cls, value, values):
@@ -147,6 +157,8 @@ class SettingsParser:
         self._yml_path = self._locate_yml()
         if self._yml_path is not None:
             self._yml = self._parse_yml()
+            if self._yml is None:
+                self._yml = {}
         else:
             self._yml_path = project_root
             self._yml = {}

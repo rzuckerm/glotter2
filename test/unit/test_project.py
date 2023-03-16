@@ -347,6 +347,11 @@ def test_good_project(value, expected_value):
             id="acronyms-none",
         ),
         pytest.param(
+            {"words": ["foo"], "acronyms": ["blah", None]},
+            "none is not an allowed",
+            id="acronyms-item-none",
+        ),
+        pytest.param(
             {"words": ["foo"], "acronym_scheme": "blah"},
             "not a valid enumeration",
             id="bad-acronym-scheme",
@@ -508,3 +513,13 @@ def test_set_tests():
         },
     )
     assert use_tests_project == expected_project
+
+
+def test_set_tests_no_use_tests():
+    project = Project(
+        **{"words": ["foo"], "tests": {"valid": {"params": [{"expected": "blah"}]}}}
+    )
+    expected_project = project.copy()
+
+    project.set_tests([])
+    assert project == expected_project

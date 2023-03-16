@@ -17,7 +17,7 @@ def setup_settings_parser(tmp_dir, path, contents):
 
 def test_locate_yml_when_glotter_yml_does_not_exist(tmp_dir, recwarn):
     settings_parser = SettingsParser(tmp_dir)
-    assert settings_parser.yml_path is None
+    assert settings_parser.yml_path == tmp_dir
     assert settings_parser.project_root == tmp_dir
     assert len(recwarn.list) == 1
     assert ".glotter.yml not found" in str(recwarn.pop(UserWarning).message)
@@ -117,7 +117,7 @@ def test_parse_source_root_when_bad(source_root, tmp_dir):
 
 def test_parse_projects_when_glotter_yml_does_not_exist(tmp_dir, recwarn):
     settings_parser = SettingsParser(tmp_dir)
-    assert settings_parser.projects is None
+    assert settings_parser.projects == {}
     assert len(recwarn.list) == 1
 
 
