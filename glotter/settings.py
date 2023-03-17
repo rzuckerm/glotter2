@@ -9,6 +9,7 @@ from pydantic import BaseModel, validator, root_validator
 
 from glotter.project import Project, AcronymScheme
 from glotter.singleton import Singleton
+from glotter.utils import error_and_exit
 
 
 class Settings(metaclass=Singleton):
@@ -157,12 +158,15 @@ class SettingsParser:
         self._yml_path = self._locate_yml()
         if self._yml_path is not None:
             self._yml = self._parse_yml()
-            if self._yml is None:
-                self._yml = {}
         else:
             self._yml_path = project_root
-            self._yml = {}
             warn(f'.glotter.yml not found in directory "{project_root}"')
+
+        if self._yml is None:
+            self._yml = {}
+
+        if not isinstance(self._yml, dict):
+            error_and_exit(".glotter.yml does not contain a dict")
 
         config = SettingsConfig(**self._yml, yml_path=self._yml_path)
         self._acronym_scheme = config.settings.acronym_scheme

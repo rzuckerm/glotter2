@@ -1,3 +1,6 @@
+import sys
+
+
 def quote(value: str) -> str:
     """
     Enclose a value in quotes
@@ -31,3 +34,8 @@ def indent(value: str, num_spaces: int) -> str:
 
     spaces = " " * num_spaces
     return "".join(f"{spaces}{line}" for line in value.splitlines(keepends=True))
+
+
+def error_and_exit(msg):
+    print(msg)
+    sys.exit(1)

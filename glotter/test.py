@@ -6,6 +6,7 @@ import pytest
 from glotter.source import get_sources, filter_sources
 from glotter.settings import Settings
 from glotter.test_generator import generate_tests
+from glotter.utils import error_and_exit
 
 
 def test(args):
@@ -21,7 +22,7 @@ def test(args):
             test_args += _get_tests(project_type, all_tests, source)
 
     if not test_args:
-        _error_and_exit("No tests were found")
+        error_and_exit("No tests were found")
 
     _run_pytest_and_exit(*test_args)
 
@@ -45,11 +46,6 @@ def _run_pytest_and_exit(*args):
     args = ["-v"] + list(args)
     code = pytest.main(args=args)
     sys.exit(code)
-
-
-def _error_and_exit(msg):
-    print(msg)
-    sys.exit(1)
 
 
 class TestCollectionPlugin:

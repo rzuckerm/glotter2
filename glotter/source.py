@@ -7,6 +7,7 @@ import yaml
 from glotter import testinfo
 from glotter.settings import Settings
 from glotter.containerfactory import ContainerFactory
+from glotter.utils import error_and_exit
 
 
 class Source:
@@ -152,7 +153,7 @@ def filter_sources(args, sources):
 
     if args.project:
         if args.project not in sources:
-            _error_and_exit(f'No valid sources found for project: "{args.project}"')
+            error_and_exit(f'No valid sources found for project: "{args.project}"')
 
         sources = {args.project: sources[args.project]}
 
@@ -177,7 +178,7 @@ def filter_sources(args, sources):
 
         if errors:
             error_msg = ", ".join(errors)
-            _error_and_exit(
+            error_and_exit(
                 f"No valid sources found for the following combination: {error_msg}"
             )
 
@@ -192,8 +193,3 @@ def _matches_source(args, source):
         not args.source
         or f"{source.name}{source.extension}".lower() == args.source.lower()
     )
-
-
-def _error_and_exit(msg):
-    print(msg)
-    sys.exit(1)
