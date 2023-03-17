@@ -1,6 +1,6 @@
 # pylint hates pydantic
 # pylint: disable=E0213,E0611
-from typing import List, Optional, ClassVar
+from typing import Dict, List, Optional, ClassVar
 from enum import Enum, auto
 
 from pydantic import BaseModel, validator, conlist, constr
@@ -30,7 +30,7 @@ class Project(BaseModel):
     acronyms: conlist(constr(min_length=1, regex=VALID_REGEX)) = []
     acronym_scheme: AcronymScheme = AcronymScheme.two_letter_limit
     use_tests: Optional[AutoGenUseTests] = None
-    tests: List[AutoGenTest] = []
+    tests: Dict[str, AutoGenTest] = {}
 
     @validator("acronyms", pre=True, each_item=True)
     def get_acronym(cls, value):
@@ -56,16 +56,16 @@ class Project(BaseModel):
         if values.get("use_tests"):
             raise ValueError('"tests" and "use_tests" items are mutually exclusive')
 
-        return [
-            {
+        return {
+            test_name: {
                 **test,
                 "requires_parameters": values.get("requires_parameters") or False,
                 "name": test_name,
             }
             for test_name, test in value.items()
-        ]
+        }
 
-    def set_tests(self, tests: List[AutoGenTest]):
+    def set_tests(self, tests: Dict[str, AutoGenTest]):
         """
         If there is a "use_tests" item, then set the specified tests, renaming them
         according to the "use_tests" item. The "use_tests" item is then removed
@@ -74,15 +74,17 @@ class Project(BaseModel):
         """
 
         if self.use_tests:
-            self.tests = [
-                AutoGenTest(
-                    **test.dict(exclude={"name"}),
-                    name=test.name.replace(
-                        self.use_tests.search, self.use_tests.replace
-                    ),
+            self.tests = {}
+            for test_name, test in tests.items():
+                test_name = test_name.replace(
+                    self.use_tests.search, self.use_tests.replace
                 )
-                for test in tests
-            ]
+                self.tests[test_name] = {
+                    test_name: AutoGenTest(
+                        **test.dict(exclude={"name"}), name=test_name
+                    )
+                }
+
             self.use_tests = None
 
     @property

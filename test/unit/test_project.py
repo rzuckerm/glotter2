@@ -161,7 +161,7 @@ def test_get_project_name_by_scheme_bad():
                 "acronyms": [],
                 "acronym_scheme": AcronymScheme.two_letter_limit,
                 "use_tests": None,
-                "tests": [],
+                "tests": {},
             },
             id=f"just-words-{char1}{char2}-{char2}{char1}",
         )
@@ -176,7 +176,7 @@ def test_get_project_name_by_scheme_bad():
                 "acronyms": [],
                 "acronym_scheme": AcronymScheme.two_letter_limit,
                 "use_tests": None,
-                "tests": [],
+                "tests": {},
             },
             id="requires-parameters",
         )
@@ -210,7 +210,7 @@ def test_get_project_name_by_scheme_bad():
                 ],
                 "acronym_scheme": AcronymScheme.two_letter_limit,
                 "use_tests": None,
-                "tests": [],
+                "tests": {},
             },
             id=f"has-acronyms-{char1}{char2}-{char2}{char1}",
         )
@@ -225,7 +225,7 @@ def test_get_project_name_by_scheme_bad():
                 "acronyms": [],
                 "acronym_scheme": acronym_scheme,
                 "use_tests": None,
-                "tests": [],
+                "tests": {},
             },
             id=f"has-acronym-scheme-{acronym_scheme.name}",
         )
@@ -266,8 +266,8 @@ def test_get_project_name_by_scheme_bad():
                 "requires_parameters": True,
                 "acronyms": [],
                 "acronym_scheme": AcronymScheme.two_letter_limit,
-                "tests": [
-                    {
+                "tests": {
+                    "prime_number_valid": {
                         "name": "prime_number_valid",
                         "requires_parameters": True,
                         "params": [
@@ -276,7 +276,7 @@ def test_get_project_name_by_scheme_bad():
                         ],
                         "transformations": ["strip", "lower"],
                     },
-                    {
+                    "prime_number_invalid": {
                         "name": "prime_number_invalid",
                         "requires_parameters": True,
                         "params": [
@@ -293,7 +293,7 @@ def test_get_project_name_by_scheme_bad():
                         ],
                         "transformations": ["strip"],
                     },
-                ],
+                },
                 "use_tests": None,
             },
             id="tests",
@@ -376,7 +376,7 @@ def test_good_project(value, expected_value):
             id="tests-and-use-tests",
         ),
         pytest.param(
-            {"words": ["foo"], "tests": 1}, "not a valid list", id="bad-tests-int"
+            {"words": ["foo"], "tests": 1}, "not a valid dict", id="bad-tests-int"
         ),
         pytest.param(
             {
@@ -391,7 +391,7 @@ def test_good_project(value, expected_value):
                     "xyz": 32,
                 },
             },
-            "not a valid list",
+            "not a valid dict",
             id="tests-not-all-dict",
         ),
     ],

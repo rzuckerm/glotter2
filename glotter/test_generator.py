@@ -42,7 +42,7 @@ class TestGenerator:
             return ""
 
         test_code = self._get_imports() + self._get_project_fixture()
-        for test_obj in self.project.tests:
+        for test_obj in self.project.tests.values():
             test_code += test_obj.generate_test(self.long_project_name)
 
         return format_str(test_code, mode=Mode())
