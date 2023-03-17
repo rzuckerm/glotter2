@@ -1,6 +1,6 @@
 # pylint hates pydantic
 # pylint: disable=E0213,E0611
-from typing import Dict, List, Optional, ClassVar
+from typing import Dict, Optional, ClassVar
 from enum import Enum, auto
 
 from pydantic import BaseModel, validator, conlist, constr
