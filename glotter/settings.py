@@ -89,26 +89,36 @@ class SettingsConfig(BaseModel):
         if value is None:
             return {"yml_path": values["yml_path"]}
 
-        if isinstance(value, dict):
-            return {**value, "yml_path": values["yml_path"]}
+        if not isinstance(value, dict):
+            raise ValueError('"settings" item is not a valid dict')
 
-        return value
+        return {**value, "yml_path": values["yml_path"]}
 
     @validator("projects", pre=True)
     def get_projects(cls, value, values):
-        if not isinstance(value, dict) or not all(
-            isinstance(item, dict) for item in value.values()
-        ):
-            return value
+        if not isinstance(value, dict):
+            raise ValueError('"projects" item is not a valid dict')
 
-        return {
-            project_name: {**item, "acronym_scheme": values.get("acronym_scheme")}
-            for project_name, item in value.items()
-        }
+        projects = {}
+        errors = []
+        acronym_scheme = values.get("acronym_scheme")
+        for project_name, item in value.items():
+            if isinstance(item, dict):
+                projects[project_name] = {**item, "acronym_scheme": acronym_scheme}
+            else:
+                errors.append(f"Project {project_name} is not a valid dict")
+
+        if errors:
+            raise ValueError("\n".join(errors))
+
+        return projects
 
     @root_validator()
     def validate_projects(cls, values):
-        projects = values["projects"]
+        projects = values.get("projects")
+        if not isinstance(projects, dict):
+            return values
+
         projects_with_use_tests = {
             project_name: project
             for project_name, project in projects.items()
@@ -119,17 +129,17 @@ class SettingsConfig(BaseModel):
         for project_name, project in projects_with_use_tests.items():
             use_tests_name = project.use_tests.name
 
-            # Make sure one "use_tests" item does not refer to another "use_tests" item
-            if use_tests_name in projects_with_use_tests:
-                errors.append(
-                    f'Project {project_name} has a "use_tests" item that refers to '
-                    f'another "use_tests" item "{use_tests_name}"'
-                )
             # Make sure "use_tests" item refers to an actual project
-            elif use_tests_name not in projects:
+            if use_tests_name not in projects:
                 errors.append(
                     f'Project {project_name} has a "use_tests" item that refers to a '
                     f"non-existent project {project.use_tests.name}"
+                )
+            # Make sure one "use_tests" item does not refer to another "use_tests" item
+            elif use_tests_name in projects_with_use_tests:
+                errors.append(
+                    f'Project {project_name} has a "use_tests" item that refers to '
+                    f'another "use_tests" project {use_tests_name}'
                 )
             # Make sure "use_tests" item refers to a project with tests
             elif not projects[use_tests_name].tests:
@@ -151,24 +161,25 @@ class SettingsParser:
     def __init__(self, project_root):
         self._project_root = project_root
         self._yml_path = None
-        self._yml = None
         self._acronym_scheme = None
         self._projects = None
         self._source_root = None
         self._yml_path = self._locate_yml()
+
+        yml = None
         if self._yml_path is not None:
-            self._yml = self._parse_yml()
+            yml = self._parse_yml()
         else:
             self._yml_path = project_root
             warn(f'.glotter.yml not found in directory "{project_root}"')
 
-        if self._yml is None:
-            self._yml = {}
+        if yml is None:
+            yml = {}
 
-        if not isinstance(self._yml, dict):
+        if not isinstance(yml, dict):
             error_and_exit(".glotter.yml does not contain a dict")
 
-        config = SettingsConfig(**self._yml, yml_path=self._yml_path)
+        config = SettingsConfig(**yml, yml_path=self._yml_path)
         self._acronym_scheme = config.settings.acronym_scheme
         self._source_root = config.settings.source_root
         self._projects = config.projects
@@ -180,10 +191,6 @@ class SettingsParser:
     @property
     def yml_path(self):
         return self._yml_path
-
-    @property
-    def yml(self):
-        return self._yml
 
     @property
     def source_root(self):

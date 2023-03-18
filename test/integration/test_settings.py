@@ -4,7 +4,7 @@ import platform
 import pytest
 from pydantic import ValidationError
 
-from glotter.settings import SettingsParser
+from glotter.settings import SettingsParser, Settings
 from glotter.project import AcronymScheme
 
 
@@ -132,3 +132,181 @@ def test_parse_projects(tmp_dir, glotter_yml, glotter_yml_projects):
     path = os.path.join(tmp_dir, ".glotter.yml")
     settings_parser = setup_settings_parser(tmp_dir, path, glotter_yml)
     assert settings_parser.projects == glotter_yml_projects
+
+
+def test_settings_bad_yml_type(tmp_dir):
+    path = os.path.join(tmp_dir, ".glotter.yml")
+    with pytest.raises(SystemExit) as e:
+        setup_settings_parser(tmp_dir, path, "42")
+
+    assert e.value.code != 0
+
+
+@pytest.mark.parametrize(
+    ("yml", "expected_errors"),
+    [
+        pytest.param(
+            "settings: 42",
+            ['"settings" item is not a valid dict'],
+            id="bad-settings-type",
+        ),
+        pytest.param(
+            "projects: []",
+            ['"projects" item is not a valid dict'],
+            id="bad-project-type",
+        ),
+        pytest.param(
+            """\
+projects:
+    good:
+        words:
+            - "foo"
+            - "bar"
+    bad: "xyz"
+    bad2: null
+""",
+            ["Project bad is not a valid dict", "Project bad2 is not a valid dict"],
+            id="bad-project-item-type",
+        ),
+    ],
+)
+def test_settings_bad_item_type(yml, expected_errors, tmp_dir):
+    path = os.path.join(tmp_dir, ".glotter.yml")
+    with pytest.raises(ValidationError) as e:
+        setup_settings_parser(tmp_dir, path, yml)
+
+    for expected_error in expected_errors:
+        assert expected_error in str(e.value)
+
+
+def test_settings_good_use_tests(tmp_dir):
+    valid_yml = """
+                params:
+                    -   name: "not sorted"
+                        input: '"4, 5, 1, 3, 2"'
+                        expected: '"1, 2, 3, 4, 5"'
+                    -   name: "already sorted"
+                        input: '"1, 2, 3, 4"'
+                        expected: '"1, 2, 3, 4"'
+"""
+    invalid_yml = """
+                params:
+                    -   name: "no input"
+                        input: null
+                        expected: "Usage"
+                    -   name: "empty input"
+                        input: '""'
+                        expected: "Usage"
+"""
+    yml = f"""\
+projects:
+    bubblesort:
+        words:
+            - "bubble"
+            - "sort"
+        requires_parameters: true
+        tests:
+            bubble_sort_valid:{valid_yml}
+            bubble_sort_invalid:{invalid_yml}
+    insertionsort:
+        words:
+            - "insertion"
+            - "sort"
+        requires_parameters: true
+        use_tests:
+            name: "bubblesort"
+            search: "bubble_sort"
+            replace: "insertion_sort"
+    insertionsort:
+        words:
+            - "insertion"
+            - "sort"
+        requires_parameters: true
+        use_tests:
+            name: "bubblesort"
+            search: "bubble_sort"
+            replace: "insertion_sort"
+    mergesort:
+        words:
+            - "merge"
+            - "sort"
+        requires_parameters: true
+        use_tests:
+            name: "bubblesort"
+            search: "bubble_sort"
+            replace: "merge_sort"
+"""
+
+    path = os.path.join(tmp_dir, ".glotter.yml")
+    settings_parser = setup_settings_parser(tmp_dir, path, yml)
+
+    yml = f"""\
+projects:
+    bubblesort:
+        words:
+            - "bubble"
+            - "sort"
+        requires_parameters: true
+        tests:
+            bubble_sort_valid:{valid_yml}
+            bubble_sort_invalid:{invalid_yml}
+    insertionsort:
+        words:
+            - "insertion"
+            - "sort"
+        requires_parameters: true
+        tests:
+            insertion_sort_valid:{valid_yml}
+            insertion_sort_invalid:{invalid_yml}
+    mergesort:
+        words:
+            - "merge"
+            - "sort"
+        requires_parameters: true
+        tests:
+            merge_sort_valid:{valid_yml}
+            merge_sort_invalid:{invalid_yml}
+"""
+    expected_settings_parser = setup_settings_parser(tmp_dir, path, yml)
+    assert settings_parser.projects == expected_settings_parser.projects
+
+
+def test_settings_bad_use_tests(tmp_dir):
+    yml = """\
+projects:
+    foobar:
+        words:
+            - "foo"
+            - "bar"
+        use_tests:
+            name: "junk"
+    barbaz:
+        words:
+            - "bar"
+            - "baz"
+        use_tests:
+            name: "foobar"
+    bazquux:
+        words:
+            - "bar"
+            - "quux"
+        use_tests:
+            name: "pingpong"
+    pingpong:
+        words:
+            - "ping"
+            - "pong"
+"""
+    path = os.path.join(tmp_dir, ".glotter.yml")
+    with pytest.raises(ValidationError) as e:
+        setup_settings_parser(tmp_dir, path, yml)
+
+    expected_errors = [
+        'Project foobar has a "use_tests" item that refers to a non-existent project junk',
+        'Project barbaz has a "use_tests" item that refers to another "use_tests" project '
+        "foobar",
+        'Project bazquux has a "use_tests" item that refers to project pingpong, which '
+        'has no "tests" item',
+    ]
+    for expected_error in expected_errors:
+        assert expected_error in str(e.value)
