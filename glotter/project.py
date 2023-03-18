@@ -110,39 +110,33 @@ class Project(BaseModel):
 
     def _as_hyphen(self):
         return "-".join(
-            [self._try_as_acronym(word, NamingScheme.hyphen) for word in self.words]
+            self._try_as_acronym(word, NamingScheme.hyphen) for word in self.words
         )
 
     def _as_underscore(self):
         return "_".join(
-            [self._try_as_acronym(word, NamingScheme.underscore) for word in self.words]
+            self._try_as_acronym(word, NamingScheme.underscore) for word in self.words
         )
 
     def _as_camel(self):
         return self.words[0].lower() + "".join(
-            [
-                self._try_as_acronym(word.title(), NamingScheme.camel)
-                for word in self.words[1:]
-            ]
+            self._try_as_acronym(word.title(), NamingScheme.camel)
+            for word in self.words[1:]
         )
 
     def _as_pascal(self):
         return "".join(
-            [
-                self._try_as_acronym(word.title(), NamingScheme.pascal)
-                for word in self.words
-            ]
+            self._try_as_acronym(word.title(), NamingScheme.pascal)
+            for word in self.words
         )
 
     def _as_lower(self):
-        return "".join([word.lower() for word in self.words])
+        return "".join(word.lower() for word in self.words)
 
     def _as_display(self):
         return " ".join(
-            [
-                self._try_as_acronym(word.title(), NamingScheme.underscore)
-                for word in self.words
-            ]
+            self._try_as_acronym(word.title(), NamingScheme.underscore)
+            for word in self.words
         )
 
     def _is_acronym(self, word):
@@ -160,12 +154,5 @@ class Project(BaseModel):
                     NamingScheme.pascal,
                 ]:
                     return word.upper()
-        return word
 
-    def __eq__(self, other):
-        return (
-            self.words == other.words
-            and self.requires_parameters == other.requires_parameters
-            and self.acronyms == other.acronyms
-            and self.acronym_scheme == other.acronym_scheme
-        )
+        return word

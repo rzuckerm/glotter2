@@ -28,11 +28,11 @@ The acronym scheme determines how the Glotter2 should handle file names that con
 Values
 ^^^^^^
 
-- ``upper`` - All acronyms are expected to be upper case
-- ``lower`` - All acronyms are expected to be lower case
+- ``upper`` - All acronyms are expected to be uppercase
+- ``lower`` - All acronyms are expected to be lowercase
 - ``two_letter_limit`` - If an acronym is two letters or less and the project naming scheme is
-  pascal or camel, the the acronym is expected to be upper case. Otherwise it is expected lower
-  case  
+  ``pascal`` or ``camel``, the the acronym is expected to be upper case. Otherwise, it is expected
+  to be lowercase
 
 Source Root
 -----------
@@ -59,7 +59,7 @@ Each project has:
 - ``words``: a list of words that make up the name of the project depending on naming scheme
 - ``acronym``: a list of the words in the word list that are acronyms (optional)
 - ``requires_parameters``: a flag of whether the project will require command line arguments (optional,
-  default is `false`)
+  default is ``false``)
 
 Format
 ------
