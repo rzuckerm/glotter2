@@ -216,7 +216,6 @@ projects:
         words:
             - "insertion"
             - "sort"
-        requires_parameters: true
         use_tests:
             name: "bubblesort"
             search: "bubble_sort"
@@ -225,7 +224,6 @@ projects:
         words:
             - "insertion"
             - "sort"
-        requires_parameters: true
         use_tests:
             name: "bubblesort"
             search: "bubble_sort"
@@ -234,7 +232,6 @@ projects:
         words:
             - "merge"
             - "sort"
-        requires_parameters: true
         use_tests:
             name: "bubblesort"
             search: "bubble_sort"

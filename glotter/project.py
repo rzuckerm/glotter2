@@ -65,17 +65,17 @@ class Project(BaseModel):
             for test_name, test in value.items()
         }
 
-    def set_tests(self, tests: Dict[str, AutoGenTest]):
+    def set_tests(self, project: "Project"):
         """
         If there is a "use_tests" item, then set the specified tests, renaming them
         according to the "use_tests" item. The "use_tests" item is then removed
 
-        :params tests: Test items to add
+        :params tests: Project with tests to use
         """
 
         if self.use_tests:
             self.tests = {}
-            for test_name, test in tests.items():
+            for test_name, test in project.tests.items():
                 test_name = test_name.replace(
                     self.use_tests.search, self.use_tests.replace
                 )
@@ -83,6 +83,7 @@ class Project(BaseModel):
                     **test.dict(exclude={"name"}), name=test_name
                 )
 
+            self.requires_parameters = project.requires_parameters
             self.use_tests = None
 
     @property

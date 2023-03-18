@@ -149,7 +149,7 @@ class SettingsConfig(BaseModel):
                 )
             # Otherwise, set the tests that the "use_tests" item refers to with the tests renamed
             else:
-                project.set_tests(projects[use_tests_name].tests)
+                project.set_tests(projects[use_tests_name])
 
         if errors:
             raise ValueError("\n".join(errors))

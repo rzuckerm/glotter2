@@ -463,7 +463,6 @@ def test_set_tests():
     use_tests_project = Project(
         **{
             "words": ["selection", "sort"],
-            "requires_parameters": True,
             "use_tests": {
                 "name": "bubblesort",
                 "search": "bubble_sort",
@@ -482,7 +481,7 @@ def test_set_tests():
         }
     )
 
-    use_tests_project.set_tests(project.tests)
+    use_tests_project.set_tests(project)
 
     expected_project = {
         "words": ["selection", "sort"],
@@ -518,5 +517,5 @@ def test_set_tests_no_use_tests():
             "tests": {"not_valid": {"params": [{"expected": "not blah"}]}},
         }
     )
-    project.set_tests(other_project.tests)
+    project.set_tests(other_project)
     assert project == expected_project
