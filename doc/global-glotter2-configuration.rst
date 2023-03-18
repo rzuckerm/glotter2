@@ -10,13 +10,13 @@ There are two root level sections.
 Settings
 ========
 
-Settings are generic global settings.
-The following shows what settings are available and their purpose.
+Settings are generic global settings. The following shows what settings are available and their purpose.
+These settings are all optional. If this section is omitted, all of its values are default.
 
 Acronym Scheme
 --------------
 
-- **Required**
+- **Optional**
 - **Format**: ``acronym_scheme: "value"``
 - **Default**: ``two_letter_limit``
 
@@ -39,13 +39,13 @@ Source Root
 
 - **Optional**
 - **Format**: ``source_root: "path/to/root"``
-- **Default**: the value of ``project_root``
+- **Default**: the current directory
 
 Description
 ^^^^^^^^^^^
 
 Source root is the path to the directory containing all of the scripts to run execute with Glotter2.
-It can be absolute or relative from ``project_root``.
+It can be absolute or relative from the current directory.
 
 .. _projects:
 
@@ -56,9 +56,10 @@ The projects section contains all of the information about each "project" that i
 Each project has:
 
 - a project key
-- a list of words that make up the name of the project depending on naming scheme
-- a list of the words in the word list that are acronyms
-- a flag of whether the project will require command line arguments
+- ``words``: a list of words that make up the name of the project depending on naming scheme
+- ``acronym``: a list of the words in the word list that are acronyms (optional)
+- ``requires_parameters``: a flag of whether the project will require command line arguments (optional,
+  default is `false`)
 
 Format
 ------
@@ -92,7 +93,6 @@ My ``projects`` section would look like this:
           - "io"
         acronyms:
           - "io"
-        requires_parameters: false
       factorial:
         words:
           - "factorial"
@@ -101,7 +101,6 @@ My ``projects`` section would look like this:
         words:
           - "hello"
           - "world"
-        requires_parameters: false
 
 Example
 =======
@@ -112,7 +111,6 @@ The following is an example of a full ``.glotter.yml``
 
     settings:
       acronym_scheme: "two_letter_limit"
-      project_root: "./my_project"
       source_root: "./sources"
 
     projects:
@@ -122,7 +120,6 @@ The following is an example of a full ``.glotter.yml``
           - "io"
         acronyms:
           - "io"
-        requires_parameters: false
       factorial:
         words:
           - "factorial"
@@ -131,4 +128,3 @@ The following is an example of a full ``.glotter.yml``
         words:
           - "hello"
           - "world"
-        requires_parameters: false
