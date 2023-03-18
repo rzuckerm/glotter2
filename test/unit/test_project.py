@@ -438,6 +438,28 @@ def test_get_display_name(value, expected_display_name):
 
 
 def test_set_tests():
+    valid_tests = {
+        "params": [
+            {
+                "name": "not sorted",
+                "input": '"3, 4, 1, 2"',
+                "expected": "1, 2, 3, 4",
+            },
+            {
+                "name": "sorted",
+                "input": '"1, 2, 3"',
+                "expected": "1, 2, 3",
+            },
+        ],
+        "transformations": ["strip"],
+    }
+    invalid_tests = {
+        "params": [
+            {"name": "no input", "input": None, "expected": "usage"},
+            {"name": "empty input", "input": '""', "expected": "usage"},
+        ],
+        "transformations": ["strip"],
+    }
     use_tests_project = Project(
         **{
             "words": ["selection", "sort"],
@@ -454,28 +476,8 @@ def test_set_tests():
             "words": ["bubble", "sort"],
             "requires_params": True,
             "tests": {
-                "bubble_sort_valid": {
-                    "params": [
-                        {
-                            "name": "not sorted",
-                            "input": '"3, 4, 1, 2"',
-                            "expected": "1, 2, 3, 4",
-                        },
-                        {
-                            "name": "sorted",
-                            "input": '"1, 2, 3"',
-                            "expected": "1, 2, 3",
-                        },
-                    ],
-                    "transformations": ["strip"],
-                },
-                "bubble_sort_invalid": {
-                    "params": [
-                        {"name": "no input", "input": None, "expected": "usage"},
-                        {"name": "empty input", "input": '""', "expected": "usage"},
-                    ],
-                    "transformations": ["strip"],
-                },
+                "bubble_sort_valid": valid_tests,
+                "bubble_sort_invalid": invalid_tests,
             },
         }
     )
@@ -487,28 +489,8 @@ def test_set_tests():
             "words": ["selection", "sort"],
             "requires_parameters": True,
             "tests": {
-                "selection_sort_valid": {
-                    "params": [
-                        {
-                            "name": "not sorted",
-                            "input": '"3, 4, 1, 2"',
-                            "expected": "1, 2, 3, 4",
-                        },
-                        {
-                            "name": "sorted",
-                            "input": '"1, 2, 3"',
-                            "expected": "1, 2, 3",
-                        },
-                    ],
-                    "transformations": ["strip"],
-                },
-                "selection_sort_invalid": {
-                    "params": [
-                        {"name": "no input", "input": None, "expected": "usage"},
-                        {"name": "empty input", "input": '""', "expected": "usage"},
-                    ],
-                    "transformations": ["strip"],
-                },
+                "selection_sort_valid": valid_tests,
+                "selection_sort_invalid": invalid_tests,
             },
         },
     )

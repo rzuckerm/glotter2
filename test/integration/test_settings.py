@@ -188,6 +188,8 @@ def test_settings_good_use_tests(tmp_dir):
                     -   name: "already sorted"
                         input: '"1, 2, 3, 4"'
                         expected: '"1, 2, 3, 4"'
+                transformations:
+                    - "strip"
 """
     invalid_yml = """
                 params:
@@ -197,6 +199,8 @@ def test_settings_good_use_tests(tmp_dir):
                     -   name: "empty input"
                         input: '""'
                         expected: "Usage"
+                transformations:
+                    - "strip"
 """
     yml = f"""\
 projects:
