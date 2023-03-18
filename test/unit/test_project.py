@@ -474,7 +474,7 @@ def test_set_tests():
     project = Project(
         **{
             "words": ["bubble", "sort"],
-            "requires_params": True,
+            "requires_parameters": True,
             "tests": {
                 "bubble_sort_valid": valid_tests,
                 "bubble_sort_invalid": invalid_tests,
@@ -484,17 +484,26 @@ def test_set_tests():
 
     use_tests_project.set_tests(project.tests)
 
-    expected_project = Project(
-        **{
-            "words": ["selection", "sort"],
-            "requires_parameters": True,
-            "tests": {
-                "selection_sort_valid": valid_tests,
-                "selection_sort_invalid": invalid_tests,
+    expected_project = {
+        "words": ["selection", "sort"],
+        "requires_parameters": True,
+        "acronyms": [],
+        "acronym_scheme": AcronymScheme.two_letter_limit,
+        "tests": {
+            "selection_sort_valid": {
+                **valid_tests,
+                "name": "selection_sort_valid",
+                "requires_parameters": True,
+            },
+            "selection_sort_invalid": {
+                **invalid_tests,
+                "name": "selection_sort_invalid",
+                "requires_parameters": True,
             },
         },
-    )
-    assert use_tests_project == expected_project
+        "use_tests": None,
+    }
+    assert use_tests_project.dict() == expected_project
 
 
 def test_set_tests_no_use_tests():
@@ -503,5 +512,11 @@ def test_set_tests_no_use_tests():
     )
     expected_project = project.copy()
 
-    project.set_tests([])
+    other_project = Project(
+        **{
+            "words": ["bar"],
+            "tests": {"not_valid": {"params": [{"expected": "not blah"}]}},
+        }
+    )
+    project.set_tests(other_project.tests)
     assert project == expected_project
