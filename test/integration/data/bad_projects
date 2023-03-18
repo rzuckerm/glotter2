@@ -125,3 +125,10 @@ projects:
                 params:
                     - expected:
                         exec: ""
+    mergesort:
+        words:
+            - "merge"
+            - "sort"
+        use_tests:
+            name: "bubblesort"
+            search: "bubble_sort"

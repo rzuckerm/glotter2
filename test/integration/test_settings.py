@@ -381,6 +381,8 @@ projects:
                 "exec:\n    str type expected",
                 "- projects -> file_io2 -> tests -> file_io -> params -> item 1 -> expected -> "
                 "exec:\n    value must not be empty",
+                "- projects -> mergesort -> use_tests -> search:\n"
+                '    "search" item without "replace" item',
                 "?",
             ],
             id="bad-projects",
