@@ -5,17 +5,21 @@ import os
 from warnings import warn
 
 import yaml
-from pydantic import BaseModel, validator, root_validator
+from pydantic import BaseModel, validator, root_validator, ValidationError
 
 from glotter.project import Project, AcronymScheme
 from glotter.singleton import Singleton
-from glotter.utils import error_and_exit
+from glotter.utils import error_and_exit, indent
 
 
 class Settings(metaclass=Singleton):
     def __init__(self):
         self._project_root = os.getcwd()
-        self._parser = SettingsParser(self._project_root)
+        try:
+            self._parser = SettingsParser(self._project_root)
+        except ValidationError as e:
+            error_and_exit(_format_validate_error(e))
+
         self._projects = self._parser.projects
         self._source_root = self._parser.source_root or self._project_root
         self._test_mappings = {}
@@ -58,6 +62,26 @@ class Settings(metaclass=Singleton):
         return name.lower() in self.projects
 
 
+def _format_validate_error(validation_error: ValidationError) -> str:
+    error_msgs = []
+    for error in validation_error.errors():
+        error_msgs.append(
+            "- "
+            + " -> ".join(_format_location_item(location) for location in error["loc"])
+            + ":"
+        )
+        error_msgs.append(indent(error["msg"], 4))
+
+    return "Errors found in the following items:\n" + "\n".join(error_msgs)
+
+
+def _format_location_item(location) -> str:
+    if isinstance(location, int):
+        return f"item {location + 1}"
+
+    return str(location)
+
+
 class SettingsConfigSettings(BaseModel):
     acronym_scheme: AcronymScheme = AcronymScheme.two_letter_limit
     yml_path: str
@@ -89,29 +113,24 @@ class SettingsConfig(BaseModel):
         if value is None:
             return {"yml_path": values["yml_path"]}
 
-        if not isinstance(value, dict):
-            raise ValueError('"settings" item is not a valid dict')
+        if isinstance(value, dict):
+            return {**value, "yml_path": values["yml_path"]}
 
-        return {**value, "yml_path": values["yml_path"]}
+        return value
 
     @validator("projects", pre=True)
     def get_projects(cls, value, values):
         if not isinstance(value, dict):
-            raise ValueError('"projects" item is not a valid dict')
+            return value
 
-        projects = {}
-        errors = []
         acronym_scheme = values.get("acronym_scheme")
         for project_name, item in value.items():
-            if isinstance(item, dict):
-                projects[project_name] = {**item, "acronym_scheme": acronym_scheme}
-            else:
-                errors.append(f"Project {project_name} is not a valid dict")
+            if not isinstance(item, dict):
+                break
 
-        if errors:
-            raise ValueError("\n".join(errors))
+            value[project_name] = {**item, "acronym_scheme": acronym_scheme}
 
-        return projects
+        return value
 
     @root_validator()
     def validate_projects(cls, values):

@@ -25,9 +25,9 @@ class AcronymScheme(Enum):
 class Project(BaseModel):
     VALID_REGEX: ClassVar[str] = "^[0-9a-zA-Z]+$"
 
-    words: conlist(constr(min_length=1, regex=VALID_REGEX), min_items=1)
+    words: conlist(constr(min_length=1, regex=VALID_REGEX, strict=True), min_items=1)
     requires_parameters: bool = False
-    acronyms: conlist(constr(min_length=1, regex=VALID_REGEX)) = []
+    acronyms: conlist(constr(min_length=1, regex=VALID_REGEX, strict=True)) = []
     acronym_scheme: AcronymScheme = AcronymScheme.two_letter_limit
     use_tests: Optional[AutoGenUseTests] = None
     tests: Dict[str, AutoGenTest] = {}
@@ -38,13 +38,6 @@ class Project(BaseModel):
             return value
 
         return value.upper()
-
-    @validator("acronym_scheme", pre=True)
-    def get_acronmyn_scheme(cls, value):
-        if value is None:
-            return AcronymScheme.two_letter_limit
-
-        return value
 
     @validator("tests", pre=True)
     def get_tests(cls, value, values):

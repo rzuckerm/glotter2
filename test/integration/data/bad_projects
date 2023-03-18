@@ -1,0 +1,115 @@
+projects:
+    helloworld:
+        words:
+            - "hello"
+            - 42
+    fibonacci:
+        words: "xyz"
+        requires_parameters: "hey"
+        acronyms:
+            - 18
+            - "blah"
+    primenumbers:
+        words:
+            - "prime"
+            - "numbers"
+        requires_parameters: true
+        tests: "13"
+    bubblesort:
+        words:
+            - "bubble"
+            - "sort"
+        requires_parameters: true
+        tests:
+            bubble_sort_valid:
+                params:
+                    -   name: "not sorted"
+                        input: '"4, 5, 3, 1, 2"'
+                        expected: "1, 2, 3, 4, 5"
+                    -   name: "already sorted"
+                        input: '"1, 2, 3, 4"'
+                        expected: "1, 2, 3, 4"
+                transformations:
+                    - "strip"
+            bubble_sort_invalid:
+                params:
+                    -   name: "no input"
+                        input: null
+                        expected: "Usage"
+                    -   name: "empty input"
+                        input: '""'
+                        expected: "Usage"
+    insertionsort:
+        words:
+            - "insertion"
+            - "sort"
+        tests:
+            some_test:
+                params:
+                    - expected:
+                        blah: 1
+                transformations: "fred"
+        use_tests: "blah"
+    foo: "what"
+    badsort:
+        words:
+            - "bad"
+            - "sort"
+        requires_parameters: true
+        tests:
+            bad_sort:
+                params:
+                    -   name: "whatever"
+                        input: "x"
+                        expected: "y"
+        use_tests:
+            name: "bubblesort"
+            search: "bubble_sort"
+            replace: "bad_sort"
+    binary_search:
+        words:
+            - "binary"
+            - "search"
+        requires_parameters: true
+        tests:
+            test_valid:
+                params:
+                    -   expected: "42"
+                    -   99
+                    -   name: ""
+                        input: "hi"
+                    -   name: []
+                        input: {}
+                        expected: 88
+                    -   name: "blah"
+                        input: "whatever"
+                        expected:
+                        - "this"
+                        - that: 42
+                        - 567
+                transformations:
+                    - "blah"
+                    - remove:
+                        - "whatever"
+                        - 73
+                    - 15
+            test_invalid:
+                params: []
+    file_io:
+        words:
+            - "file"
+            - "io"
+        tests:
+            file_io:
+                params:
+                    - expected:
+                        exec: 123
+    file_io2:
+        words:
+            - "file"
+            - "io2"
+        tests:
+            file_io:
+                params:
+                    - expected:
+                        exec: ""

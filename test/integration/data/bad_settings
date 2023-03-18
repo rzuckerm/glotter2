@@ -1,0 +1,4 @@
+settings:
+    acronym_scheme: "foo"
+    source_root:
+        - "blah"

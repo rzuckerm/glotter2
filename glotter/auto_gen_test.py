@@ -1,15 +1,20 @@
 # pylint hates pydantic
 # pylint: disable=E0213,E0611
-from typing import Optional, List, Dict, Tuple, Union, Callable, ClassVar
+from typing import Optional, List, Dict, Tuple, Callable, ClassVar, Any
 from functools import partial
 
-from pydantic import BaseModel, validator, root_validator, constr, conlist
+from pydantic import (
+    BaseModel,
+    validator,
+    root_validator,
+    constr,
+    conlist,
+    ValidationError,
+)
+from pydantic.error_wrappers import ErrorWrapper
 
 from glotter.utils import quote, indent
 
-ExpectedT = Union[str, List[str], Dict[str, str]]
-
-TransformationT = Union[str, Dict[str, List[str]]]
 TransformationScalarFuncT = Callable[[str, str], Tuple[str, str]]
 TransformationDictFuncT = Callable[[List[str], str, str], Tuple[str, str]]
 
@@ -19,7 +24,7 @@ class AutoGenParam(BaseModel):
 
     name: str = ""
     input: Optional[str] = None
-    expected: ExpectedT
+    expected: Any
 
     @validator("expected")
     def validate_expected(cls, value):
@@ -33,17 +38,35 @@ class AutoGenParam(BaseModel):
 
         if isinstance(value, dict):
             if not value:
-                raise ValueError('Too few "expected" items')
+                raise ValueError("too few items")
 
             if len(value) > 1:
-                raise ValueError('Too many "expected" items')
+                raise ValueError("too many items")
 
             key, item = tuple(*value.items())
             if key == "exec":
+                if not isinstance(item, str):
+                    raise ValidationError(
+                        [
+                            ErrorWrapper(ValueError("str type expected"), loc="exec"),
+                        ],
+                        model=cls,
+                    )
                 if not item:
-                    raise ValueError('No value for "exec" item in "expected"')
+                    raise ValidationError(
+                        [
+                            ErrorWrapper(
+                                ValueError("value must not be empty"), loc="exec"
+                            )
+                        ],
+                        model=cls,
+                    )
             elif key != "self":
-                raise ValueError(f'Invalid key "{key}" in "expected" item')
+                raise ValueError('invalid "expected" type')
+        elif isinstance(value, list):
+            _validate_str_list(cls, value)
+        elif not isinstance(value, str):
+            raise ValueError("str, list, or dict type expected")
 
         return value
 
@@ -68,6 +91,20 @@ class AutoGenParam(BaseModel):
         return (
             f"pytest.param({input_param}, {expected_output}, id={quote(self.name)}),\n"
         )
+
+
+def _validate_str_list(cls, values, item_name: str = ""):
+    loc = ()
+    if item_name:
+        loc += (item_name,)
+
+    errors = [
+        ErrorWrapper(ValueError("str type expected"), loc=loc + (index,))
+        for index, value in enumerate(values)
+        if not isinstance(value, str)
+    ]
+    if errors:
+        raise ValidationError(errors, model=cls)
 
 
 def _append_method_to_actual(
@@ -110,7 +147,7 @@ class AutoGenTest(BaseModel):
     name: constr(strict=True, min_length=1, regex="^[a-zA-Z][0-9a-zA-Z_]*$")
     requires_parameters: bool = False
     params: conlist(AutoGenParam, min_items=1)
-    transformations: List[TransformationT] = []
+    transformations: List[Any] = []
 
     SCALAR_TRANSFORMATION_FUNCS: ClassVar[Dict[str, TransformationScalarFuncT]] = {
         "strip": partial(_append_method_to_actual, "strip"),
@@ -124,7 +161,7 @@ class AutoGenTest(BaseModel):
         "strip": _strip_chars,
     }
 
-    @validator("params", each_item=True, pre=True)
+    @validator("params", each_item=True, pre=True, always=True)
     def validate_params(cls, value, values):
         """
         Validate each parameter
@@ -137,20 +174,42 @@ class AutoGenTest(BaseModel):
         """
 
         if values.get("requires_parameters"):
-            if "input" not in value:
-                raise ValueError(
-                    'This project requires parameters, but "input" is not specified'
-                )
-
+            errors = []
             if "name" not in value:
-                raise ValueError(
-                    'This project requires parameters, but "name" is not specified'
+                errors.append(
+                    ErrorWrapper(
+                        ValueError("field is required when parameters required"),
+                        loc="name",
+                    )
+                )
+            elif isinstance(value["name"], str) and not value["name"]:
+                errors.append(
+                    ErrorWrapper(
+                        ValueError(
+                            "value is must not be empty when parameters required"
+                        ),
+                        loc="name",
+                    )
                 )
 
-            if not value["name"]:
-                raise ValueError(
-                    'This project requires parameters, but "name" is empty'
+            if "input" not in value:
+                errors.append(
+                    ErrorWrapper(
+                        ValueError("field is required when parameters required"),
+                        loc="input",
+                    )
                 )
+
+            if "expected" not in value:
+                errors.append(
+                    ErrorWrapper(
+                        ValueError("field is required when parameters required"),
+                        loc="expected",
+                    )
+                )
+
+            if errors:
+                raise ValidationError(errors, model=cls)
 
         return value
 
@@ -166,15 +225,15 @@ class AutoGenTest(BaseModel):
 
         if isinstance(value, str):
             if value not in cls.SCALAR_TRANSFORMATION_FUNCS:
-                raise ValueError(f'Invalid transformation "{value}"')
+                raise ValueError(f'invalid transformation "{value}"')
         elif isinstance(value, dict):
             key = str(*value)
             if key not in cls.DICT_TRANSFORMATION_FUNCS:
-                raise ValueError(f'Invalid transformation "{key}"')
+                raise ValueError(f'invalid transformation "{key}"')
+
+            _validate_str_list(cls, value[key], key)
         else:
-            raise ValueError(
-                f'Invalid transformation data type "{type(value).__name__}"'
-            )
+            raise ValueError("str or dict type expected")
 
         return value
 
@@ -293,7 +352,7 @@ with open({project_name_underscores}.full_path, "r", encoding="utf-8") as file:
 """
 
 
-def _get_assert(actual_var: str, expected_var: str, expected_output: ExpectedT) -> str:
+def _get_assert(actual_var: str, expected_var: str, expected_output) -> str:
     if isinstance(expected_output, list):
         return f"""\
 actual_list = {actual_var}

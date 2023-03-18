@@ -82,6 +82,14 @@ def tmp_dir():
 
 
 @pytest.fixture
+def tmp_dir_chdir(tmp_dir):
+    curr_cwd = os.getcwd()
+    os.chdir(tmp_dir)
+    yield tmp_dir
+    os.chdir(curr_cwd)
+
+
+@pytest.fixture
 def mock_projects(glotter_yml_projects, monkeypatch):
     return monkeypatch.setattr(
         "glotter.settings.Settings.projects", glotter_yml_projects

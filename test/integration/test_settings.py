@@ -1,11 +1,15 @@
 import os
 import platform
+import shutil
 
 import pytest
 from pydantic import ValidationError
 
-from glotter.settings import SettingsParser
+from glotter.settings import SettingsParser, Settings
 from glotter.project import AcronymScheme
+from glotter.singleton import Singleton
+
+TEST_DATA_PATH = os.path.abspath(os.path.join("test", "integration", "data"))
 
 
 def setup_settings_parser(tmp_dir, path, contents):
@@ -311,3 +315,92 @@ projects:
     ]
     for expected_error in expected_errors:
         assert expected_error in str(e.value)
+
+
+@pytest.mark.parametrize(
+    ("src_filename", "expected_errors"),
+    [
+        pytest.param(
+            "bad_settings",
+            [
+                "- settings -> acronym_scheme:\n    value is not a valid enumeration",
+                "- settings -> source_root:\n    str type expected",
+            ],
+            id="bad-settings",
+        ),
+        pytest.param(
+            "bad_projects",
+            [
+                "- projects -> helloworld -> words -> item 2:\n    str type expected",
+                "- projects -> fibonacci -> words:\n    value is not a valid list",
+                "- projects -> fibonacci -> requires_parameters:\n"
+                "    value could not be parsed to a boolean",
+                "- projects -> fibonacci -> acronyms -> item 1:\n    str type expected",
+                "- projects -> primenumbers -> tests:\n    value is not a valid dict",
+                "- projects -> insertionsort -> tests -> some_test -> params -> item 1 -> "
+                'expected:\n    invalid "expected" type',
+                "- projects -> insertionsort -> tests -> some_test -> transformations:\n"
+                "    value is not a valid list",
+                "- projects -> insertionsort -> use_tests:\n    value is not a valid dict",
+                "- projects -> foo:\n    value is not a valid dict",
+                "- projects -> badsort -> tests:\n"
+                '    "tests" and "use_tests" items are mutually exclusive',
+                "- projects -> binary_search -> tests -> test_valid -> params -> item 1 -> "
+                "name:\n    field is required",
+                "- projects -> binary_search -> tests -> test_valid -> params -> item 1 -> "
+                "input:\n    field is required",
+                "- projects -> binary_search -> tests -> test_valid -> params -> item 2:\n"
+                "    argument of type 'int' is not iterable",
+                "- projects -> binary_search -> tests -> test_valid -> params -> item 3 -> "
+                "name:\n    value is must not be empty",
+                "- projects -> binary_search -> tests -> test_valid -> params -> item 3 -> "
+                "expected:\n    field is required",
+                "- projects -> binary_search -> tests -> test_valid -> params -> item 4 -> "
+                "name:\n    str type expected",
+                "- projects -> binary_search -> tests -> test_valid -> params -> item 4 -> "
+                "input:\n    str type expected",
+                "- projects -> binary_search -> tests -> test_valid -> params -> item 4 -> "
+                "expected:\n    str, list, or dict type expected",
+                "- projects -> binary_search -> tests -> test_valid -> params -> item 5 -> "
+                "expected -> item 2:\n    str type expected",
+                "- projects -> binary_search -> tests -> test_valid -> params -> item 5 -> "
+                "expected -> item 3:\n    str type expected",
+                "- projects -> binary_search -> tests -> test_valid -> transformations -> "
+                'item 1:\n    invalid transformation "blah"',
+                "- projects -> binary_search -> tests -> test_valid -> transformations -> "
+                "item 2 -> remove -> item 2:\n    str type expected",
+                "- projects -> binary_search -> tests -> test_valid -> transformations -> "
+                "item 3:\n    str or dict type expected",
+                "- projects -> binary_search -> tests -> test_invalid -> params:\n"
+                "    ensure this value has at least 1 item",
+                "- projects -> file_io -> tests -> file_io -> params -> item 1 -> expected -> "
+                "exec:\n    str type expected",
+                "- projects -> file_io2 -> tests -> file_io -> params -> item 1 -> expected -> "
+                "exec:\n    value must not be empty",
+                "?",
+            ],
+            id="bad-projects",
+        ),
+    ],
+)
+def test_bad_glotter_yml(
+    src_filename, expected_errors, tmp_dir_chdir, clear_singleton, capsys
+):
+    src_path = os.path.join(TEST_DATA_PATH, src_filename)
+    shutil.copy(src_path, ".glotter.yml")
+
+    with pytest.raises(SystemExit) as e:
+        Settings()
+
+    assert e.value.code != 0
+
+    output = capsys.readouterr().out
+    for expected_error in expected_errors:
+        assert expected_error in output
+
+
+@pytest.fixture()
+def clear_singleton():
+    Singleton.clear()
+    yield
+    Singleton.clear()
