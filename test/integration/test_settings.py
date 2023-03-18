@@ -371,6 +371,8 @@ projects:
                 "item 2 -> remove -> item 2:\n    str type expected",
                 "- projects -> binary_search -> tests -> test_valid -> transformations -> "
                 "item 3:\n    str or dict type expected",
+                "- projects -> binary_search -> tests -> test_valid -> transformations -> "
+                "item 4:\n    too few items",
                 "- projects -> binary_search -> tests -> test_invalid -> params:\n"
                 "    ensure this value has at least 1 item",
                 "- projects -> file_io -> tests -> file_io -> params -> item 1 -> expected -> "

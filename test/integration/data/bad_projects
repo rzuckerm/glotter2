@@ -93,6 +93,7 @@ projects:
                         - "whatever"
                         - 73
                     - 15
+                    - strip:
             test_invalid:
                 params: []
     file_io:
