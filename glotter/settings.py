@@ -67,7 +67,11 @@ def _format_validate_error(validation_error: ValidationError) -> str:
     for error in validation_error.errors():
         error_msgs.append(
             "- "
-            + " -> ".join(_format_location_item(location) for location in error["loc"])
+            + " -> ".join(
+                _format_location_item(location)
+                for location in error["loc"]
+                if location != "__root__"
+            )
             + ":"
         )
         error_msgs.append(indent(error["msg"], 4))
@@ -121,9 +125,9 @@ class SettingsConfig(BaseModel):
     @validator("projects", pre=True)
     def get_projects(cls, value, values):
         if not isinstance(value, dict):
-            return value
+            raise ValueError("value is not a valid dict")
 
-        acronym_scheme = values.get("acronym_scheme")
+        acronym_scheme = values["settings"].acronym_scheme
         for project_name, item in value.items():
             if not isinstance(item, dict):
                 break

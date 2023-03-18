@@ -132,3 +132,10 @@ projects:
         use_tests:
             name: "bubblesort"
             search: "bubble_sort"
+    selectionsort:
+        words:
+            - "selection"
+            - "sort"
+        use_tests:
+            name: "bubblesort"
+            replace: "bubble_sort"

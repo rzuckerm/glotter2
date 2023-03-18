@@ -76,40 +76,39 @@ def test_auto_gen_param_good(value, expected_value):
 @pytest.mark.parametrize(
     ("value", "expected_error"),
     [
-        pytest.param({}, "expected", id="empty"),
         pytest.param(
             {"name": None, "input": None, "expected": "some-str"},
-            "name",
+            "name\n  none is not an allowed",
             id="bad-name",
         ),
         pytest.param(
             {"name": "x", "input": {"some-key": "some-value"}, "expected": "some-str"},
-            "input",
+            "input\n  str type expected",
             id="bad-input",
         ),
         pytest.param(
             {"name": "x", "input": "some-str", "expected": None},
-            "none is not an allowed",
+            "expected\n  str, list, or dict type expected",
             id="bad-expected",
         ),
         pytest.param(
             {"name": "x", "input": "some-str", "expected": {"blah": "y"}},
-            'Invalid key "blah" in "expected"',
+            'expected\n  invalid "expected" type',
             id="bad-expected-dict",
         ),
         pytest.param(
             {"name": "x", "input": "some-str", "expected": {"self": "", "exec": "foo"}},
-            'Too many "expected" items',
+            "expected\n  too many items",
             id="too-many-expected-dict",
         ),
         pytest.param(
             {"name": "x", "input": "some-str", "expected": {}},
-            'Too few "expected" items',
+            "expected\n  too few items",
             id="too-few-expected-dict",
         ),
         pytest.param(
             {"name": "x", "input": "some-str", "expected": {"exec": ""}},
-            'No value for "exec" item in "expected"',
+            "expected -> exec\n  value must not be empty",
             id="empty-expected-exec",
         ),
     ],
@@ -293,7 +292,7 @@ def test_auto_gen_test_good(value, expected_value):
                 "requires_parameters": True,
                 "params": [{"input": "some-input", "expected": "some-str"}],
             },
-            '"name" is not specified',
+            "params -> 0 -> name\n  field is required",
             id="missing-param-name",
         ),
         pytest.param(
@@ -302,7 +301,7 @@ def test_auto_gen_test_good(value, expected_value):
                 "requires_parameters": True,
                 "params": [{"name": "", "input": "some-input", "expected": "some-str"}],
             },
-            '"name" is empty',
+            "params -> 0 -> name\n  value must not be empty",
             id="empty-param-name",
         ),
         pytest.param(
@@ -311,7 +310,7 @@ def test_auto_gen_test_good(value, expected_value):
                 "requires_parameters": True,
                 "params": [{"name": "some-name", "expected": "some-str"}],
             },
-            '"input" is not specified',
+            "params -> 0 -> input\n  field is required",
             id="missing-param-input",
         ),
     ],
@@ -370,37 +369,60 @@ def test_auto_gen_transform_vars(
 
 
 @pytest.mark.parametrize(
-    ("transformation", "expected_error"),
+    ("transformation", "expected_errors"),
     [
-        pytest.param("foo", 'Invalid transformation "foo"', id="scalar"),
-        pytest.param({"bar": ["x"]}, 'Invalid transformation "bar"', id="dict"),
         pytest.param(
-            ["1", "2"], 'Invalid transformation data type "list"', id="bad-type-list"
+            "foo", ['transformations -> 0\n  invalid transformation "foo"'], id="scalar"
         ),
-        pytest.param(3, 'Invalid transformation data type "int"', id="bad-type-int"),
         pytest.param(
-            None, 'Invalid transformation data type "NoneType"', id="bad-type-None"
+            {"bar": ["x"]},
+            ['transformations -> 0\n  invalid transformation "bar"'],
+            id="dict",
         ),
-        pytest.param({"strip": 32}, "not a valid list", id="bad-strip-int"),
         pytest.param(
-            {"strip": {"blah": "what"}}, "not a valid list", id="bad-strip-dict"
+            ["1", "2"],
+            ["transformations -> 0\n  str or dict type expected"],
+            id="bad-type-list",
+        ),
+        pytest.param(
+            3, ["transformations -> 0\n  str or dict type expected"], id="bad-type-int"
+        ),
+        pytest.param(
+            None,
+            ["transformations -> 0\n  str or dict type expected"],
+            id="bad-type-None",
+        ),
+        pytest.param(
+            {"strip": 32},
+            ["transformations -> 0 -> strip\n  value is not a valid list"],
+            id="bad-strip-int",
+        ),
+        pytest.param(
+            {"strip": {"blah": "what"}},
+            ["transformations -> 0 -> strip\n  value is not a valid list"],
+            id="bad-strip-dict",
         ),
         pytest.param(
             {"strip": ["a", 5, ["x"]]},
-            "str type expected",
+            [
+                "transformations -> 0 -> strip -> 1\n  str type expected",
+                "transformations -> 0 -> strip -> 2\n  str type expected",
+            ],
             id="bad-strip-bad-list-item",
         ),
         pytest.param(
-            {"remove": None}, "none is not an allowed value", id="bad-remove-None"
+            {"remove": None},
+            ["transformations -> 0 -> remove\n  value is not a valid list"],
+            id="bad-remove-None",
         ),
         pytest.param(
             {"remove": [{"foo": "bar"}, "x"]},
-            "str type expected",
+            ["transformations -> 0 -> remove"],
             id="bad-remove-bad-list-item",
         ),
     ],
 )
-def test_auto_gen_bad_transformations(transformation, expected_error):
+def test_auto_gen_bad_transformations(transformation, expected_errors):
     value = {
         "name": "some_name",
         "params": [{"name": "some-param", "expected": "some-output"}],
@@ -409,7 +431,8 @@ def test_auto_gen_bad_transformations(transformation, expected_error):
     with pytest.raises(ValidationError) as e:
         AutoGenTest(**value)
 
-    assert expected_error in str(e.value)
+    for expected_error in expected_errors:
+        assert expected_error in str(e.value)
 
 
 @pytest.mark.parametrize(

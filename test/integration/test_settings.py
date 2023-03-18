@@ -151,12 +151,12 @@ def test_settings_bad_yml_type(tmp_dir):
     [
         pytest.param(
             "settings: 42",
-            ['"settings" item is not a valid dict'],
+            ["settings\n  value is not a valid dict"],
             id="bad-settings-type",
         ),
         pytest.param(
             "projects: []",
-            ['"projects" item is not a valid dict'],
+            ["projects\n  value is not a valid dict"],
             id="bad-project-type",
         ),
         pytest.param(
@@ -169,7 +169,10 @@ projects:
     bad: "xyz"
     bad2: null
 """,
-            ["Project bad is not a valid dict", "Project bad2 is not a valid dict"],
+            [
+                "projects -> bad\n  value is not a valid dict",
+                "projects -> bad2\n  none is not an allowed",
+            ],
             id="bad-project-item-type",
         ),
     ],
@@ -352,7 +355,7 @@ projects:
                 "- projects -> binary_search -> tests -> test_valid -> params -> item 2:\n"
                 "    argument of type 'int' is not iterable",
                 "- projects -> binary_search -> tests -> test_valid -> params -> item 3 -> "
-                "name:\n    value is must not be empty",
+                "name:\n    value must not be empty",
                 "- projects -> binary_search -> tests -> test_valid -> params -> item 3 -> "
                 "expected:\n    field is required",
                 "- projects -> binary_search -> tests -> test_valid -> params -> item 4 -> "
@@ -381,9 +384,11 @@ projects:
                 "exec:\n    str type expected",
                 "- projects -> file_io2 -> tests -> file_io -> params -> item 1 -> expected -> "
                 "exec:\n    value must not be empty",
-                "- projects -> mergesort -> use_tests -> search:\n"
-                '    "search" item without "replace" item',
-                "?",
+                "- projects -> mergesort -> use_tests:\n"
+                '    "search" item specified without "replace" item',
+                "- projects -> selectionsort -> use_tests:\n"
+                '    "replace" item specified without "search" item',
+                # "?",
             ],
             id="bad-projects",
         ),

@@ -98,11 +98,15 @@ def _validate_str_list(cls, values, item_name: str = ""):
     if item_name:
         loc += (item_name,)
 
-    errors = [
-        ErrorWrapper(ValueError("str type expected"), loc=loc + (index,))
-        for index, value in enumerate(values)
-        if not isinstance(value, str)
-    ]
+    if not isinstance(values, list):
+        errors = [ErrorWrapper(ValueError("value is not a valid list"), loc=loc)]
+    else:
+        errors = [
+            ErrorWrapper(ValueError("str type expected"), loc=loc + (index,))
+            for index, value in enumerate(values)
+            if not isinstance(value, str)
+        ]
+
     if errors:
         raise ValidationError(errors, model=cls)
 
@@ -185,9 +189,7 @@ class AutoGenTest(BaseModel):
             elif isinstance(value["name"], str) and not value["name"]:
                 errors.append(
                     ErrorWrapper(
-                        ValueError(
-                            "value is must not be empty when parameters required"
-                        ),
+                        ValueError("value must not be empty when parameters required"),
                         loc="name",
                     )
                 )
