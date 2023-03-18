@@ -100,12 +100,12 @@ This file can be placed anywhere in the filesystem of your project, but it is re
 <p>There are two root level sections.</p>
 <section id="settings">
 <h2>Settings<a class="headerlink" href="#settings" title="Permalink to this heading"></a></h2>
-<p>Settings are generic global settings.
-The following shows what settings are available and their purpose.</p>
+<p>Settings are generic global settings. The following shows what settings are available and their purpose.
+These settings are all optional. If this section is omitted, all of its values are default.</p>
 <section id="acronym-scheme">
 <h3>Acronym Scheme<a class="headerlink" href="#acronym-scheme" title="Permalink to this heading"></a></h3>
 <ul class="simple">
-<li><p><strong>Required</strong></p></li>
+<li><p><strong>Optional</strong></p></li>
 <li><p><strong>Format</strong>: <code class="docutils literal notranslate"><span class="pre">acronym_scheme:</span> <span class="pre">&quot;value&quot;</span></code></p></li>
 <li><p><strong>Default</strong>: <code class="docutils literal notranslate"><span class="pre">two_letter_limit</span></code></p></li>
 </ul>
@@ -129,12 +129,12 @@ case</p></li>
 <ul class="simple">
 <li><p><strong>Optional</strong></p></li>
 <li><p><strong>Format</strong>: <code class="docutils literal notranslate"><span class="pre">source_root:</span> <span class="pre">&quot;path/to/root&quot;</span></code></p></li>
-<li><p><strong>Default</strong>: the value of <code class="docutils literal notranslate"><span class="pre">project_root</span></code></p></li>
+<li><p><strong>Default</strong>: the current directory</p></li>
 </ul>
 <section id="id1">
 <h4>Description<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h4>
 <p>Source root is the path to the directory containing all of the scripts to run execute with Glotter2.
-It can be absolute or relative from <code class="docutils literal notranslate"><span class="pre">project_root</span></code>.</p>
+It can be absolute or relative from the current directory.</p>
 </section>
 </section>
 </section>
@@ -144,9 +144,10 @@ It can be absolute or relative from <code class="docutils literal notranslate"><
 Each project has:</p>
 <ul class="simple">
 <li><p>a project key</p></li>
-<li><p>a list of words that make up the name of the project depending on naming scheme</p></li>
-<li><p>a list of the words in the word list that are acronyms</p></li>
-<li><p>a flag of whether the project will require command line arguments</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">words</span></code>: a list of words that make up the name of the project depending on naming scheme</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">acronym</span></code>: a list of the words in the word list that are acronyms (optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">requires_parameters</span></code>: a flag of whether the project will require command line arguments (optional,
+default is <cite>false</cite>)</p></li>
 </ul>
 <section id="format">
 <h3>Format<a class="headerlink" href="#format" title="Permalink to this heading"></a></h3>
@@ -174,7 +175,6 @@ My <code class="docutils literal notranslate"><span class="pre">projects</span><
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;io&quot;</span>
 <span class="w">    </span><span class="nt">acronyms</span><span class="p">:</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;io&quot;</span>
-<span class="w">    </span><span class="nt">requires_parameters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 <span class="w">  </span><span class="nt">factorial</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">words</span><span class="p">:</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;factorial&quot;</span>
@@ -183,7 +183,6 @@ My <code class="docutils literal notranslate"><span class="pre">projects</span><
 <span class="w">    </span><span class="nt">words</span><span class="p">:</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;hello&quot;</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;world&quot;</span>
-<span class="w">    </span><span class="nt">requires_parameters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 </pre></div>
 </div>
 </section>
@@ -193,7 +192,6 @@ My <code class="docutils literal notranslate"><span class="pre">projects</span><
 <p>The following is an example of a full <code class="docutils literal notranslate"><span class="pre">.glotter.yml</span></code></p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">settings</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">acronym_scheme</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;two_letter_limit&quot;</span>
-<span class="w">  </span><span class="nt">project_root</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;./my_project&quot;</span>
 <span class="w">  </span><span class="nt">source_root</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;./sources&quot;</span>
 
 <span class="nt">projects</span><span class="p">:</span>
@@ -203,7 +201,6 @@ My <code class="docutils literal notranslate"><span class="pre">projects</span><
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;io&quot;</span>
 <span class="w">    </span><span class="nt">acronyms</span><span class="p">:</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;io&quot;</span>
-<span class="w">    </span><span class="nt">requires_parameters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 <span class="w">  </span><span class="nt">factorial</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">words</span><span class="p">:</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;factorial&quot;</span>
@@ -212,7 +209,6 @@ My <code class="docutils literal notranslate"><span class="pre">projects</span><
 <span class="w">    </span><span class="nt">words</span><span class="p">:</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;hello&quot;</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;world&quot;</span>
-<span class="w">    </span><span class="nt">requires_parameters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 </pre></div>
 </div>
 </section>
