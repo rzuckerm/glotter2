@@ -87,13 +87,24 @@ projects:
                         - "this"
                         - that: 42
                         - 567
+                    -   name: "something"
+                        input: "543"
+                        expected: {}
+                    -   name: "else"
+                        input: "678"
+                        expected:
+                            foo: "1"
+                            bar: "2"
+                    -   name: "other"
+                        input: "999"
+                        expected:
+                            foo: "7"
                 transformations:
                     - "blah"
                     - remove:
                         - "whatever"
                         - 73
                     - 15
-                    - strip:
             test_invalid:
                 params: []
     file_io:

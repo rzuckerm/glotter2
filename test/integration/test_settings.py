@@ -365,16 +365,18 @@ projects:
                 "expected -> item 2:\n    str type expected",
                 "- projects -> binary_search -> tests -> test_valid -> params -> item 5 -> "
                 "expected -> item 3:\n    str type expected",
+                "- projects -> binary_search -> tests -> test_valid -> params -> item 6 -> "
+                "expected:\n    too few items",
+                "- projects -> binary_search -> tests -> test_valid -> params -> item 7 -> "
+                "expected:\n    too many items",
+                "- projects -> binary_search -> tests -> test_valid -> params -> item 8 -> "
+                'expected:\n    invalid "expected" type',
                 "- projects -> binary_search -> tests -> test_valid -> transformations -> "
                 'item 1:\n    invalid transformation "blah"',
                 "- projects -> binary_search -> tests -> test_valid -> transformations -> "
                 "item 2 -> remove -> item 2:\n    str type expected",
                 "- projects -> binary_search -> tests -> test_valid -> transformations -> "
                 "item 3:\n    str or dict type expected",
-                "- projects -> binary_search -> tests -> test_valid -> transformations -> "
-                "item 4:\n    too few items",
-                "- projects -> binary_search -> tests -> test_invalid -> params:\n"
-                "    ensure this value has at least 1 item",
                 "- projects -> file_io -> tests -> file_io -> params -> item 1 -> expected -> "
                 "exec:\n    str type expected",
                 "- projects -> file_io2 -> tests -> file_io -> params -> item 1 -> expected -> "
