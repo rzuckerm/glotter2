@@ -306,31 +306,47 @@ def test_good_project(value, expected_value):
 
 
 @pytest.mark.parametrize(
-    ("value", "expected_error"),
+    ("value", "expected_errors"),
     [
-        pytest.param({}, "words", id="missing-words"),
-        pytest.param({"words": []}, "at least 1 item", id="no-words"),
-        pytest.param({"words": ["help", ""]}, "at least 1 character", id="empty-words"),
+        pytest.param({}, "words\n  field required", id="missing-words"),
+        pytest.param(
+            {"words": []},
+            ["words\n  ensure this value has at least 1 item"],
+            id="no-words",
+        ),
+        pytest.param(
+            {"words": ["help", ""]},
+            ["words -> 1\n  ensure this value has at least 1 char"],
+            id="empty-words",
+        ),
     ]
     + [
         pytest.param(
-            {"words": [bad_word]}, "does not match regex", id=f"bad-words-{bad_word}"
+            {"words": [bad_word]},
+            ["words -> 0\n  string does not match regex"],
+            id=f"bad-words-{bad_word}",
         )
         for bad_word in BAD_WORDS
     ]
     + [
-        pytest.param({"words": None}, "none is not an allowed", id="words-none"),
-        pytest.param({"words": {"some": "thing"}}, "not a valid list", id="words-dict"),
+        pytest.param(
+            {"words": None}, ["words\n  none is not an allowed"], id="words-none"
+        ),
+        pytest.param(
+            {"words": {"some": "thing"}},
+            ["words\n  value is not a valid list"],
+            id="words-dict",
+        ),
         pytest.param(
             {"words": ["foo"], "acronyms": ["", "foo"]},
-            "at least 1 character",
+            ["acronyms -> 0\n  ensure this value has at least 1 char"],
             id="empty-acronyms",
         ),
     ]
     + [
         pytest.param(
             {"words": ["foo"], "acronyms": ["foo", bad_word]},
-            "does not match regex",
+            ["acronyms -> 1\n  string does not match regex"],
             id=f"bad-acronyms-{bad_word}",
         )
         for bad_word in BAD_WORDS
@@ -338,32 +354,32 @@ def test_good_project(value, expected_value):
     + [
         pytest.param(
             {"words": ["foo"], "acronyms": None},
-            "none is not an allowed",
+            ["acronyms\n  none is not an allowed"],
             id="acronyms-none",
         ),
         pytest.param(
             {"words": ["foo"], "acronyms": {"what": "ever"}},
-            "not a valid list",
-            id="acronyms-none",
+            ["acronyms\n  value is not a valid list"],
+            id="acronyms-dict",
         ),
         pytest.param(
             {"words": ["foo"], "acronyms": ["blah", None]},
-            "none is not an allowed",
+            ["acronyms -> 1\n  none is not an allowed"],
             id="acronyms-item-none",
         ),
         pytest.param(
             {"words": ["foo"], "acronym_scheme": "blah"},
-            "not a valid enumeration",
+            ["acronym_scheme\n  value is not a valid enumeration"],
             id="bad-acronym-scheme",
         ),
         pytest.param(
             {"words": ["foo"], "use_tests": {}},
-            "use_tests",
+            ["use_tests -> name\n  field required"],
             id="bad-use-tests",
         ),
         pytest.param(
             {"words": ["foo"], "tests": {"foo": {"params": []}}},
-            "tests",
+            ["tests -> foo -> params\n  ensure this value has at least 1 item"],
             id="bad-tests",
         ),
         pytest.param(
@@ -372,16 +388,18 @@ def test_good_project(value, expected_value):
                 "tests": {"foo": {"params": [{"expected": "blah"}]}},
                 "use_tests": {"name": "bar"},
             },
-            "mutually exclusive",
+            ['tests\n  "tests" and "use_tests" items are mutually exclusive'],
             id="tests-and-use-tests",
         ),
         pytest.param(
-            {"words": ["foo"], "tests": 1}, "not a valid dict", id="bad-tests-int"
+            {"words": ["foo"], "tests": 1},
+            ["tests\n  value is not a valid dict"],
+            id="bad-tests-int",
         ),
         pytest.param(
             {
                 "words": ["foo"],
-                "requires_params": True,
+                "requires_parameters": True,
                 "tests": {
                     "blah": {
                         "params": [
@@ -391,16 +409,20 @@ def test_good_project(value, expected_value):
                     "xyz": 32,
                 },
             },
-            "not a valid dict",
+            [
+                "tests -> blah -> name\n  field required",
+                "tests -> xyz\n  value is not a valid dict",
+            ],
             id="tests-not-all-dict",
         ),
     ],
 )
-def test_bad_project(value, expected_error):
+def test_bad_project(value, expected_errors):
     with pytest.raises(ValidationError) as e:
         Project(**value)
 
-    assert expected_error in str(e.value)
+    for expected_error in expected_errors:
+        assert expected_error in str(e.value)
 
 
 @pytest.mark.parametrize(

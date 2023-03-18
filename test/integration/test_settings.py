@@ -310,11 +310,9 @@ projects:
         setup_settings_parser(tmp_dir, path, yml)
 
     expected_errors = [
-        'Project foobar has a "use_tests" item that refers to a non-existent project junk',
-        'Project barbaz has a "use_tests" item that refers to another "use_tests" project '
-        "foobar",
-        'Project bazquux has a "use_tests" item that refers to project pingpong, which '
-        'has no "tests" item',
+        "projects -> foobar -> use_tests\n  refers to a non-existent project junk",
+        'projects -> barbaz -> use_tests\n  refers to another "use_tests" project foobar',
+        'projects -> bazquux -> use_tests\n  refers to project pingpong, which has no "tests" item',
     ]
     for expected_error in expected_errors:
         assert expected_error in str(e.value)
@@ -388,7 +386,6 @@ projects:
                 '    "search" item specified without "replace" item',
                 "- projects -> selectionsort -> use_tests:\n"
                 '    "replace" item specified without "search" item',
-                # "?",
             ],
             id="bad-projects",
         ),

@@ -6,6 +6,7 @@ from warnings import warn
 
 import yaml
 from pydantic import BaseModel, validator, root_validator, ValidationError
+from pydantic.error_wrappers import ErrorWrapper
 
 from glotter.project import Project, AcronymScheme
 from glotter.singleton import Singleton
@@ -151,31 +152,44 @@ class SettingsConfig(BaseModel):
         errors = []
         for project_name, project in projects_with_use_tests.items():
             use_tests_name = project.use_tests.name
+            loc = ("projects", project_name, "use_tests")
 
             # Make sure "use_tests" item refers to an actual project
             if use_tests_name not in projects:
                 errors.append(
-                    f'Project {project_name} has a "use_tests" item that refers to a '
-                    f"non-existent project {project.use_tests.name}"
+                    ErrorWrapper(
+                        ValueError(
+                            f"refers to a non-existent project {project.use_tests.name}"
+                        ),
+                        loc=loc,
+                    )
                 )
             # Make sure one "use_tests" item does not refer to another "use_tests" item
             elif use_tests_name in projects_with_use_tests:
                 errors.append(
-                    f'Project {project_name} has a "use_tests" item that refers to '
-                    f'another "use_tests" project {use_tests_name}'
+                    ErrorWrapper(
+                        ValueError(
+                            f'refers to another "use_tests" project {use_tests_name}'
+                        ),
+                        loc=loc,
+                    )
                 )
             # Make sure "use_tests" item refers to a project with tests
             elif not projects[use_tests_name].tests:
                 errors.append(
-                    f'Project {project_name} has a "use_tests" item that refers to project '
-                    f'{use_tests_name}, which has no "tests" item'
+                    ErrorWrapper(
+                        ValueError(
+                            f'refers to project {use_tests_name}, which has no "tests" item'
+                        ),
+                        loc=loc,
+                    )
                 )
             # Otherwise, set the tests that the "use_tests" item refers to with the tests renamed
             else:
                 project.set_tests(projects[use_tests_name])
 
         if errors:
-            raise ValueError("\n".join(errors))
+            raise ValidationError(errors, model=cls)
 
         return values
 
