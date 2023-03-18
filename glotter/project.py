@@ -79,11 +79,9 @@ class Project(BaseModel):
                 test_name = test_name.replace(
                     self.use_tests.search, self.use_tests.replace
                 )
-                self.tests[test_name] = {
-                    test_name: AutoGenTest(
-                        **test.dict(exclude={"name"}), name=test_name
-                    )
-                }
+                self.tests[test_name] = AutoGenTest(
+                    **test.dict(exclude={"name"}), name=test_name
+                )
 
             self.use_tests = None
 
