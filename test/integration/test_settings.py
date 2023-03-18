@@ -4,7 +4,7 @@ import platform
 import pytest
 from pydantic import ValidationError
 
-from glotter.settings import SettingsParser, Settings
+from glotter.settings import SettingsParser
 from glotter.project import AcronymScheme
 
 
