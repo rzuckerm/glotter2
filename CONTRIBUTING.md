@@ -2,9 +2,9 @@
 
 Thank you for your desire to contribute to Glotter2!
 
-If you haven't already, please first take a look through our [docs].
-Specifically, make sure you have a grasp on [general usage][docs-general-usage] of glotter
-and [how glotter2 integrates with clients][docs-integrating].
+If you haven't already, please first take a look through our [README], [Code of Conduct],
+and [docs]. Specifically, make sure you have a grasp on [general usage][docs-general-usage]
+of glotter and [how glotter2 integrates with clients][docs-integrating].
 
 Once you are familiar with the basics, see the sections below for how to contribute.
 
@@ -24,8 +24,8 @@ Before you can build Glotter2, there a few things you will need.
 
 - `docker`: Glotter2 makes extensive use of docker. You will need to have docker installed on your
   machine
-- `python`, `pip`, and `virtualenv`: Glotter2 is written in python and uses `pip` to install
-  `virtualenv`, which is used to create a virtual environment where dependencies can be installed.
+- `python`, `pip`, and `virtualenv`: Glotter2 is written in python and uses `pip` to install dependencies
+  in a `virtualenv`, a virtual environment where dependencies are installed.
 - `make`: Everything in Glotter2 is built and run using `make`
 
 ### Structure
@@ -33,10 +33,10 @@ Before you can build Glotter2, there a few things you will need.
 The file structure of Glotter2 looks like the following (with omissions):
 
 - `glotter`
+- `doc`
 - `test`
   - `integration`
   - `unit`
-- `doc`
 - `Makefile`
 - `pyproject.toml`
 - `poetry.lock`
@@ -44,7 +44,7 @@ The file structure of Glotter2 looks like the following (with omissions):
 The `glotter` directory contains all source code for the project.
 
 The `doc` directory contains all the documentation for the project.
-[Sphinx](https://pypi.org/project/sphinx) is used to convert the
+[Sphinx] is used to convert the
 [reStructuredText](https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html)
 to HTML.
 
@@ -61,9 +61,9 @@ dependencies as well as configuration. The `poetry.lock` locks down the exact ve
 dependencies for build reproducibility. The project is based on
 [python-poetry](https://python-poetry.org/docs/).
 
-The project used `black` to do code formatting and format linting and `pylint` for linting.
+The project used [black] to do code formatting and format linting and [pylint] for linting.
 
-This project uses `pytest` as its testing library, but it is also a wrapper around `pytest`.
+This project uses [pytest] as its testing library, but it is also a wrapper around [pytest].
 
 ### Local Development
 
@@ -76,14 +76,22 @@ Everything associated with this project is done through `make` targets:
 
 ## Running Tests
 
-Test can be run with `make test`. If you want to pass arguments to `pytest`, use the
-`PYTEST_ARGS`. Some common arguments:
+Test can be run with `make test`. If you want to pass arguments to [pytest], use the
+`PYTEST_ARGS`. Here are some common arguments:
 
+* `-v` - Verbose output
+* `-vv` - Very verbose output
+* `-vvl` - Very verbose, long output
 * `-k "<pattern>"` - Only run tests that match a specific pattern. The match can be
   done on test filename or test function name
 * `-x` - Stop on the first failure
 * `-s` - Show test output
 * `--pdb` - Open python debugger when a failure occurs
+
+For example, this will run tests that match `test_generator`, stop on the first
+failure, and open the python debugger on that failure:
+
+`make test PYTEST_ARGS="-vvl -x --pdb -k test_generator"`
 
 ## Final Requirements for Contributing
 
@@ -104,13 +112,25 @@ Test can be run with `make test`. If you want to pass arguments to `pytest`, use
   ```
 - Please write tests for new functionality. No pull requests will be accepted without applicable
   new or existing unit or integration tests.
-- After creating the pull request, ensure that all the test passed on GitHub Actions. No pull
+- After creating the pull request, ensure that all the test passed on [GitHub Actions]. No pull
   requests will be merged without failing tests.
 - If your changes are related to an existing issue, please reference that issue in your pull
   request.
 - If your changes are not related to an existing issue, please either create a new issue and
   link to it.
 
-[docs]:https://github.com/rzuckerm/glotter2/README.md
-[docs-general-usage]:https://github.com/rzuckerm/glotter2/General-Usage.md
-[docs-integrating]:https://github.com/rzuckerm/glotter2/Integrating-With-Glotter.md
+[README]: https://github.com/rzuckerm/glotter2#glotter2
+[Code of Conduct]: https://github.com/rzuckerm/glotter2/blob/main/CODE_OF_CONDUCT.md
+[GitHub Actions]: https://github.com/rzuckerm/glotter2/actions/workflows/makefile.yml
+
+[docs]: https://rzuckerm.github.io/glotter2/
+[docs-general-usage]: https://rzuckerm.github.io/glotter2/general-usage.html
+[docs-integrating]: https://rzuckerm.github.io/glotter2/index.html#integrating-with-glotter2
+
+[Sphinx]: https://pypi.org/project/sphinx
+[black]: https://pypi.org/project/black
+[pylint]: https://pypi.org/project/pylint
+[python-poetry]: https://pypi.org/project/poetry
+[pytest]: https://pypi.org/project/pytest
+
+[reStructuredText]: https://www.sphinx-doc.org/en/master/usage/restructuredtext/
