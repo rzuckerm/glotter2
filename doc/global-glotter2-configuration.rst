@@ -205,7 +205,7 @@ The following transformations are string values:
 - ``"lower"``: Convert the actual value to lowercase.
 - ``"any_order"``: Convert the actual and expected value into a sorted list of unique
   values -- e.g., a list of ``["7", "3", "1", "7"]`` is converted to ``["1", "3", "7"]``.
-- ``strip_expected``: Remove leading a trailing whitespace from the expected value.
+- ``"strip_expected"``: Remove leading a trailing whitespace from the expected value.
 
 The following transformations are dictionaries:
 
