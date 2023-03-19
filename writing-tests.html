@@ -242,14 +242,14 @@ would look:</p>
 <span class="p">]</span>
 
 
-<span class="nd">@project_fixture</span><span class="p">(</span><span class="n">Factorial</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
+<span class="nd">@project_fixture</span><span class="p">(</span><span class="n">ProjectType</span><span class="o">.</span><span class="n">Factorial</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">factorial</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
     <span class="n">request</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
     <span class="k">yield</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span>
     <span class="n">request</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
 
 
-<span class="nd">@project_test</span><span class="p">(</span><span class="n">Factorial</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
+<span class="nd">@project_test</span><span class="p">(</span><span class="n">ProjectType</span><span class="o">.</span><span class="n">Factorial</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
 <span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span>
     <span class="s1">&#39;cli_args, expected&#39;</span><span class="p">,</span>
     <span class="p">[</span>

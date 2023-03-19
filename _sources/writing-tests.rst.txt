@@ -190,14 +190,14 @@ would look:
     ]
 
 
-    @project_fixture(Factorial.key)
+    @project_fixture(ProjectType.Factorial.key)
     def factorial(request):
         request.param.build()
         yield request.param
         request.param.cleanup()
 
 
-    @project_test(Factorial.key)
+    @project_test(ProjectType.Factorial.key)
     @pytest.mark.parametrize(
         'cli_args, expected',
         [
