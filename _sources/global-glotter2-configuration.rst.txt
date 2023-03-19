@@ -213,7 +213,7 @@ The following transformations are dictionaries:
 
   .. code-block:: yaml
 
-    - ``"remove"``:
+    - "remove":
       - "char1"
       - "char2"
       - ...
