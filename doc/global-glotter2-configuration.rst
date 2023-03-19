@@ -23,7 +23,7 @@ Acronym Scheme
 Description
 ^^^^^^^^^^^
 
-The acronym scheme determines how the Glotter2 should handle file names that contain acronyms.
+``acronym_scheme`` determines how the Glotter2 should handle file names that contain acronyms.
 
 Values
 ^^^^^^
@@ -53,13 +53,169 @@ Projects
 ========
 
 The projects section contains all of the information about each "project" that is implemented in your project.
-Each project has:
+Each project has a project key and a set of value.
 
-- a project key
-- ``words``: a list of words that make up the name of the project depending on naming scheme
-- ``acronym``: a list of the words in the word list that are acronyms (optional)
-- ``requires_parameters``: a flag of whether the project will require command line arguments (optional,
-  default is ``false``)
+
+Words
+-----
+
+- **Required**
+- **Format**:
+
+  .. code-block:: yaml
+
+    words:
+      - "word1"
+      - "word2"
+      - ...
+
+Description
+^^^^^^^^^^^
+
+``words`` is a list of words that make up the name of the project depending on naming scheme.
+
+Acronyms
+--------
+
+- **Optional**
+- **Format**:
+
+  .. code-block:: yaml
+
+    acronyms:
+      - "acronym1"
+      - "acronym2"
+      - ...
+
+Description
+^^^^^^^^^^^
+
+``acronyms`` is a list of the words in the word list that are acronyms.
+
+Requires Parameters
+-------------------
+
+- **Optional**
+- **Format**: ``requires_parameters: boolean``
+- **Default**: ``false``
+
+Description
+^^^^^^^^^^^
+
+``requires_parameters`` is a flag of whether the project will require command line arguments.
+
+Values
+^^^^^^
+
+- ``true`` - A project requires command line arguments
+- ``false`` - A project does not require command line arguments
+
+Tests
+-----
+
+- **Optional**
+- **Format**
+
+  .. code-block:: yaml
+
+    tests:
+      test_name1:
+        params:
+          - name: param_name1
+            input: input_value1
+            expected: expected_value1
+        ...
+        transformations:
+          - transformation1
+          ...
+      ...
+
+Description
+^^^^^^^^^^^
+
+``tests`` is a dictionary that describes auto-generated tests. Each auto-generate test
+has a name that is a key. Each of these tests have is a list of parameter dictionaries,
+``params``. This is required. Each list has the following item:
+
+- ``name`` is a name of the parameter.
+- ``input`` is an input value to the test for this parameter.
+- ``expected`` is a expected value or values for this parameter.
+
+Each of these tests can have a list of ``transformations`` that can be applied to the
+actual value and/or the expected value before comparing the actual and expected values.
+
+Values
+^^^^^^
+
+- The test key must be at least one character that starts with an alphabetic character
+  or an underscore. All subsequent characters must be alphanumeric or an underscore.
+
+Params
+~~~~~~
+
+- **Required**
+
+- ``name`` is a string. It is required if ``requires_parameters`` is ``true``.
+- ``input`` is a string. It is required if ``requires_parameters`` is ``true``.
+- ``expected`` is required. It is either a string, a list of strings, or a dictionary
+  contain a key and a string value:
+
+  .. code-block:: yaml
+
+      expected: "string_value"
+
+  .. code-block:: yaml
+
+      expected:
+        - "list_value1"
+        - "list_value2"
+        - ...
+
+  .. code-block:: yaml
+
+      expected:
+        key: "string"
+
+  As a dictionary may be one of the following:
+
+  - ``exec: "command"`` - Execute a command in the language-specific docker container.
+  - ``self: ""`` - The expect value is the project code (i.e., a 
+    `quine <https://en.wikipedia.org/wiki/Quine_(computing)>`_)
+
+Transformations
+~~~~~~~~~~~~~~~
+
+- **Optional**
+
+The following transformations are string values:
+
+- `"strip"`: Remove leading and trailing whitespace from the actual value.
+- `"splitlines"`: Split actual value at each newline character -- e.g., ``"1\n2\n3"`` is
+  converted to the list ``["1", "2", "3"]``.
+- `"lower"`: Convert the actual value to lowercase.
+- `"any_order"`: Convert the actual and expected value into a sorted list of unique
+  values -- e.g., a list of ``["7", "3", "1", "7"]`` is converted to ``["1", "3", "7"]``.
+- ``strip_expected``: Remove leading a trailing whitespace from the expected value.
+
+The following transformations are dictionaries:
+
+- "remove": Remove all listed characters from the actual value:
+
+  .. code-block:: yaml
+
+    - "remove":
+      - "char1"
+      - "char2"
+      - ...
+
+- "strip": Remove leading and trailing characters from the actual value.
+
+  .. code-block:: yaml
+
+    - "strip":
+      - "char1"
+      - "char2"
+      - ...
 
 Format
 ------
