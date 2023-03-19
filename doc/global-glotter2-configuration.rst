@@ -156,7 +156,17 @@ Params
 - **Required**
 
 - ``name`` is a string. It is required if ``requires_parameters`` is ``true``.
-- ``input`` is a string. It is required if ``requires_parameters`` is ``true``.
+- ``input`` is required if ``requires_parameters`` is ``true``. It is either ``null``
+  or a string:
+
+  .. code-block:: yaml
+
+    input: null
+
+  .. code-block:: yaml
+
+    input: "string_value"
+
 - ``expected`` is required. It is either a string, a list of strings, or a dictionary
   contain a key and a string value:
 
@@ -217,6 +227,35 @@ The following transformations are dictionaries:
       - "char2"
       - ...
 
+Use Tests
+---------
+
+- **Optional**
+- **Format**:
+
+  .. code-block:: yaml
+
+    use_tests:
+    - name: "project_name"
+      search: "search_string"
+      replace: "replace_string"
+
+Description
+^^^^^^^^^^^
+
+``use_tests`` allows tests to be reused from another project. It is mutually exclusive with
+``tests``.
+
+Values
+^^^^^^
+
+- ``name`` is a string that indicates the project for which to reuse tests. It is required.
+- ``search`` is a string to use a string to search for in the test name.
+- ``replace`` is a string to use a string to replace in the tests.
+
+Both ``search`` and ``replace`` is optional, but it one is specified, then other must also
+be specified.
+
 Format
 ------
 
@@ -224,7 +263,7 @@ The format for a project is as follows:
 
 .. code-block:: yaml
 
-    projectkey:
+    projectkey1:
       words:
         - "words"
         - "in"
@@ -234,11 +273,46 @@ The format for a project is as follows:
         - "in"
         - "project"
       requires_parameters: true
+      tests:
+        testkey1:
+          params:
+            - name: "param name1"
+              input: "input value1"
+              expected: expected value or values 1
+            - name: "param name2"
+              input: "input value2"
+              expected: expected value or values 2
+            - ...
+        testkey2:
+          params:
+            - name: "param name1"
+              input: "input value1"
+              expected: expected value or values 1
+            - name: "param name2"
+              input: "input value2"
+              expected: expected value or values 2
+            - ...
+    projectkey2:
+      words:
+        - "words"
+        - "in"
+        - "project"
+      acronyms:
+        - "acronyms"
+        - "in"
+        - "project"
+      use_tests:
+        - name: "projectkey"
+          search: "search_value"
+          replace: "replace_value"
 
-So for example. Let's say I have three projects named FileIO, Factorial, and HelloWorld.
-FileIO contains an acronym.
-Factorial requires parameters.
-My ``projects`` section would look like this:
+So for example. Let's say I have three projects named FileIO, Factorial, HelloWorld,
+Quine, BubbleSort, and MergeSort.
+
+FileIO contains an acronym. Both Factorial and BubbleSort requires parameters.
+MergeSort uses tests from BubbleSort.
+
+The ``projects`` section would look like this:
 
 .. code-block:: yaml
 
@@ -249,14 +323,92 @@ My ``projects`` section would look like this:
           - "io"
         acronyms:
           - "io"
+        tests:
+          fileio:
+            - expected:
+              exec: "cat output.txt"
       factorial:
         words:
           - "factorial"
         requires_parameters: true
+        tests:
+          factorial_valid:
+            params:
+              - name: "value 1"
+                input: "1"
+                expected: "1"
+              - name: "value 5"
+                input: "5"
+                expected: "120"
+            transformations:
+              - "strip"
+          factorial_invalid:
+            params:
+              - name: "no input"
+                input: null
+                expected: "Some error message"
+              - name: "empty input"
+                input: '""'
+                expected: "Some error message"
+            transformations:
+              - "strip"
       helloworld:
         words:
           - "hello"
           - "world"
+        tests:
+            hello_world:
+                params:
+                  - expected: "Hello, world!"
+                transformations:
+                  - "strip"
+      quine:
+        words:
+          - "quine"
+        tests:
+            quine:
+                params:
+                  - expected:
+                    - self: ""
+                transformations:
+                  - "strip"
+                  - "strip_expected"
+      bubblesort:
+        words:
+          - "bubble"
+          - "sort"
+        requires_parameters: true
+        bubble_sort_valid:
+          params:
+            - name: "not sorted"
+              input: '"4, 5, 1, 3, 2"'
+              expected: "1, 2, 3, 4, 5"
+            - name: "already sorted"
+              input: '"1, 2, 3, 4"'
+              expected: "1, 2, 3, 4"
+          transformations:
+            -   remove:
+                - "["
+                - "]"
+            -   "strip"
+        bubble_sort_invalid:
+          params:
+            - name: "no input"
+              input: null
+              expected: "Some error"
+            - name: "empty input"
+              input: '""'
+              expected: "Some error"
+          transformations:
+            - "strip"
+      mergesort:
+        words:
+          - "merge"
+          - "sort"
+        use_tests:
+          - name: "bubblesort"
+            search: "bubble_sort"
+            replace: "merge_sort"
 
 Example
 =======
@@ -276,11 +428,89 @@ The following is an example of a full ``.glotter.yml``
           - "io"
         acronyms:
           - "io"
+        tests:
+          fileio:
+            - expected:
+              exec: "cat output.txt"
       factorial:
         words:
           - "factorial"
         requires_parameters: true
+        tests:
+          factorial_valid:
+            params:
+              - name: "value 1"
+                input: "1"
+                expected: "1"
+              - name: "value 5"
+                input: "5"
+                expected: "120"
+            transformations:
+              - "strip"
+          factorial_invalid:
+            params:
+              - name: "no input"
+                input: null
+                expected: "Some error message"
+              - name: "empty input"
+                input: '""'
+                expected: "Some error message"
+            transformations:
+              - "strip"
       helloworld:
         words:
           - "hello"
           - "world"
+        tests:
+            hello_world:
+                params:
+                  - expected: "Hello, world!"
+                transformations:
+                  - "strip"
+      quine:
+        words:
+          - "quine"
+        tests:
+            quine:
+                params:
+                  - expected:
+                    - self: ""
+                transformations:
+                  - "strip"
+                  - "strip_expected"
+      bubblesort:
+        words:
+          - "bubble"
+          - "sort"
+        requires_parameters: true
+        bubble_sort_valid:
+          params:
+            - name: "not sorted"
+              input: '"4, 5, 1, 3, 2"'
+              expected: "1, 2, 3, 4, 5"
+            - name: "already sorted"
+              input: '"1, 2, 3, 4"'
+              expected: "1, 2, 3, 4"
+          transformations:
+            -   remove:
+                - "["
+                - "]"
+            -   "strip"
+        bubble_sort_invalid:
+          params:
+            - name: "no input"
+              input: null
+              expected: "Some error"
+            - name: "empty input"
+              input: '""'
+              expected: "Some error"
+          transformations:
+            - "strip"
+      mergesort:
+        words:
+          - "merge"
+          - "sort"
+        use_tests:
+          - name: "bubblesort"
+            search: "bubble_sort"
+            replace: "merge_sort"
