@@ -59,6 +59,29 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#projects">Projects</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#words">Words</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id3">Description</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#acronyms">Acronyms</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id4">Description</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#requires-parameters">Requires Parameters</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id5">Description</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id6">Values</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#tests">Tests</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id7">Description</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id8">Values</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#use-tests">Use Tests</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id9">Description</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id10">Values</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#format">Format</a></li>
 </ul>
 </li>
@@ -111,7 +134,7 @@ These settings are all optional. If this section is omitted, all of its values a
 </ul>
 <section id="description">
 <h4>Description<a class="headerlink" href="#description" title="Permalink to this heading"></a></h4>
-<p>The acronym scheme determines how the Glotter2 should handle file names that contain acronyms.</p>
+<p><code class="docutils literal notranslate"><span class="pre">acronym_scheme</span></code> determines how the Glotter2 should handle file names that contain acronyms.</p>
 </section>
 <section id="values">
 <h4>Values<a class="headerlink" href="#values" title="Permalink to this heading"></a></h4>
@@ -141,18 +164,209 @@ It can be absolute or relative from the current directory.</p>
 <section id="projects">
 <span id="id2"></span><h2>Projects<a class="headerlink" href="#projects" title="Permalink to this heading"></a></h2>
 <p>The projects section contains all of the information about each “project” that is implemented in your project.
-Each project has:</p>
-<ul class="simple">
-<li><p>a project key</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">words</span></code>: a list of words that make up the name of the project depending on naming scheme</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">acronym</span></code>: a list of the words in the word list that are acronyms (optional)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">requires_parameters</span></code>: a flag of whether the project will require command line arguments (optional,
-default is <code class="docutils literal notranslate"><span class="pre">false</span></code>)</p></li>
+Each project has a project key and a set of value.</p>
+<section id="words">
+<h3>Words<a class="headerlink" href="#words" title="Permalink to this heading"></a></h3>
+<ul>
+<li><p><strong>Required</strong></p></li>
+<li><p><strong>Format</strong>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">words</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;word1&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;word2&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+</pre></div>
+</div>
+</li>
 </ul>
+<section id="id3">
+<h4>Description<a class="headerlink" href="#id3" title="Permalink to this heading"></a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">words</span></code> is a list of words that make up the name of the project depending on naming scheme.</p>
+</section>
+</section>
+<section id="acronyms">
+<h3>Acronyms<a class="headerlink" href="#acronyms" title="Permalink to this heading"></a></h3>
+<ul>
+<li><p><strong>Optional</strong></p></li>
+<li><p><strong>Format</strong>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">acronyms</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;acronym1&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;acronym2&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<section id="id4">
+<h4>Description<a class="headerlink" href="#id4" title="Permalink to this heading"></a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">acronyms</span></code> is a list of the words in the word list that are acronyms.</p>
+</section>
+</section>
+<section id="requires-parameters">
+<h3>Requires Parameters<a class="headerlink" href="#requires-parameters" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Optional</strong></p></li>
+<li><p><strong>Format</strong>: <code class="docutils literal notranslate"><span class="pre">requires_parameters:</span> <span class="pre">boolean</span></code></p></li>
+<li><p><strong>Default</strong>: <code class="docutils literal notranslate"><span class="pre">false</span></code></p></li>
+</ul>
+<section id="id5">
+<h4>Description<a class="headerlink" href="#id5" title="Permalink to this heading"></a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">requires_parameters</span></code> is a flag of whether the project will require command line arguments.</p>
+</section>
+<section id="id6">
+<h4>Values<a class="headerlink" href="#id6" title="Permalink to this heading"></a></h4>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">true</span></code> - A project requires command line arguments</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">false</span></code> - A project does not require command line arguments</p></li>
+</ul>
+</section>
+</section>
+<section id="tests">
+<h3>Tests<a class="headerlink" href="#tests" title="Permalink to this heading"></a></h3>
+<ul>
+<li><p><strong>Optional</strong></p></li>
+<li><p><strong>Format</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">test_name1</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">params</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">param_name1</span>
+<span class="w">        </span><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">input_value1</span>
+<span class="w">        </span><span class="nt">expected</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">expected_value1</span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+<span class="w">    </span><span class="nt">transformations</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">transformation1</span>
+<span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+<span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<section id="id7">
+<h4>Description<a class="headerlink" href="#id7" title="Permalink to this heading"></a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">tests</span></code> is a dictionary that describes auto-generated tests. Each auto-generate test
+has a name that is a key. Each of these tests have is a list of parameter dictionaries,
+<code class="docutils literal notranslate"><span class="pre">params</span></code>. This is required. Each list has the following item:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> is a name of the parameter.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">input</span></code> is an input value to the test for this parameter.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">expected</span></code> is a expected value or values for this parameter.</p></li>
+</ul>
+<p>Each of these tests can have a list of <code class="docutils literal notranslate"><span class="pre">transformations</span></code> that can be applied to the
+actual value and/or the expected value before comparing the actual and expected values.</p>
+</section>
+<section id="id8">
+<h4>Values<a class="headerlink" href="#id8" title="Permalink to this heading"></a></h4>
+<ul class="simple">
+<li><p>The test key must be at least one character that starts with an alphabetic character
+or an underscore. All subsequent characters must be alphanumeric or an underscore.</p></li>
+</ul>
+<section id="params">
+<h5>Params<a class="headerlink" href="#params" title="Permalink to this heading"></a></h5>
+<ul>
+<li><p><strong>Required</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> is a string. It is required if <code class="docutils literal notranslate"><span class="pre">requires_parameters</span></code> is <code class="docutils literal notranslate"><span class="pre">true</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">input</span></code> is required if <code class="docutils literal notranslate"><span class="pre">requires_parameters</span></code> is <code class="docutils literal notranslate"><span class="pre">true</span></code>. It is either <code class="docutils literal notranslate"><span class="pre">null</span></code>
+or a string:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
+</pre></div>
+</div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;string_value&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">expected</span></code> is required. It is either a string, a list of strings, or a dictionary
+contain a key and a string value:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">expected</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;string_value&quot;</span>
+</pre></div>
+</div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">expected</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;list_value1&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;list_value2&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+</pre></div>
+</div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">expected</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">key</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;string&quot;</span>
+</pre></div>
+</div>
+<p>As a dictionary may be one of the following:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">exec:</span> <span class="pre">&quot;command&quot;</span></code> - Execute a command in the language-specific docker container.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">self:</span> <span class="pre">&quot;&quot;</span></code> - The expect value is the project code (i.e., a
+<a class="reference external" href="https://en.wikipedia.org/wiki/Quine_(computing)">quine</a>)</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="transformations">
+<h5>Transformations<a class="headerlink" href="#transformations" title="Permalink to this heading"></a></h5>
+<ul class="simple">
+<li><p><strong>Optional</strong></p></li>
+</ul>
+<p>The following transformations are string values:</p>
+<ul class="simple">
+<li><p><cite>“strip”</cite>: Remove leading and trailing whitespace from the actual value.</p></li>
+<li><p><cite>“splitlines”</cite>: Split actual value at each newline character – e.g., <code class="docutils literal notranslate"><span class="pre">&quot;1\n2\n3&quot;</span></code> is
+converted to the list <code class="docutils literal notranslate"><span class="pre">[&quot;1&quot;,</span> <span class="pre">&quot;2&quot;,</span> <span class="pre">&quot;3&quot;]</span></code>.</p></li>
+<li><p><cite>“lower”</cite>: Convert the actual value to lowercase.</p></li>
+<li><p><cite>“any_order”</cite>: Convert the actual and expected value into a sorted list of unique
+values – e.g., a list of <code class="docutils literal notranslate"><span class="pre">[&quot;7&quot;,</span> <span class="pre">&quot;3&quot;,</span> <span class="pre">&quot;1&quot;,</span> <span class="pre">&quot;7&quot;]</span></code> is converted to <code class="docutils literal notranslate"><span class="pre">[&quot;1&quot;,</span> <span class="pre">&quot;3&quot;,</span> <span class="pre">&quot;7&quot;]</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">strip_expected</span></code>: Remove leading a trailing whitespace from the expected value.</p></li>
+</ul>
+<p>The following transformations are dictionaries:</p>
+<ul>
+<li><p>“remove”: Remove all listed characters from the actual value:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;remove&quot;</span><span class="p p-Indicator">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;char1&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;char2&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+</pre></div>
+</div>
+</li>
+<li><p>“strip”: Remove leading and trailing characters from the actual value.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;strip&quot;</span><span class="p p-Indicator">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;char1&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;char2&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+</section>
+</section>
+<section id="use-tests">
+<h3>Use Tests<a class="headerlink" href="#use-tests" title="Permalink to this heading"></a></h3>
+<ul>
+<li><p><strong>Optional</strong></p></li>
+<li><p><strong>Format</strong>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">use_tests</span><span class="p">:</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;project_name&quot;</span>
+<span class="w">  </span><span class="nt">search</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;search_string&quot;</span>
+<span class="w">  </span><span class="nt">replace</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;replace_string&quot;</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<section id="id9">
+<h4>Description<a class="headerlink" href="#id9" title="Permalink to this heading"></a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">use_tests</span></code> allows tests to be reused from another project. It is mutually exclusive with
+<code class="docutils literal notranslate"><span class="pre">tests</span></code>.</p>
+</section>
+<section id="id10">
+<h4>Values<a class="headerlink" href="#id10" title="Permalink to this heading"></a></h4>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> is a string that indicates the project for which to reuse tests. It is required.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">search</span></code> is a string to use a string to search for in the test name.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">replace</span></code> is a string to use a string to replace in the tests.</p></li>
+</ul>
+<p>Both <code class="docutils literal notranslate"><span class="pre">search</span></code> and <code class="docutils literal notranslate"><span class="pre">replace</span></code> is optional, but it one is specified, then other must also
+be specified.</p>
+</section>
+</section>
 <section id="format">
 <h3>Format<a class="headerlink" href="#format" title="Permalink to this heading"></a></h3>
 <p>The format for a project is as follows:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">projectkey</span><span class="p">:</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">projectkey1</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">words</span><span class="p">:</span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;words&quot;</span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;in&quot;</span>
@@ -162,12 +376,45 @@ default is <code class="docutils literal notranslate"><span class="pre">false</s
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;in&quot;</span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;project&quot;</span>
 <span class="w">  </span><span class="nt">requires_parameters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">testkey1</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">params</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;param</span><span class="nv"> </span><span class="s">name1&quot;</span>
+<span class="w">          </span><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;input</span><span class="nv"> </span><span class="s">value1&quot;</span>
+<span class="w">          </span><span class="nt">expected</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">expected value or values 1</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;param</span><span class="nv"> </span><span class="s">name2&quot;</span>
+<span class="w">          </span><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;input</span><span class="nv"> </span><span class="s">value2&quot;</span>
+<span class="w">          </span><span class="nt">expected</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">expected value or values 2</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+<span class="w">    </span><span class="nt">testkey2</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">params</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;param</span><span class="nv"> </span><span class="s">name1&quot;</span>
+<span class="w">          </span><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;input</span><span class="nv"> </span><span class="s">value1&quot;</span>
+<span class="w">          </span><span class="nt">expected</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">expected value or values 1</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;param</span><span class="nv"> </span><span class="s">name2&quot;</span>
+<span class="w">          </span><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;input</span><span class="nv"> </span><span class="s">value2&quot;</span>
+<span class="w">          </span><span class="nt">expected</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">expected value or values 2</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+<span class="nt">projectkey2</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">words</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;words&quot;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;in&quot;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;project&quot;</span>
+<span class="w">  </span><span class="nt">acronyms</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;acronyms&quot;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;in&quot;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;project&quot;</span>
+<span class="w">  </span><span class="nt">use_tests</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;projectkey&quot;</span>
+<span class="w">      </span><span class="nt">search</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;search_value&quot;</span>
+<span class="w">      </span><span class="nt">replace</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;replace_value&quot;</span>
 </pre></div>
 </div>
-<p>So for example. Let’s say I have three projects named FileIO, Factorial, and HelloWorld.
-FileIO contains an acronym.
-Factorial requires parameters.
-My <code class="docutils literal notranslate"><span class="pre">projects</span></code> section would look like this:</p>
+<p>So for example. Let’s say I have three projects named FileIO, Factorial, HelloWorld,
+Quine, BubbleSort, and MergeSort.</p>
+<p>FileIO contains an acronym. Both Factorial and BubbleSort requires parameters.
+MergeSort uses tests from BubbleSort.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">projects</span></code> section would look like this:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">projects</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">fileio</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">words</span><span class="p">:</span>
@@ -175,14 +422,92 @@ My <code class="docutils literal notranslate"><span class="pre">projects</span><
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;io&quot;</span>
 <span class="w">    </span><span class="nt">acronyms</span><span class="p">:</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;io&quot;</span>
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">fileio</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">expected</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">exec</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;cat</span><span class="nv"> </span><span class="s">output.txt&quot;</span>
 <span class="w">  </span><span class="nt">factorial</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">words</span><span class="p">:</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;factorial&quot;</span>
 <span class="w">    </span><span class="nt">requires_parameters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">factorial_valid</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">params</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;value</span><span class="nv"> </span><span class="s">1&quot;</span>
+<span class="w">            </span><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;1&quot;</span>
+<span class="w">            </span><span class="nt">expected</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;1&quot;</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;value</span><span class="nv"> </span><span class="s">5&quot;</span>
+<span class="w">            </span><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;5&quot;</span>
+<span class="w">            </span><span class="nt">expected</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;120&quot;</span>
+<span class="w">        </span><span class="nt">transformations</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;strip&quot;</span>
+<span class="w">      </span><span class="nt">factorial_invalid</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">params</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;no</span><span class="nv"> </span><span class="s">input&quot;</span>
+<span class="w">            </span><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
+<span class="w">            </span><span class="nt">expected</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Some</span><span class="nv"> </span><span class="s">error</span><span class="nv"> </span><span class="s">message&quot;</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;empty</span><span class="nv"> </span><span class="s">input&quot;</span>
+<span class="w">            </span><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;&quot;&quot;&#39;</span>
+<span class="w">            </span><span class="nt">expected</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Some</span><span class="nv"> </span><span class="s">error</span><span class="nv"> </span><span class="s">message&quot;</span>
+<span class="w">        </span><span class="nt">transformations</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;strip&quot;</span>
 <span class="w">  </span><span class="nt">helloworld</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">words</span><span class="p">:</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;hello&quot;</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;world&quot;</span>
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">hello_world</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">params</span><span class="p">:</span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">expected</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Hello,</span><span class="nv"> </span><span class="s">world!&quot;</span>
+<span class="w">            </span><span class="nt">transformations</span><span class="p">:</span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;strip&quot;</span>
+<span class="w">  </span><span class="nt">quine</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">words</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;quine&quot;</span>
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">quine</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">params</span><span class="p">:</span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">expected</span><span class="p">:</span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">self</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">            </span><span class="nt">transformations</span><span class="p">:</span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;strip&quot;</span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;strip_expected&quot;</span>
+<span class="w">  </span><span class="nt">bubblesort</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">words</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;bubble&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;sort&quot;</span>
+<span class="w">    </span><span class="nt">requires_parameters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">bubble_sort_valid</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">params</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;not</span><span class="nv"> </span><span class="s">sorted&quot;</span>
+<span class="w">          </span><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;&quot;4,</span><span class="nv"> </span><span class="s">5,</span><span class="nv"> </span><span class="s">1,</span><span class="nv"> </span><span class="s">3,</span><span class="nv"> </span><span class="s">2&quot;&#39;</span>
+<span class="w">          </span><span class="nt">expected</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;1,</span><span class="nv"> </span><span class="s">2,</span><span class="nv"> </span><span class="s">3,</span><span class="nv"> </span><span class="s">4,</span><span class="nv"> </span><span class="s">5&quot;</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;already</span><span class="nv"> </span><span class="s">sorted&quot;</span>
+<span class="w">          </span><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;&quot;1,</span><span class="nv"> </span><span class="s">2,</span><span class="nv"> </span><span class="s">3,</span><span class="nv"> </span><span class="s">4&quot;&#39;</span>
+<span class="w">          </span><span class="nt">expected</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;1,</span><span class="nv"> </span><span class="s">2,</span><span class="nv"> </span><span class="s">3,</span><span class="nv"> </span><span class="s">4&quot;</span>
+<span class="w">      </span><span class="nt">transformations</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w">   </span><span class="nt">remove</span><span class="p">:</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;[&quot;</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;]&quot;</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w">   </span><span class="s">&quot;strip&quot;</span>
+<span class="w">    </span><span class="nt">bubble_sort_invalid</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">params</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;no</span><span class="nv"> </span><span class="s">input&quot;</span>
+<span class="w">          </span><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
+<span class="w">          </span><span class="nt">expected</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Some</span><span class="nv"> </span><span class="s">error&quot;</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;empty</span><span class="nv"> </span><span class="s">input&quot;</span>
+<span class="w">          </span><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;&quot;&quot;&#39;</span>
+<span class="w">          </span><span class="nt">expected</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Some</span><span class="nv"> </span><span class="s">error&quot;</span>
+<span class="w">      </span><span class="nt">transformations</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;strip&quot;</span>
+<span class="w">  </span><span class="nt">mergesort</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">words</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;merge&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;sort&quot;</span>
+<span class="w">    </span><span class="nt">use_tests</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;bubblesort&quot;</span>
+<span class="w">        </span><span class="nt">search</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;bubble_sort&quot;</span>
+<span class="w">        </span><span class="nt">replace</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;merge_sort&quot;</span>
 </pre></div>
 </div>
 </section>
@@ -201,14 +526,92 @@ My <code class="docutils literal notranslate"><span class="pre">projects</span><
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;io&quot;</span>
 <span class="w">    </span><span class="nt">acronyms</span><span class="p">:</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;io&quot;</span>
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">fileio</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">expected</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">exec</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;cat</span><span class="nv"> </span><span class="s">output.txt&quot;</span>
 <span class="w">  </span><span class="nt">factorial</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">words</span><span class="p">:</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;factorial&quot;</span>
 <span class="w">    </span><span class="nt">requires_parameters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">factorial_valid</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">params</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;value</span><span class="nv"> </span><span class="s">1&quot;</span>
+<span class="w">            </span><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;1&quot;</span>
+<span class="w">            </span><span class="nt">expected</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;1&quot;</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;value</span><span class="nv"> </span><span class="s">5&quot;</span>
+<span class="w">            </span><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;5&quot;</span>
+<span class="w">            </span><span class="nt">expected</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;120&quot;</span>
+<span class="w">        </span><span class="nt">transformations</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;strip&quot;</span>
+<span class="w">      </span><span class="nt">factorial_invalid</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">params</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;no</span><span class="nv"> </span><span class="s">input&quot;</span>
+<span class="w">            </span><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
+<span class="w">            </span><span class="nt">expected</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Some</span><span class="nv"> </span><span class="s">error</span><span class="nv"> </span><span class="s">message&quot;</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;empty</span><span class="nv"> </span><span class="s">input&quot;</span>
+<span class="w">            </span><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;&quot;&quot;&#39;</span>
+<span class="w">            </span><span class="nt">expected</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Some</span><span class="nv"> </span><span class="s">error</span><span class="nv"> </span><span class="s">message&quot;</span>
+<span class="w">        </span><span class="nt">transformations</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;strip&quot;</span>
 <span class="w">  </span><span class="nt">helloworld</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">words</span><span class="p">:</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;hello&quot;</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;world&quot;</span>
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">hello_world</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">params</span><span class="p">:</span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">expected</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Hello,</span><span class="nv"> </span><span class="s">world!&quot;</span>
+<span class="w">            </span><span class="nt">transformations</span><span class="p">:</span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;strip&quot;</span>
+<span class="w">  </span><span class="nt">quine</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">words</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;quine&quot;</span>
+<span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">quine</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">params</span><span class="p">:</span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">expected</span><span class="p">:</span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">self</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">            </span><span class="nt">transformations</span><span class="p">:</span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;strip&quot;</span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;strip_expected&quot;</span>
+<span class="w">  </span><span class="nt">bubblesort</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">words</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;bubble&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;sort&quot;</span>
+<span class="w">    </span><span class="nt">requires_parameters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">bubble_sort_valid</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">params</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;not</span><span class="nv"> </span><span class="s">sorted&quot;</span>
+<span class="w">          </span><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;&quot;4,</span><span class="nv"> </span><span class="s">5,</span><span class="nv"> </span><span class="s">1,</span><span class="nv"> </span><span class="s">3,</span><span class="nv"> </span><span class="s">2&quot;&#39;</span>
+<span class="w">          </span><span class="nt">expected</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;1,</span><span class="nv"> </span><span class="s">2,</span><span class="nv"> </span><span class="s">3,</span><span class="nv"> </span><span class="s">4,</span><span class="nv"> </span><span class="s">5&quot;</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;already</span><span class="nv"> </span><span class="s">sorted&quot;</span>
+<span class="w">          </span><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;&quot;1,</span><span class="nv"> </span><span class="s">2,</span><span class="nv"> </span><span class="s">3,</span><span class="nv"> </span><span class="s">4&quot;&#39;</span>
+<span class="w">          </span><span class="nt">expected</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;1,</span><span class="nv"> </span><span class="s">2,</span><span class="nv"> </span><span class="s">3,</span><span class="nv"> </span><span class="s">4&quot;</span>
+<span class="w">      </span><span class="nt">transformations</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w">   </span><span class="nt">remove</span><span class="p">:</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;[&quot;</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;]&quot;</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w">   </span><span class="s">&quot;strip&quot;</span>
+<span class="w">    </span><span class="nt">bubble_sort_invalid</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">params</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;no</span><span class="nv"> </span><span class="s">input&quot;</span>
+<span class="w">          </span><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
+<span class="w">          </span><span class="nt">expected</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Some</span><span class="nv"> </span><span class="s">error&quot;</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;empty</span><span class="nv"> </span><span class="s">input&quot;</span>
+<span class="w">          </span><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;&quot;&quot;&#39;</span>
+<span class="w">          </span><span class="nt">expected</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Some</span><span class="nv"> </span><span class="s">error&quot;</span>
+<span class="w">      </span><span class="nt">transformations</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;strip&quot;</span>
+<span class="w">  </span><span class="nt">mergesort</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">words</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;merge&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;sort&quot;</span>
+<span class="w">    </span><span class="nt">use_tests</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;bubblesort&quot;</span>
+<span class="w">        </span><span class="nt">search</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;bubble_sort&quot;</span>
+<span class="w">        </span><span class="nt">replace</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;merge_sort&quot;</span>
 </pre></div>
 </div>
 </section>
