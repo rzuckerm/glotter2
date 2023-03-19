@@ -73,13 +73,13 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#tests">Tests</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#id7">Description</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id8">Values</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id8">Description</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id9">Values</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#use-tests">Use Tests</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#id9">Description</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id10">Values</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id11">Description</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id12">Values</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#format">Format</a></li>
@@ -221,7 +221,7 @@ Each project has a project key and a set of value.</p>
 </section>
 </section>
 <section id="tests">
-<h3>Tests<a class="headerlink" href="#tests" title="Permalink to this heading"></a></h3>
+<span id="id7"></span><h3>Tests<a class="headerlink" href="#tests" title="Permalink to this heading"></a></h3>
 <ul>
 <li><p><strong>Optional</strong></p></li>
 <li><p><strong>Format</strong></p>
@@ -240,8 +240,8 @@ Each project has a project key and a set of value.</p>
 </div>
 </li>
 </ul>
-<section id="id7">
-<h4>Description<a class="headerlink" href="#id7" title="Permalink to this heading"></a></h4>
+<section id="id8">
+<h4>Description<a class="headerlink" href="#id8" title="Permalink to this heading"></a></h4>
 <p><code class="docutils literal notranslate"><span class="pre">tests</span></code> is a dictionary that describes auto-generated tests. Each auto-generate test
 has a name that is a key. Each of these tests have is a list of parameter dictionaries,
 <code class="docutils literal notranslate"><span class="pre">params</span></code>. This is required. Each list has the following item:</p>
@@ -253,8 +253,8 @@ has a name that is a key. Each of these tests have is a list of parameter dictio
 <p>Each of these tests can have a list of <code class="docutils literal notranslate"><span class="pre">transformations</span></code> that can be applied to the
 actual value and/or the expected value before comparing the actual and expected values.</p>
 </section>
-<section id="id8">
-<h4>Values<a class="headerlink" href="#id8" title="Permalink to this heading"></a></h4>
+<section id="id9">
+<h4>Values<a class="headerlink" href="#id9" title="Permalink to this heading"></a></h4>
 <ul class="simple">
 <li><p>The test key must be at least one character that starts with an alphabetic character
 or an underscore. All subsequent characters must be alphanumeric or an underscore.</p></li>
@@ -335,7 +335,7 @@ values – e.g., a list of <code class="docutils literal notranslate"><span clas
 </section>
 </section>
 <section id="use-tests">
-<h3>Use Tests<a class="headerlink" href="#use-tests" title="Permalink to this heading"></a></h3>
+<span id="id10"></span><h3>Use Tests<a class="headerlink" href="#use-tests" title="Permalink to this heading"></a></h3>
 <ul>
 <li><p><strong>Optional</strong></p></li>
 <li><p><strong>Format</strong>:</p>
@@ -347,13 +347,13 @@ values – e.g., a list of <code class="docutils literal notranslate"><span clas
 </div>
 </li>
 </ul>
-<section id="id9">
-<h4>Description<a class="headerlink" href="#id9" title="Permalink to this heading"></a></h4>
+<section id="id11">
+<h4>Description<a class="headerlink" href="#id11" title="Permalink to this heading"></a></h4>
 <p><code class="docutils literal notranslate"><span class="pre">use_tests</span></code> allows tests to be reused from another project. It is mutually exclusive with
 <code class="docutils literal notranslate"><span class="pre">tests</span></code>.</p>
 </section>
-<section id="id10">
-<h4>Values<a class="headerlink" href="#id10" title="Permalink to this heading"></a></h4>
+<section id="id12">
+<h4>Values<a class="headerlink" href="#id12" title="Permalink to this heading"></a></h4>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> is a string that indicates the project for which to reuse tests. It is required.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">search</span></code> is a string to use a string to search for in the test name.</p></li>
@@ -614,6 +614,9 @@ MergeSort uses tests from BubbleSort.</p>
 <span class="w">        </span><span class="nt">replace</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;merge_sort&quot;</span>
 </pre></div>
 </div>
+<p>If you’d like to see a full working example of a <code class="docutils literal notranslate"><span class="pre">.glotter.yml</span></code>, see the
+one in <a class="reference external" href="https://github.com/TheRenegadeCoder/sample-programs/blob/main/.glotter.yml">sample-programs</a>.
+To see what the auto-generated code looks like, see the <a class="reference external" href="https://github.com/rzuckerm/sample-programs-auto-gen-tests/tree/main/test/generated">sample-programs-auto-gen-tests</a> repository.</p>
 </section>
 </section>
 

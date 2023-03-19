@@ -110,6 +110,8 @@ Values
 - ``true`` - A project requires command line arguments
 - ``false`` - A project does not require command line arguments
 
+.. _tests:
+
 Tests
 -----
 
@@ -226,6 +228,8 @@ The following transformations are dictionaries:
       - "char1"
       - "char2"
       - ...
+
+.. _use_tests:
 
 Use Tests
 ---------
@@ -514,3 +518,8 @@ The following is an example of a full ``.glotter.yml``
           - name: "bubblesort"
             search: "bubble_sort"
             replace: "merge_sort"
+
+If you'd like to see a full working example of a ``.glotter.yml``, see the
+one in `sample-programs <https://github.com/TheRenegadeCoder/sample-programs/blob/main/.glotter.yml>`_.
+To see what the auto-generated code looks like, see the `sample-programs-auto-gen-tests 
+<https://github.com/rzuckerm/sample-programs-auto-gen-tests/tree/main/test/generated>`_ repository.
