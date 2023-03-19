@@ -151,7 +151,7 @@ would look:
 
     from glotter import project_test, project_fixture
 
-    from test import Factorial
+    from test import ProjectType
 
     error_permutations = [
         (
