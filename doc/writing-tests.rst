@@ -134,7 +134,7 @@ somewhere in your project or using an enum with a ``key`` method as seen below:
 
 .. note::
 
-    For this example to work, the project keys in your [global Glotter2 configuration][Glotter2-config-projects],
+    For this example to work, the project keys in your `global Glotter2 configuration`_,
     must match the names of the enum values letter-for-letter.
 
 
