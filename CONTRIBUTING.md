@@ -22,11 +22,16 @@ template or the Feature Request template as applicable.
 
 Before you can build Glotter2, there a few things you will need.
 
-- `docker`: Glotter2 makes extensive use of docker. You will need to have docker installed on your
-  machine
-- `python`, `pip`, and `virtualenv`: Glotter2 is written in python and uses `pip` to install dependencies
-  in a `virtualenv`, a virtual environment where dependencies are installed.
-- `make`: Everything in Glotter2 is built and run using `make`
+- [docker]: Glotter2 makes extensive use of docker. You will need to have docker installed on your
+  machine.
+- [python], [pip], and [virtualenv]: Glotter2 is written in python and uses `pip` to install
+  dependencies in a virtual environment that isolates the dependencies for this project
+  from the dependencies on your host system.
+- [make]: Everything in Glotter2 is built and run using `make`. See the following installation
+  guides:
+  - [Installing make on Linux]
+  - [Installing make on MacOS]
+  - [Installing make on Windows]
 
 ### Structure
 
@@ -134,3 +139,12 @@ failure, and open the python debugger on that failure:
 [pytest]: https://pypi.org/project/pytest
 
 [reStructuredText]: https://www.sphinx-doc.org/en/master/usage/restructuredtext/
+
+[docker]: https://docs.docker.com/get-docker/
+[python]: https://www.python.org/downloads/
+[pip]: https://pip.pypa.io/en/stable/installation/
+[virtualenv]: https://virtualenv.pypa.io/en/latest/installation.html
+[make]: https://www.gnu.org/software/make/
+[Installing make on Linux]: https://www.incredibuild.com/integrations/gnu-make#:~:text=If%20you're%20on%20Linux,Fedora%2FRHEL%20%E2%80%93%20yum%20install%20make
+[Installing make on MacOS]: https://formulae.brew.sh/formula/make
+[Installing make on Windows]: https://gnuwin32.sourceforge.net/packages/make.htm
