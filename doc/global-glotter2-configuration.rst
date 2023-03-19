@@ -199,26 +199,26 @@ Transformations
 
 The following transformations are string values:
 
-- `"strip"`: Remove leading and trailing whitespace from the actual value.
-- `"splitlines"`: Split actual value at each newline character -- e.g., ``"1\n2\n3"`` is
+- ``"strip"``: Remove leading and trailing whitespace from the actual value.
+- ``"splitlines"``: Split actual value at each newline character -- e.g., ``"1\n2\n3"`` is
   converted to the list ``["1", "2", "3"]``.
-- `"lower"`: Convert the actual value to lowercase.
-- `"any_order"`: Convert the actual and expected value into a sorted list of unique
+- ``"lower"``: Convert the actual value to lowercase.
+- ``"any_order"``: Convert the actual and expected value into a sorted list of unique
   values -- e.g., a list of ``["7", "3", "1", "7"]`` is converted to ``["1", "3", "7"]``.
 - ``strip_expected``: Remove leading a trailing whitespace from the expected value.
 
 The following transformations are dictionaries:
 
-- "remove": Remove all listed characters from the actual value:
+- ``"remove"``: Remove all listed characters from the actual value:
 
   .. code-block:: yaml
 
-    - "remove":
+    - ``"remove"``:
       - "char1"
       - "char2"
       - ...
 
-- "strip": Remove leading and trailing characters from the actual value.
+- ``"strip"``: Remove leading and trailing characters from the actual value.
 
   .. code-block:: yaml
 
