@@ -304,25 +304,25 @@ contain a key and a string value:</p>
 </ul>
 <p>The following transformations are string values:</p>
 <ul class="simple">
-<li><p><cite>“strip”</cite>: Remove leading and trailing whitespace from the actual value.</p></li>
-<li><p><cite>“splitlines”</cite>: Split actual value at each newline character – e.g., <code class="docutils literal notranslate"><span class="pre">&quot;1\n2\n3&quot;</span></code> is
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;strip&quot;</span></code>: Remove leading and trailing whitespace from the actual value.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;splitlines&quot;</span></code>: Split actual value at each newline character – e.g., <code class="docutils literal notranslate"><span class="pre">&quot;1\n2\n3&quot;</span></code> is
 converted to the list <code class="docutils literal notranslate"><span class="pre">[&quot;1&quot;,</span> <span class="pre">&quot;2&quot;,</span> <span class="pre">&quot;3&quot;]</span></code>.</p></li>
-<li><p><cite>“lower”</cite>: Convert the actual value to lowercase.</p></li>
-<li><p><cite>“any_order”</cite>: Convert the actual and expected value into a sorted list of unique
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;lower&quot;</span></code>: Convert the actual value to lowercase.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;any_order&quot;</span></code>: Convert the actual and expected value into a sorted list of unique
 values – e.g., a list of <code class="docutils literal notranslate"><span class="pre">[&quot;7&quot;,</span> <span class="pre">&quot;3&quot;,</span> <span class="pre">&quot;1&quot;,</span> <span class="pre">&quot;7&quot;]</span></code> is converted to <code class="docutils literal notranslate"><span class="pre">[&quot;1&quot;,</span> <span class="pre">&quot;3&quot;,</span> <span class="pre">&quot;7&quot;]</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">strip_expected</span></code>: Remove leading a trailing whitespace from the expected value.</p></li>
 </ul>
 <p>The following transformations are dictionaries:</p>
 <ul>
-<li><p>“remove”: Remove all listed characters from the actual value:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;remove&quot;</span><span class="p p-Indicator">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;char1&quot;</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;char2&quot;</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;remove&quot;</span></code>: Remove all listed characters from the actual value:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span>- ``&quot;remove&quot;``:
+  - &quot;char1&quot;
+  - &quot;char2&quot;
+  - ...
 </pre></div>
 </div>
 </li>
-<li><p>“strip”: Remove leading and trailing characters from the actual value.</p>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;strip&quot;</span></code>: Remove leading and trailing characters from the actual value.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;strip&quot;</span><span class="p p-Indicator">:</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;char1&quot;</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;char2&quot;</span>
