@@ -227,6 +227,9 @@ Each project has a project key and a set of value.</p>
 <li><p><strong>Format</strong></p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">tests</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">test_name1</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">inputs</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;Input</span><span class="nv"> </span><span class="s">1&quot;</span>
+<span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">...</span>
 <span class="w">    </span><span class="nt">params</span><span class="p">:</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">param_name1</span>
 <span class="w">        </span><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">input_value1</span>
@@ -242,9 +245,16 @@ Each project has a project key and a set of value.</p>
 </ul>
 <section id="id8">
 <h4>Description<a class="headerlink" href="#id8" title="Permalink to this heading"></a></h4>
-<p><code class="docutils literal notranslate"><span class="pre">tests</span></code> is a dictionary that describes auto-generated tests. Each auto-generate test
-has a name that is a key. Each of these tests have is a list of parameter dictionaries,
-<code class="docutils literal notranslate"><span class="pre">params</span></code>. This is required. Each list has the following item:</p>
+<p><code class="docutils literal notranslate"><span class="pre">tests</span></code> is a dictionary that describes auto-generated tests. Each
+auto-generated test has a name that is a key.</p>
+<p>Each of these tests may have a list of input names, <code class="docutils literal notranslate"><span class="pre">inputs</span></code>. This is optional,
+and it is ignored if <code class="docutils literal notranslate"><span class="pre">requires_parameters</span></code> is <code class="docutils literal notranslate"><span class="pre">false</span></code>. Each item gives a
+name to each value in the <code class="docutils literal notranslate"><span class="pre">input</span></code> field. This field is used for
+auto-generated test documentation. If not specified, a single input called
+<cite>“Input”</cite> is assumed. When <code class="docutils literal notranslate"><span class="pre">requires_parameters</span></code> is <code class="docutils literal notranslate"><span class="pre">false</span></code>, the
+test documentation just refers to the requirements section.</p>
+<p>Each of these tests have is a list of parameter dictionaries, <code class="docutils literal notranslate"><span class="pre">params</span></code>. This
+is required. Each list has the following item:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> is a name of the parameter.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">input</span></code> is an input value to the test for this parameter.</p></li>
@@ -582,6 +592,8 @@ MergeSort uses tests from BubbleSort.</p>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;sort&quot;</span>
 <span class="w">    </span><span class="nt">requires_parameters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="w">    </span><span class="nt">bubble_sort_valid</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">inputs</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;List</span><span class="nv"> </span><span class="s">Input&quot;</span>
 <span class="w">      </span><span class="nt">params</span><span class="p">:</span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;not</span><span class="nv"> </span><span class="s">sorted&quot;</span>
 <span class="w">          </span><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;&quot;4,</span><span class="nv"> </span><span class="s">5,</span><span class="nv"> </span><span class="s">1,</span><span class="nv"> </span><span class="s">3,</span><span class="nv"> </span><span class="s">2&quot;&#39;</span>
@@ -595,6 +607,8 @@ MergeSort uses tests from BubbleSort.</p>
 <span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;]&quot;</span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w">   </span><span class="s">&quot;strip&quot;</span>
 <span class="w">    </span><span class="nt">bubble_sort_invalid</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">inputs</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;List</span><span class="nv"> </span><span class="s">Input&quot;</span>
 <span class="w">      </span><span class="nt">params</span><span class="p">:</span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;no</span><span class="nv"> </span><span class="s">input&quot;</span>
 <span class="w">          </span><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
