@@ -122,6 +122,9 @@ Tests
 
     tests:
       test_name1:
+        inputs:
+          - "Input 1"
+          ...
         params:
           - name: param_name1
             input: input_value1
@@ -135,9 +138,18 @@ Tests
 Description
 ^^^^^^^^^^^
 
-``tests`` is a dictionary that describes auto-generated tests. Each auto-generate test
-has a name that is a key. Each of these tests have is a list of parameter dictionaries,
-``params``. This is required. Each list has the following item:
+``tests`` is a dictionary that describes auto-generated tests. Each
+auto-generated test has a name that is a key.
+
+Each of these tests may have a list of input names, ``inputs``. This is optional,
+and it is ignored if ``requires_parameters`` is ``false``. Each item gives a
+name to each value in the ``input`` field. This field is used for
+auto-generated test documentation. If not specified, a single input called
+`"Input"` is assumed. When ``requires_parameters`` is ``false``, the
+test documentation just refers to the requirements section.
+
+Each of these tests have is a list of parameter dictionaries, ``params``. This
+is required. Each list has the following item:
 
 - ``name`` is a name of the parameter.
 - ``input`` is an input value to the test for this parameter.
@@ -488,6 +500,8 @@ The following is an example of a full ``.glotter.yml``
           - "sort"
         requires_parameters: true
         bubble_sort_valid:
+          inputs:
+            - "List Input"
           params:
             - name: "not sorted"
               input: '"4, 5, 1, 3, 2"'
@@ -501,6 +515,8 @@ The following is an example of a full ``.glotter.yml``
                 - "]"
             -   "strip"
         bubble_sort_invalid:
+          inputs:
+            - "List Input"
           params:
             - name: "no input"
               input: null

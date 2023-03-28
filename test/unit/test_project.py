@@ -270,6 +270,7 @@ def test_get_project_name_by_scheme_bad():
                     "prime_number_valid": {
                         "name": "prime_number_valid",
                         "requires_parameters": True,
+                        "inputs": ["Input"],
                         "params": [
                             {"name": "one", "input": "1", "expected": "composite"},
                             {"name": "two", "input": "2", "expected": "prime"},
@@ -279,6 +280,7 @@ def test_get_project_name_by_scheme_bad():
                     "prime_number_invalid": {
                         "name": "prime_number_invalid",
                         "requires_parameters": True,
+                        "inputs": ["Input"],
                         "params": [
                             {
                                 "name": "no input",
@@ -415,6 +417,24 @@ def test_good_project(value, expected_value):
             ],
             id="tests-not-all-dict",
         ),
+        pytest.param(
+            {
+                "words": ["foo"],
+                "requires_params": True,
+                "tests": {
+                    "blah": {
+                        "inputs": ["Input1", 2, 3],
+                        "params": [
+                            {"name": "whatever", "input": None, "expected": "stuff"}
+                        ],
+                    }
+                }
+            },
+            [
+                "tests -> blah -> inputs -> 1\n  input is not a str",
+                "tests -> blah -> inputs -> 2\n  input is not a str",
+            ]
+        )
     ],
 )
 def test_bad_project(value, expected_errors):
@@ -461,6 +481,7 @@ def test_get_display_name(value, expected_display_name):
 
 def test_set_tests():
     valid_tests = {
+        "inputs": ["Input List"],
         "params": [
             {
                 "name": "not sorted",
@@ -476,6 +497,7 @@ def test_set_tests():
         "transformations": ["strip"],
     }
     invalid_tests = {
+        "inputs": ["Input List"],
         "params": [
             {"name": "no input", "input": None, "expected": "usage"},
             {"name": "empty input", "input": '""', "expected": "usage"},

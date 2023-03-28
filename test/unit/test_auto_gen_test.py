@@ -167,6 +167,7 @@ def test_auto_gen_param_get_pytest_param(value, expected_pytest_param):
             {
                 "name": char,
                 "requires_parameters": False,
+                "inputs": ["Input"],
                 "params": [
                     {"name": "some-name", "input": None, "expected": "some-str"}
                 ],
@@ -182,6 +183,7 @@ def test_auto_gen_param_get_pytest_param(value, expected_pytest_param):
             {
                 "name": "some_name",
                 "requires_parameters": False,
+                "inputs": ["Input"],
                 "params": [{"name": "", "input": None, "expected": "foo"}],
                 "transformations": [],
             },
@@ -198,6 +200,7 @@ def test_auto_gen_param_get_pytest_param(value, expected_pytest_param):
             {
                 "name": f"foo_{char}_bar",
                 "requires_parameters": False,
+                "inputs": ["Input"],
                 "params": [
                     {"name": "some-name", "input": None, "expected": "some-str"}
                 ],
@@ -229,6 +232,7 @@ def test_auto_gen_param_get_pytest_param(value, expected_pytest_param):
             {
                 "name": "test_name2",
                 "requires_parameters": True,
+                "inputs": ["Input"],
                 "params": [
                     {
                         "name": "some-name1",
@@ -244,6 +248,34 @@ def test_auto_gen_param_get_pytest_param(value, expected_pytest_param):
                 "transformations": ["strip", "splitlines"],
             },
             id="muli_param-multi_transformation",
+        ),
+        pytest.param(
+            {
+                "name": "test_name3",
+                "requires_parameters": True,
+                "inputs": ["Input1", "Input2"],
+                "params": [
+                    {
+                        "name": "some-name3",
+                        "input": "some-input3",
+                        "expected": "some-expected3",
+                    }
+                ],
+            },
+            {
+                "name": "test_name3",
+                "requires_parameters": True,
+                "inputs": ["Input1", "Input2"],
+                "params": [
+                    {
+                        "name": "some-name3",
+                        "input": "some-input3",
+                        "expected": "some-expected3",
+                    }
+                ],
+                "transformations": [],
+            },
+            id="has_inputs",
         ),
     ],
 )
@@ -312,6 +344,70 @@ def test_auto_gen_test_good(value, expected_value):
             },
             "params -> 0 -> input\n  field is required",
             id="missing-param-input",
+        ),
+        pytest.param(
+            {
+                "name": "test_name4",
+                "requires_parameters": True,
+                "inputs": None,
+                "params": [
+                    {
+                        "name": "some-name4",
+                        "input": "some-input4",
+                        "expected": "some-expected4",
+                    }
+                ],
+            },
+            "inputs\n  none is not an allowed",
+            id="inputs-none",
+        ),
+        pytest.param(
+            {
+                "name": "test_name4",
+                "requires_parameters": True,
+                "inputs": [],
+                "params": [
+                    {
+                        "name": "some-name4",
+                        "input": "some-input4",
+                        "expected": "some-expected4",
+                    }
+                ],
+            },
+            "inputs\n  ensure this value has at least 1 item",
+            id="inputs-empty",
+        ),
+        pytest.param(
+            {
+                "name": "test_name4",
+                "requires_parameters": True,
+                "inputs": 5,
+                "params": [
+                    {
+                        "name": "some-name4",
+                        "input": "some-input4",
+                        "expected": "some-expected4",
+                    }
+                ],
+            },
+            "inputs\n  value is not a valid list",
+            id="inputs-int",
+        ),
+        pytest.param(
+            {
+                "name": "test_name4",
+                "requires_parameters": True,
+                "inputs": ["foo", 12, "bar"],
+                "params": [
+                    {
+                        "name": "some-name4",
+                        "input": "some-input4",
+                        "expected": "some-expected4",
+                    }
+                ],
+            },
+            "inputs -> 1\n  input is not a str",
+            id="inputs-not-all-str",
         ),
     ],
 )

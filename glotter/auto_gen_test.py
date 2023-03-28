@@ -150,6 +150,7 @@ class AutoGenTest(BaseModel):
 
     name: constr(strict=True, min_length=1, regex="^[a-zA-Z][0-9a-zA-Z_]*$")
     requires_parameters: bool = False
+    inputs: conlist(str, min_items=1) = ["Input"]
     params: conlist(AutoGenParam, min_items=1)
     transformations: List[Any] = []
 
@@ -164,6 +165,21 @@ class AutoGenTest(BaseModel):
         "remove": _remove_chars,
         "strip": _strip_chars,
     }
+
+    @validator("inputs", each_item=True, pre=True, always=True)
+    def validate_inputs(cls, value):
+        """
+        Validate each input
+
+        :param value: Input to validate
+        :return: Original input
+        :raises: :exc:`ValueError` if input invalid
+        """
+
+        if not isinstance(value, str):
+            raise ValueError("input is not a str")
+
+        return value
 
     @validator("params", each_item=True, pre=True, always=True)
     def validate_params(cls, value, values):
