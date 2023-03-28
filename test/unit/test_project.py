@@ -428,13 +428,13 @@ def test_good_project(value, expected_value):
                             {"name": "whatever", "input": None, "expected": "stuff"}
                         ],
                     }
-                }
+                },
             },
             [
                 "tests -> blah -> inputs -> 1\n  input is not a str",
                 "tests -> blah -> inputs -> 2\n  input is not a str",
-            ]
-        )
+            ],
+        ),
     ],
 )
 def test_bad_project(value, expected_errors):
