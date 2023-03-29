@@ -139,7 +139,7 @@ class TestDocSectionGenerator:
                 inputs = inputs[:num_input_params]
                 cells += [quote(value) for value in inputs]
                 if extra_inputs:
-                    cells[-1] += " " + [quote(value) for value in extra_inputs]
+                    cells[-1] += " " + " ".join(quote(value) for value in extra_inputs)
 
             cells += [""] * (num_input_params - len(inputs))
 
