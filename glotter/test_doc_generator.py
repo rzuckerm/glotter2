@@ -105,13 +105,13 @@ class TestDocSectionGenerator:
         return [f"### {self.test_obj_name}", ""]
 
     def _get_test_table_header(self):
-        columns = ["Description"] + self.test_obj.inputs
+        cells = ["Description"] + self.test_obj.inputs
         if self._any_test_output_is_different():
-            columns.append("Output")
+            cells.append("Output")
 
         return [
-            "| " + " | ".join(columns) + " |",
-            "| " + " | ".join("-" * len(column) for column in columns) + " |",
+            _cells_to_table_line(cells),
+            _cells_to_table_line("-" * len(cell) for cell in cells),
         ]
 
     def _any_test_output_is_different(self):
@@ -130,22 +130,24 @@ class TestDocSectionGenerator:
         num_input_params = len(self.test_obj.inputs)
         for test_param in self.test_obj.params:
             output = test_param.expected
-            columns = [test_param.name.title()]
+            cells = [test_param.name.title()]
             if test_param.input is None:
                 inputs = []
-            else:
+            elif num_input_params > 1:
                 inputs = shlex.split(test_param.input)[:num_input_params]
-                columns += [quote(value) for value in inputs]
+                cells += [quote(value) for value in inputs]
+            else:
+                cells = [test_param.input]
 
-            columns += [""] * (num_input_params - len(inputs))
+            cells += [""] * (num_input_params - len(inputs))
 
             if has_output_column:
                 if isinstance(output, str):
-                    columns.append(quote(output))
+                    cells.append(quote(output))
                 else:
-                    columns.append("<br>".join(quote(item) for item in output))
+                    cells.append("<br>".join(quote(item) for item in output))
 
-            doc.append("| " + " | ".join(columns) + " |")
+            doc.append(_cells_to_table_line(cells))
 
         if not has_output_column:
             doc += [
@@ -158,3 +160,7 @@ class TestDocSectionGenerator:
             ]
 
         return doc + [""]
+
+
+def _cells_to_table_line(cells):
+    return "| " + " | ".join(cells) + " |"
