@@ -133,11 +133,13 @@ class TestDocSectionGenerator:
             cells = [test_param.name.title()]
             if test_param.input is None:
                 inputs = []
-            elif num_input_params > 1:
-                inputs = shlex.split(test_param.input)[:num_input_params]
-                cells += [quote(value) for value in inputs]
             else:
-                cells = [test_param.input]
+                inputs = shlex.split(test_param.input)
+                extra_inputs = inputs[num_input_params:]
+                inputs = inputs[:num_input_params]
+                cells += [quote(value) for value in inputs]
+                if extra_inputs:
+                    cells[-1] += " " + [quote(value) for value in extra_inputs]
 
             cells += [""] * (num_input_params - len(inputs))
 
