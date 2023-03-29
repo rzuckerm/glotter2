@@ -145,7 +145,7 @@ Each of these tests may have a list of input names, ``inputs``. This is optional
 and it is ignored if ``requires_parameters`` is ``false``. Each item gives a
 name to each value in the ``input`` field. This field is used for
 auto-generated test documentation. If not specified, a single input called
-`"Input"` is assumed. When ``requires_parameters`` is ``false``, the
+``"Input"`` is assumed. When ``requires_parameters`` is ``false``, the
 test documentation just refers to the requirements section.
 
 Each of these tests have is a list of parameter dictionaries, ``params``. This
