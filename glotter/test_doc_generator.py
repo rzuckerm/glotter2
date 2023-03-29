@@ -67,7 +67,7 @@ class TestDocGenerator:
             ]
 
         doc = [
-            f"Every project in the [{repo_name}]({repo_url}) repo should be tested.",
+            f"Every project in the [{repo_name} repo]({repo_url}) should be tested.",
             f"In this section, we specify the set of tests specific to {self.project_title}.",
         ]
         if len(self.project.tests) > 1:
