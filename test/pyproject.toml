@@ -10,7 +10,9 @@ disable = [
     "unused-argument",
     "protected-access",
     "too-few-public-methods",
-    "too-many-arguments"
+    "too-many-arguments",
+    "duplicate-code",
+    "line-too-long"
 ]
 
 [tool.pylint.basic]
