@@ -1,6 +1,5 @@
 import os
 import shlex
-from contextlib import suppress
 
 from glotter.settings import Settings
 from glotter.utils import quote
@@ -15,32 +14,28 @@ def generate_test_docs(doc_dir, repo_name, repo_url):
     :param repo_url: Repository URL
     """
 
-    settings = Settings()
-    for project_name, project in settings.projects.items():
-        test_doc_generator = TestDocGenerator(project_name, project, doc_dir)
-        test_doc_generator.generate_test_doc(repo_name, repo_url)
+    os.makedirs(doc_dir, exist_ok=True)
 
-
-def remove_generated_test_docs(doc_dir):
     settings = Settings()
-    for project_name, project in settings.projects.items():
-        test_doc_generator = TestDocGenerator(project_name, project, doc_dir)
-        test_doc_generator.remove_test_doc()
+    for project in settings.projects.values():
+        test_doc_generator = TestDocGenerator(project)
+        doc = test_doc_generator.generate_test_doc(repo_name, repo_url)
+        if doc:
+            doc_path = os.path.join(doc_dir, "-".join(project.words) + "-testing.md")
+            with open(doc_path, "w", encoding="utf-8") as f:
+                f.write(doc)
 
 
 class TestDocGenerator:
     __test__ = False  # Indicate this is not a test
 
-    def __init__(self, project_name, project, doc_dir):
-        self.project_name = project_name
+    def __init__(self, project):
         self.project = project
-        self.project_dir = os.path.join(doc_dir, "-".join(self.project.words))
         self.project_title = " ".join(self.project.words).title()
-        self.testing_path = os.path.join(self.project_dir, "testing.md")
 
     def generate_test_doc(self, repo_name, repo_url):
         if not self.project.tests:
-            return
+            return ""
 
         doc = self._get_test_intro(repo_name, repo_url)
         if self.project.requires_parameters:
@@ -48,21 +43,12 @@ class TestDocGenerator:
                 test_doc_section_generator = TestDocSectionGenerator(test_obj)
                 doc += test_doc_section_generator.get_test_section()
 
-        os.makedirs(self.project_dir, exist_ok=True)
-        with open(self.testing_path, "w", encoding="utf-8") as f:
-            f.write("\n".join(doc).rstrip() + "\n")
-
-    def remove_test_doc(self):
-        if not self.project.tests:
-            return
-
-        with suppress(OSError):
-            os.remove(self.testing_path)
+        return "\n".join(doc).rstrip() + "\n"
 
     def _get_test_intro(self, repo_name, repo_url):
         if not self.project.requires_parameters:
             return [
-                "Verify that the actual output matches the expected output ",
+                "Verify that the actual output matches the expected output",
                 "(see [Requirements](#requirements)).",
             ]
 
@@ -78,13 +64,13 @@ class TestDocGenerator:
             doc += [
                 "- " + _get_test_section_title(test_obj)
                 for test_obj in self.project.tests.values()
-            ] + [""]
+            ]
 
-        return doc
+        return doc + [""]
 
 
 def _get_test_section_title(test_obj):
-    return test_obj.name.replace("_", " ").title()
+    return test_obj.name.replace("_", " ").title() + " Tests"
 
 
 class TestDocSectionGenerator:
