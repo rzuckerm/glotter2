@@ -198,18 +198,16 @@ def test_generate_tests(mock_settings, temp_dir_chdir):
     generate_test_docs("generated", REPO_NAME, REPO_URL)
 
     filenames = os.listdir(UNIT_TEST_DATA_PATH)
-    assert sorted(os.listdir("generated")) == sorted(filenames)
-
     for filename in filenames:
+        with open(os.path.join(UNIT_TEST_DATA_PATH, filename), encoding="utf-8") as f:
+            contents = f.read()
+
         with open(
             os.path.join(
-                UNIT_TEST_DATA_PATH, filename.replace("test_", "").replace(".py", "")
+                "generated", filename.replace("-testing.md", f"{os.path.sep}testing.md")
             ),
             encoding="utf-8",
         ) as f:
-            contents = f.read()
-
-        with open(os.path.join("generated", filename), encoding="utf-8") as f:
             expected_contents = f.read()
 
         assert contents == expected_contents, f"{filename} contents do not match"

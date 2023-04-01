@@ -14,15 +14,15 @@ def generate_test_docs(doc_dir, repo_name, repo_url):
     :param repo_url: Repository URL
     """
 
-    os.makedirs(doc_dir, exist_ok=True)
-
     settings = Settings()
     for project in settings.projects.values():
         test_doc_generator = TestDocGenerator(project)
         doc = test_doc_generator.generate_test_doc(repo_name, repo_url)
         if doc:
-            doc_path = os.path.join(doc_dir, "-".join(project.words) + "-testing.md")
-            with open(doc_path, "w", encoding="utf-8") as f:
+            project_dir = os.path.join(doc_dir, "-".join(project.words))
+            os.makedirs(project_dir)
+            project_doc_path = os.path.join(project_dir, "testing.md")
+            with open(os.path.join(project_doc_path), "w", encoding="utf-8") as f:
                 f.write(doc)
 
 
