@@ -6,9 +6,11 @@ PROJECT_NAME = "primenumber"
 
 @project_fixture(PROJECT_NAME)
 def prime_number(request):
-    request.param.build()
-    yield request.param
-    request.param.cleanup()
+    try:
+        request.param.build()
+        yield request.param
+    finally:
+        request.param.cleanup()
 
 
 @project_test(PROJECT_NAME)

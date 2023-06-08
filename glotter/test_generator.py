@@ -60,9 +60,11 @@ class TestGenerator:
 PROJECT_NAME="{self.project_name}"
 @project_fixture(PROJECT_NAME)
 def {self.long_project_name}(request):
-    request.param.build()
-    yield request.param
-    request.param.cleanup()
+    try:
+        request.param.build()
+        yield request.param
+    finally:
+        request.param.cleanup()
 """
 
     def write_tests(self, test_code):

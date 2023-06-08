@@ -25,6 +25,8 @@ If you'd like to contribute to Glotter2, read our [contributing guidelines](./CO
 
 ### Glotter2 releases
 
+* 0.7.0: work-in-progress
+  * Add try/finally to auto-generated project fixture
 * 0.6.1:
   * Update `docker` dependency to 6.1.0 to support `urllib3` 2.x
 * 0.6.0:
