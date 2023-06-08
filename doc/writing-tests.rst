@@ -49,9 +49,11 @@ Altogether, this should look like the following:
 
     @project_fixture('my_project_key')
     def my_project_key(request):
-        request.param.build()
-        yield request.param
-        request.param.cleanup()
+        try:
+            request.param.build()
+            yield request.param
+        finally:
+            request.param.cleanup()
 
 .. note::
 

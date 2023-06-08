@@ -19,6 +19,8 @@ def _prompt_params(project_type):
 def _build_and_run(source, params):
     print()
     print(f'Running "{source.name}{source.extension}"...')
-    source.build()
-    print(source.run(params))
-    source.cleanup()
+    try:
+        source.build()
+        print(source.run(params))
+    finally:
+        source.cleanup()
