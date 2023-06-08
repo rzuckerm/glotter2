@@ -118,9 +118,11 @@ specified by a <a class="reference internal" href="#project-key">project key</a>
 <p>Altogether, this should look like the following:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@project_fixture</span><span class="p">(</span><span class="s1">&#39;my_project_key&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">my_project_key</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
-    <span class="n">request</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
-    <span class="k">yield</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span>
-    <span class="n">request</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">request</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+        <span class="k">yield</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">request</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
 </pre></div>
 </div>
 <div class="admonition note">
