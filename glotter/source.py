@@ -170,7 +170,13 @@ def filter_sources(args, sources):
             errors.append(f'project "{args.project}"')
 
         if args.language:
-            errors.append(f'language "{args.language}"')
+            if isinstance(args.language, set):
+                errors.append(
+                    "languages "
+                    + ", ".join(f'"{language}"' for language in sorted(args.language))
+                )
+            else:
+                errors.append(f'language "{args.language}"')
 
         if args.source:
             errors.append(f'source "{args.source}"')
@@ -185,8 +191,12 @@ def filter_sources(args, sources):
 
 
 def _matches_source(args, source):
-    if args.language and source.language.lower() != args.language.lower():
-        return False
+    if args.language:
+        if isinstance(args.language, set):
+            if source.language.lower() not in args.language:
+                return False
+        elif source.language.lower() != args.language.lower():
+            return False
 
     return (
         not args.source

@@ -12,7 +12,6 @@ def download(args):
         for sources in sources_by_type.values()
         for source in sources
     }
-
     if args.parallel:
         with ThreadPoolExecutor(max_workers=4) as executor:
             executor.map(

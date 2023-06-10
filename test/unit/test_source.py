@@ -18,6 +18,19 @@ def test_full_path(test_info_string_no_build):
     assert actual == expected
 
 
+def test_repr(test_info_string_no_build):
+    src = Source(
+        "name",
+        "python",
+        os.path.join("this", "is", "a", "path"),
+        test_info_string_no_build,
+    )
+    actual = repr(src)
+    expected_path = os.path.join("this", "is", "a", "path")
+    expected = f"Source(name: name, path: {expected_path})"
+    assert actual == expected
+
+
 @pytest.mark.parametrize(
     ("name", "expected"),
     [("name", ""), ("name.ext", ".ext"), ("name.name2.ext", ".ext")],
@@ -132,6 +145,12 @@ def test_exec_on_non_zero_exit_code_raises_no_error(
     source_no_build.exec(exec_cmd)
 
 
+def test_cleanup(factory, source_no_build, no_io):
+    container = factory.get_container(source_no_build)
+    source_no_build.cleanup()
+    assert container.removed
+
+
 def test_filter_nothing():
     args = MockArgs()
     filtered_sources = filter_sources(args, {})
@@ -176,6 +195,27 @@ def test_filter_language_not_found(mock_sources, capsys):
     assert e.value.code != 0
     assert (
         'No valid sources found for the following combination: language "foo"'
+        in capsys.readouterr().out
+    )
+
+
+def test_filter_languages(mock_sources):
+    args = MockArgs(language={"bar", "cool"})
+    filtered_sources = filter_sources(args, mock_sources)
+    assert filtered_sources == {
+        "baklava": [mock_sources["baklava"][0]],
+        "quine": [mock_sources["quine"][0], mock_sources["quine"][2]],
+    }
+
+
+def test_filter_languages_not_found(mock_sources, capsys):
+    with pytest.raises(SystemExit) as e:
+        args = MockArgs(language={"foo", "goo"})
+        filter_sources(args, mock_sources)
+
+    assert e.value.code != 0
+    assert (
+        'No valid sources found for the following combination: languages "foo", "goo"'
         in capsys.readouterr().out
     )
 
