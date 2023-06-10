@@ -1,10 +1,11 @@
 from unittest.mock import patch, call
 import os
+import sys
 import argparse
 
 import pytest
 
-from glotter.batch import batch
+from glotter.__main__ import main
 from glotter.source import Source
 
 LANGUAGES = ["bar", "bart", "cool", "d", "eiffel"]
@@ -15,8 +16,7 @@ def test_invalid_num_batches(
     num_batches, mock_download, mock_test, mock_remove, capsys
 ):
     with pytest.raises(SystemExit) as e:
-        args = MockArgs(num_batches=num_batches)
-        batch(args)
+        batch_command(num_batches=num_batches)
 
     assert e.value.code != 0
 
@@ -33,8 +33,7 @@ def test_invalid_batch_num(
     batch_num, num_batches, mock_download, mock_test, mock_remove, capsys
 ):
     with pytest.raises(SystemExit) as e:
-        args = MockArgs(num_batches=num_batches, batch=batch_num)
-        batch(args)
+        batch_command(num_batches=num_batches, batch_num=batch_num)
 
     assert e.value.code != 0
 
@@ -107,12 +106,9 @@ def test_without_batch_num(
     ]
 
     with pytest.raises(SystemExit) as e:
-        args = MockArgs(
-            num_batches=test_options["num_batches"],
-            parallel=parallel,
-            remove=remove,
+        batch_command(
+            num_batches=test_options["num_batches"], parallel=parallel, remove=remove
         )
-        batch(args)
 
     assert e.value.code == test_options["expected_exit_code"]
 
@@ -187,13 +183,12 @@ def test_with_batch_num(
     mock_test.side_effect = SystemExit(test_options["exit_code"])
 
     with pytest.raises(SystemExit) as e:
-        args = MockArgs(
+        batch_command(
             num_batches=test_options["num_batches"],
-            batch=test_options["batch_num"],
+            batch_num=test_options["batch_num"],
             parallel=test_options["parallel"],
             remove=test_options["remove"],
         )
-        batch(args)
 
     assert e.value.code == test_options["exit_code"]
 
@@ -216,8 +211,7 @@ def test_do_nothing_when_no_languages_available(
     mock_download, mock_test, mock_remove, mock_containers
 ):
     with pytest.raises(SystemExit) as e:
-        args = MockArgs(num_batches=6, batch=6, remove=True)
-        batch(args)
+        batch_command(num_batches=6, batch_num=6, remove=True)
 
     assert e.value.code == 0
     mock_download.assert_not_called()
@@ -225,12 +219,19 @@ def test_do_nothing_when_no_languages_available(
     mock_remove.assert_not_called()
 
 
-class MockArgs:
-    def __init__(self, num_batches, batch=None, parallel=False, remove=False):
-        self.num_batches = num_batches
-        self.batch = batch
-        self.parallel = parallel
-        self.remove = remove
+def batch_command(num_batches, batch_num=None, parallel=False, remove=False):
+    args = [str(num_batches)]
+    if batch_num is not None:
+        args += ["--batch", str(batch_num)]
+
+    if parallel:
+        args.append("--parallel")
+
+    if remove:
+        args.append("--remove")
+
+    with patch.object(sys, "argv", ["glotter", "batch"] + args):
+        main()
 
 
 def mock_batch_args(languages, parallel):
