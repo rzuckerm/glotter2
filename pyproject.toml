@@ -59,6 +59,6 @@ disable = [
 
 [tool.pylint.basic]
 good-names = [
-    "e", "f", "k", "v",
+    "e", "f", "k", "v", "n",
     "hyphen", "underscore", "camel", "pascal", "lower", "upper", "two_letter_limit"
 ]

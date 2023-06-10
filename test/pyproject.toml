@@ -16,4 +16,4 @@ disable = [
 ]
 
 [tool.pylint.basic]
-good-names = ["ci", "e", "f", "fi", "t", "n"]
+good-names = ["ci", "e", "f", "fi", "t"]
