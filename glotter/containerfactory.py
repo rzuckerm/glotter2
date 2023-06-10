@@ -99,6 +99,21 @@ class ContainerFactory(metaclass=Singleton):
 
         return None
 
+    def remove_image(self, container_info):
+        """
+        Remove a docker image
+
+        :param container_info: metadata about the image to remove
+        """
+
+        image_name = f"{container_info.image}:{str(container_info.tag)}"
+        images = self._client.images.list(
+            name=f"{container_info.image}:{str(container_info.tag)}"
+        )
+        if len(images) == 1:
+            print(f"Removing {image_name}", flush=True)
+            self._client.images.remove(image=image_name, force=True)
+
     def cleanup(self, source):
         """
         Cleanup docker container and temporary folder. Also remove both from their

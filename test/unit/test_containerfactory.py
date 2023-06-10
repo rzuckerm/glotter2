@@ -21,6 +21,20 @@ def test_get_image_returns_correct_tag(factory, container_info):
     assert result == f"{container_info.image}:{container_info.tag}"
 
 
+def test_remove_image_when_found(factory, container_info):
+    Images.add_image("foo:bar")
+    Images.add_image(f"{container_info.image}:{container_info.tag}")
+    Images.add_image(f"{container_info.image}:other")
+    factory.remove_image(container_info)
+    assert Images.image_list == ["foo:bar", f"{container_info.image}:other"]
+
+
+def test_remove_image_does_when_not_found(factory, container_info):
+    Images.add_image("foo:bar")
+    factory.remove_image(container_info)
+    assert Images.image_list == ["foo:bar"]
+
+
 def test_get_container_uses_correct_image(factory, source_no_build, monkeypatch):
     monkeypatch.setattr("tempfile.mkdtemp", lambda *args, **kwargs: "TEMP_DIR")
     monkeypatch.setattr("shutil.copy", lambda *args, **kwargs: "")

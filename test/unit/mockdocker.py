@@ -56,14 +56,22 @@ class Images:
 
     @classmethod
     def list(cls, name=None, **kwargs):
-        if name and name in cls.image_list:
+        if not name:
+            return cls.image_list
+
+        if name in cls.image_list:
             return [name]
 
-        return cls.image_list
+        return []
 
     @classmethod
     def clear(cls):
         cls.image_list = []
+
+    @classmethod
+    def remove(cls, image, **kwargs):
+        if image in cls.image_list:
+            Images.image_list.remove(image)
 
 
 class DockerApi:

@@ -16,6 +16,7 @@ from .mockdocker import DockerMock
 @pytest.fixture
 def docker():
     docker_mock = DockerMock()
+    docker_mock.clear()
     yield docker_mock
     docker_mock.clear()
 
