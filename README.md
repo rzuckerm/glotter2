@@ -30,6 +30,7 @@ If you'd like to contribute to Glotter2, read our [contributing guidelines](./CO
     container is cleaned up
   * Add `try/finally` to `run` command to make sure docker container is
     cleaned up
+  * Add `batch` command
 * 0.6.1:
   * Update `docker` dependency to 6.1.0 to support `urllib3` 2.x
 * 0.6.0:

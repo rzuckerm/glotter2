@@ -5,6 +5,7 @@ from glotter.run import run
 from glotter.test import test
 from glotter.download import download
 from glotter.report import report
+from glotter.batch import batch
 
 
 def main():
@@ -17,13 +18,14 @@ Commands:
   test        Run tests for sources or a group of sources. Use `glotter test --help` for more information.
   download    Download all the docker images required to run the tests
   report      Output a report of discovered sources for configured projects and languages
+  batch       Download docker images, run tests, and optionally remove images for each batch
 """,
     )
     parser.add_argument(
         "command",
         type=str,
         help="Subcommand to run",
-        choices=["run", "test", "download", "report"],
+        choices=["run", "test", "download", "report", "batch"],
     )
     args = parser.parse_args(sys.argv[1:2])
     commands = {
@@ -31,6 +33,7 @@ Commands:
         "run": parse_run,
         "test": parse_test,
         "report": parse_report,
+        "batch": parse_batch,
     }
     commands[args.command]()
 
@@ -111,6 +114,31 @@ def parse_report():
     )
     args = parser.parse_args(sys.argv[2:])
     report(args)
+
+
+def parse_batch():
+    parser = argparse.ArgumentParser(
+        prog="glotter",
+        description="Download images, run tests, and optionally remove image in batches"
+        "project, or a single source. Only one option may be specified.",
+    )
+    parser.add_argument(
+        "num_batches", metavar="NUM_BATCHES", type=int, help="number of batches"
+    )
+    _add_parallel_arg(
+        parser,
+        "Download images, run tests, and optionally remove images in parallel for each batch",
+    )
+    parser.add_argument(
+        "--batch", type=int, metavar="BATCH", help="batch number (1 to NUM_BATCHES)"
+    )
+    parser.add_argument(
+        "--remove",
+        action="store_true",
+        help="remove docker images are each batch is finished",
+    )
+    args = parser.parse_args(sys.argv[2:])
+    batch(args)
 
 
 if __name__ == "__main__":
