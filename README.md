@@ -25,7 +25,9 @@ If you'd like to contribute to Glotter2, read our [contributing guidelines](./CO
 
 ### Glotter2 releases
 
-* 0.7.0: work-in-progress
+* 0.7.1:
+  * Remove work-in-progress from changelog
+* 0.7.0:
   * Add `try/finally` to auto-generated project fixture to make sure docker
     container is cleaned up
   * Add `try/finally` to `run` command to make sure docker container is
