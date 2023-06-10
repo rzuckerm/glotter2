@@ -50,6 +50,11 @@
 <li class="toctree-l2"><a class="reference internal" href="#run">Run</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#test">Test</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#report">Report</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#batch">Batch</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#serial-mode">Serial Mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#parallel-mode">Parallel Mode</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="global-glotter2-configuration.html">Global Glotter2 Configuration</a></li>
@@ -214,6 +219,62 @@ at the specified report path instead of to stdout</p></td>
 </tbody>
 </table>
 <p>If <code class="docutils literal notranslate"><span class="pre">-o</span></code> is not specified, the report is output as <a class="reference external" href="https://www.markdownguide.org/basic-syntax/">Markdown</a> to stdout.</p>
+</section>
+<section id="batch">
+<h2>Batch<a class="headerlink" href="#batch" title="Permalink to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">batch</span></code> command is only used in a Continuous Integration (CI) pipeline to limit the
+amount of disk space used. It breaks up the image download, testing, and optional image removal
+into individual batches.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">batch</span></code> command has a required argument that specifies the number of batches to use (<code class="docutils literal notranslate"><span class="pre">&lt;n&gt;</span></code>).</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">batch</span></code> command also has the following optional arguments:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag</p></th>
+<th class="head"><p>Short Flag</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--batch</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">-b</span></code></p></td>
+<td><p>Indicate the batch number (1 through <code class="docutils literal notranslate"><span class="pre">&lt;n&gt;</span></code>). If not specified, all batches are run</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--parallel</span></code></p></td>
+<td></td>
+<td><p>Download images, run tests, and optionally remove images in parallel</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--remove</span></code></p></td>
+<td></td>
+<td><p>Indicates if the images should be removed after each batch is finished</p></td>
+</tr>
+</tbody>
+</table>
+<p>There are two modes in which <code class="docutils literal notranslate"><span class="pre">batch</span></code> can be used:</p>
+<ol class="arabic simple">
+<li><p>Serial</p></li>
+<li><p>Parallel</p></li>
+</ol>
+<section id="serial-mode">
+<h3>Serial Mode<a class="headerlink" href="#serial-mode" title="Permalink to this heading"></a></h3>
+<p>In this mode all batches are run one after another. It is highly recommended that <code class="docutils literal notranslate"><span class="pre">--remove</span></code> be used
+with this mode in order to save disk space by removing images that are only used for the current batch.
+For example, break the download, test, and removal into 3 batches and parallelize:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>glotter batch 3 --remove --parallel
+</pre></div>
+</div>
+</section>
+<section id="parallel-mode">
+<h3>Parallel Mode<a class="headerlink" href="#parallel-mode" title="Permalink to this heading"></a></h3>
+<p>In this mode each batch is run on a different build server. This has the potential benefit of reducing
+build time if a sufficient number of build servers are available. For this mode, it is not necessary to
+specified <code class="docutils literal notranslate"><span class="pre">--remove</span></code> since the build server will clean itself up as soon as the current job is finished.
+As with the previous example, break the download and test into 3 batches and parallelize for each
+build server:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>glotter batch 3 --batch &lt;m&gt; --parallel
+</pre></div>
+</div>
+<p>where: <code class="docutils literal notranslate"><span class="pre">&lt;m&gt;</span></code> is <code class="docutils literal notranslate"><span class="pre">1</span></code> for the first build server, <code class="docutils literal notranslate"><span class="pre">2</span></code> for the second, and <code class="docutils literal notranslate"><span class="pre">3</span></code> for the third.</p>
+</section>
 </section>
 </section>
 

@@ -104,3 +104,54 @@ The ``report`` command has the following optional argument:
 +--------------+------------+--------------------------------------------------------------------------------------+
 
 If ``-o`` is not specified, the report is output as `Markdown <https://www.markdownguide.org/basic-syntax/>`_ to stdout.
+
+-----
+Batch
+-----
+
+The ``batch`` command is only used in a Continuous Integration (CI) pipeline to limit the
+amount of disk space used. It breaks up the image download, testing, and optional image removal
+into individual batches.
+
+The ``batch`` command has a required argument that specifies the number of batches to use (``<n>``).
+
+The ``batch`` command also has the following optional arguments:
+
+==============  ==========  ===========
+Flag            Short Flag  Description
+==============  ==========  ===========
+``--batch``     ``-b``      Indicate the batch number (1 through ``<n>``). If not specified, all batches are run
+``--parallel``              Download images, run tests, and optionally remove images in parallel
+``--remove``                Indicates if the images should be removed after each batch is finished
+==============  ==========  ===========
+
+There are two modes in which ``batch`` can be used:
+
+1. Serial
+2. Parallel
+
+Serial Mode
+-----------
+
+In this mode all batches are run one after another. It is highly recommended that ``--remove`` be used
+with this mode in order to save disk space by removing images that are only used for the current batch.
+For example, break the download, test, and removal into 3 batches and parallelize:
+
+.. code-block:: text
+
+    glotter batch 3 --remove --parallel
+
+Parallel Mode
+-------------
+
+In this mode each batch is run on a different build server. This has the potential benefit of reducing
+build time if a sufficient number of build servers are available. For this mode, it is not necessary to
+specified ``--remove`` since the build server will clean itself up as soon as the current job is finished.
+As with the previous example, break the download and test into 3 batches and parallelize for each
+build server:
+
+.. code-block:: text
+
+    glotter batch 3 --batch <m> --parallel
+
+where: ``<m>`` is ``1`` for the first build server, ``2`` for the second, and ``3`` for the third.
