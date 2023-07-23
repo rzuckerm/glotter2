@@ -88,6 +88,7 @@ def source_with_build(test_info_string_with_build):
 @pytest.fixture
 def no_io(monkeypatch):
     monkeypatch.setattr("tempfile.mkdtemp", lambda *args, **kwargs: "TEMP_DIR")
+    monkeypatch.setattr("os.chmod", lambda *args, **kwargs: "")
     monkeypatch.setattr("shutil.copy", lambda *args, **kwargs: "")
     monkeypatch.setattr("shutil.rmtree", lambda *args, **kwargs: "")
 

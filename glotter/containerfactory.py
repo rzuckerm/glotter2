@@ -1,3 +1,4 @@
+import os
 import shutil
 import tempfile
 from datetime import datetime, timedelta
@@ -31,6 +32,7 @@ class ContainerFactory(metaclass=Singleton):
         key = source.full_path
 
         tmp_dir = tempfile.mkdtemp()
+        os.chmod(tmp_dir, 0o777)
         shutil.copy(source.full_path, tmp_dir)
         self._volume_dis[key] = tmp_dir
 

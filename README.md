@@ -25,6 +25,8 @@ If you'd like to contribute to Glotter2, read our [contributing guidelines](./CO
 
 ### Glotter2 releases
 
+* 0.7.2:
+  * Make sure temporary directory used for docker is world accessible
 * 0.7.1:
   * Remove work-in-progress from changelog
 * 0.7.0:

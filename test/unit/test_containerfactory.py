@@ -37,6 +37,7 @@ def test_remove_image_does_when_not_found(factory, container_info):
 
 def test_get_container_uses_correct_image(factory, source_no_build, monkeypatch):
     monkeypatch.setattr("tempfile.mkdtemp", lambda *args, **kwargs: "TEMP_DIR")
+    monkeypatch.setattr("os.chmod", lambda *args, **kwargs: "")
     monkeypatch.setattr("shutil.copy", lambda *args, **kwargs: "")
     result = factory.get_container(source_no_build)
     assert result.image == "python:3.7-alpine"
@@ -46,6 +47,7 @@ def test_get_container_runs_container_with_correct_settings(
     factory, source_no_build, monkeypatch
 ):
     monkeypatch.setattr("tempfile.mkdtemp", lambda *args, **kwargs: "TEMP_DIR")
+    monkeypatch.setattr("os.chmod", lambda *args, **kwargs: "")
     monkeypatch.setattr("shutil.copy", lambda *args, **kwargs: "")
     result = factory.get_container(source_no_build)
     assert result.name.startswith(source_no_build.name)
@@ -57,8 +59,9 @@ def test_get_container_runs_container_with_correct_settings(
 def test_get_container_builds_correct_volume_info(
     factory, source_no_build, monkeypatch
 ):
-    monkeypatch.setattr("shutil.copy", lambda *args, **kwargs: "")
     monkeypatch.setattr("tempfile.mkdtemp", lambda *args, **kwargs: "TEMP_DIR")
+    monkeypatch.setattr("shutil.copy", lambda *args, **kwargs: "")
+    monkeypatch.setattr("os.chmod", lambda *args, **kwargs: "")
     result = factory.get_container(source_no_build)
     assert result["volumes"] == {"TEMP_DIR": {"bind": "/src", "mode": "rw"}}
 
