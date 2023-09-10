@@ -160,6 +160,7 @@ class AutoGenTest(BaseModel):
         "lower": partial(_append_method_to_actual, "lower"),
         "any_order": _unique_sort,
         "strip_expected": partial(_append_method_to_expected, "strip"),
+        "splitlines_expected": partial(_append_method_to_expected, "splitlines"),
     }
     DICT_TRANSFORMATION_FUNCS: ClassVar[Dict[str, TransformationDictFuncT]] = {
         "remove": _remove_chars,

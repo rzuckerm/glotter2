@@ -447,6 +447,12 @@ def test_auto_gen_test_bad(value, expected_error):
             "expected",
             id="strip-dict",
         ),
+        pytest.param(
+            ["splitlines_expected"],
+            "actual",
+            "expected.splitlines()",
+            id="splitlines_expected",
+        ),
     ],
 )
 def test_auto_gen_transform_vars(
