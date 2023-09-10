@@ -220,7 +220,7 @@ The following transformations are string values:
 - ``"any_order"``: Convert the actual and expected value into a sorted list of unique
   values -- e.g., a list of ``["7", "3", "1", "7"]`` is converted to ``["1", "3", "7"]``.
 - ``"strip_expected"``: Remove leading a trailing whitespace from the expected value.
-- ``"splitlines_expected"``: Split expected value at line boundardies -- e.g.,
+- ``"splitlines_expected"``: Split expected value at line boundaries -- e.g.,
   ``"1\r2\r\3"`` is converted to a list ``["1", "2", "3"]``.
 
 The following transformations are dictionaries:
