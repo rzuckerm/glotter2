@@ -1,0 +1,27 @@
+name: Publish CI
+
+on:
+  push:
+    # Publish semver tags as releases.
+    tags: [ 'v*' ]
+
+jobs:
+  publish:
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.8"
+
+      - uses: snok/install-poetry@v1.3.3
+        with:
+          version: 1.6.1
+          virtualenvs-create: false
+          virtualenvs-in-project: false
+
+      - name: Publish to pypi
+        run: poetry config pypi-token.pypi "${{secrets.PYPI_TOKEN}}" && poetry publish --build
