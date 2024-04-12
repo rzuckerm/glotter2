@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "glotter2"
 packages = [{include="glotter"}]
-version = "0.8.0"
+version = "0.8.1"
 description = "An execution library for scripts written in any language. This is a fork of https://github.com/auroq/glotter"
 authors = ["auroq", "rzuckerm"]
 readme = "README.md"
@@ -25,7 +25,7 @@ jinja2 = "^3.1.2"
 pytest = "^7.2.1"
 pyyaml = "^6.0"
 pytest-xdist = "^3.2.0"
-black = "^23.1.0"
+black = "^24.4.0"
 pydantic = "^1.10.6"
 
 [tool.poetry.group.dev.dependencies]
