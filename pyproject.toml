@@ -27,6 +27,7 @@ pyyaml = "^6.0"
 pytest-xdist = "^3.2.0"
 black = "^24.4.0"
 pydantic = "^1.10.6"
+requests = "<2.32"
 
 [tool.poetry.group.dev.dependencies]
 pylint = "^2.16.2"
