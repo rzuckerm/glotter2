@@ -61,7 +61,7 @@ $(META): | $(VENV)
 $(VENV):
 	@echo "*** Initializing environment ***"
 	$(CREATE_VIRTUALENV)
-	$(ACT) pip install 'poetry==1.4.2'
+	$(ACT) pip install 'poetry==1.8.3'
 	@echo ""
 endif
 
