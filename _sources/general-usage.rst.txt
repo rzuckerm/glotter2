@@ -9,12 +9,14 @@ to install a local sdk or development environment.
 Before Glotter2 can be used, your project must be configured.
 See :ref:`integrating-with-glotter2` for more information
 
-The Glotter2 CLI has four main commands:
+The Glotter2 CLI has these main commands:
 
 - `download`_
 - `run`_
 - `test`_
 - `report`_
+- `batch`_
+- `check`_
 
 All of these commands have this optional argument:
 
@@ -156,6 +158,7 @@ build server:
 
 where: ``<m>`` is ``1`` for the first build server, ``2`` for the second, and ``3`` for the third.
 
+-----
 Check
 -----
 
