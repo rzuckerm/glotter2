@@ -155,3 +155,10 @@ build server:
     glotter batch 3 --batch <m> --parallel
 
 where: ``<m>`` is ``1`` for the first build server, ``2`` for the second, and ``3`` for the third.
+
+Check
+-----
+
+The ``check`` command makes sure that the sample program files are named properly. If they are
+not, a list of improperly named files are output, and this command exits with an non-zero return code.
+Otherwise, this command exits with a zero return code.

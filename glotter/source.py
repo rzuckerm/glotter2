@@ -8,6 +8,8 @@ from glotter.settings import Settings
 from glotter.containerfactory import ContainerFactory
 from glotter.utils import error_and_exit
 
+BAD_SOURCES = "__bad_sources__"
+
 
 class Source:
     """Metadata about a source file"""
@@ -110,14 +112,22 @@ class Source:
 
 
 @lru_cache
-def get_sources(path):
+def get_sources(path, check_bad_sources=False):
     """
     Walk through a directory and create Source objects
 
     :param path: path to the directory through which to walk
-    :return: a dict where the key is the ProjectType and the value is a list of all the Source objects of that project
+    :param check_bad_source: if True, check for bad source filenames. Default is False
+    :return: a dict where the key is the ProjectType and the value is a list of all the
+        Source objects of that project. If check_bad_source is True,
+        the BAD_SOURCES key contains a list of invalid paths relative to the current
+        working directory
     """
     sources = {k: [] for k in Settings().projects}
+    orig_path = path
+    if check_bad_sources:
+        sources[BAD_SOURCES] = []
+
     for root, _, files in os.walk(path):
         path = os.path.abspath(root)
         if "testinfo.yml" in files:
@@ -137,6 +147,16 @@ def get_sources(path):
                         project_name, os.path.basename(path), path, test_info_string
                     )
                     sources[project_type].append(source)
+
+            if check_bad_sources:
+                invalid_filenames = set(files) - (
+                    set(folder_project_names.values()) | {"testinfo.yml", "README.md"}
+                )
+                sources[BAD_SOURCES] += [
+                    os.path.join(os.path.relpath(path, orig_path), filename)
+                    for filename in invalid_filenames
+                ]
+
     return sources
 
 

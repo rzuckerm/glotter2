@@ -25,6 +25,8 @@ If you'd like to contribute to Glotter2, read our [contributing guidelines](./CO
 
 ### Glotter2 releases
 
+* 0.9.0:
+  * Add `check` command
 * 0.8.2:
   * Update to docker 7.1.0
 * 0.8.1:

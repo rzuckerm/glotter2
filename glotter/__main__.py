@@ -6,6 +6,7 @@ from glotter.test import test
 from glotter.download import download
 from glotter.report import report
 from glotter.batch import batch
+from glotter.check import check
 
 
 def main():
@@ -19,13 +20,14 @@ Commands:
   download    Download all the docker images required to run the tests
   report      Output a report of discovered sources for configured projects and languages
   batch       Download docker images, run tests, and optionally remove images for each batch
+  check       Check for invalid sample program filenames
 """,
     )
     parser.add_argument(
         "command",
         type=str,
         help="Subcommand to run",
-        choices=["run", "test", "download", "report", "batch"],
+        choices=["run", "test", "download", "report", "batch", "check"],
     )
     args = parser.parse_args(sys.argv[1:2])
     commands = {
@@ -34,6 +36,7 @@ Commands:
         "test": parse_test,
         "report": parse_report,
         "batch": parse_batch,
+        "check": parse_check,
     }
     commands[args.command]()
 
@@ -139,6 +142,15 @@ def parse_batch():
     )
     args = parser.parse_args(sys.argv[2:])
     batch(args)
+
+
+def parse_check():
+    parser = argparse.ArgumentParser(
+        prog="glotter",
+        description="Check for invalid sample program filenames.",
+    )
+    args = parser.parse_args(sys.argv[2:])
+    check(args)
 
 
 if __name__ == "__main__":
