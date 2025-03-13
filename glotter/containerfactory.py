@@ -46,6 +46,7 @@ class ContainerFactory(metaclass=Singleton):
                 working_dir="/src",
                 volumes=volume_info,
                 detach=True,
+                entrypoint="",
             )
         return self._containers[key]
 
