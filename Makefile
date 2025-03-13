@@ -2,6 +2,7 @@ PACKAGE := glotter
 TESTS := test
 CONFIG_FILE = pyproject.toml
 ALL = $(PACKAGE) $(TESTS)
+POETRY_VERSION = 2.1.1
 
 SHELL := bash
 
@@ -22,7 +23,7 @@ else
 		POETRY:= poetry
 	else
 		ACT := source $(VENV)/bin/activate &&
-		CREATE_VIRTUALENV := if ! virtualenv -p python3.8 $(VENV) 2>/dev/null; then python -m venv $(VENV); fi
+		CREATE_VIRTUALENV := if ! virtualenv -p python3 $(VENV) 2>/dev/null; then python -m venv $(VENV); fi
 		POETRY := $(ACT) poetry
 	endif
 endif
@@ -61,7 +62,7 @@ $(META): | $(VENV)
 $(VENV):
 	@echo "*** Initializing environment ***"
 	$(CREATE_VIRTUALENV)
-	$(ACT) pip install 'poetry==1.8.3'
+	$(ACT) pip install 'poetry==$(POETRY_VERSION)'
 	@echo ""
 endif
 
