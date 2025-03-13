@@ -27,7 +27,7 @@ If you'd like to contribute to Glotter2, read our [contributing guidelines](./CO
 
 * 0.10.1
   * Run docker container with no entrypoint to allow docker images that
-    specify `ENTRYPOINT` can be used.
+    specify `ENTRYPOINT` can be used
 * 0.10.0
   * Update poetry from 1.8.3 to 2.1.1
   * Removed python 3.8 support
