@@ -3,8 +3,7 @@
 [![Makefile CI](https://github.com/rzuckerm/glotter2/actions/workflows/makefile.yml/badge.svg)](https://github.com/rzuckerm/glotter2/actions/workflows/makefile.yml)
 [![Coverage](https://rzuckerm.github.io/glotter2/badge.svg)](https://rzuckerm.github.io/glotter2/html_cov)
 [![PyPI version](https://img.shields.io/pypi/v/glotter2)](https://pypi.org/project/glotter2)
-![Python Versions](https://img.shields.io/python/required-version-toml?tomlFilePath=https%3A%2F%2Fraw.githubusercontent.com%2Frzuckerm%2Fglotter2%2Fmain%2Fpyproject.toml)
-
+[![Python Version from PEP 621 TOML](https://img.shields.io/python/required-version-toml?tomlFilePath=https%3A%2F%2Fraw.githubusercontent.com%2Frzuckerm%2Fglotter2%2Fmain%2Fpyproject.toml)](https://pypi.org/project/glotter2)
 [![Python wheel](https://img.shields.io/pypi/wheel/glotter2)](https://pypi.org/project/glotter2)
 
 [![Glotter2 logo](https://rzuckerm.github.io/glotter2/_static/glotter2_small.png)](https://rzuckerm.github.io/glotter2/)
