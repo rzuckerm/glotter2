@@ -23,6 +23,7 @@ dependencies = [
     "black (>=24.10.0,<25.0)",
     "pydantic (>=1.10.6,<2.0)"
 ]
+dynamic = [ "classifiers" ]
 
 [project.urls]
 "Bug Tracker" = "https://github.com/rzuckerm/glotter2/issues"
