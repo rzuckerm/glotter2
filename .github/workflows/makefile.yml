@@ -38,14 +38,16 @@ jobs:
         run: |
           ./scripts/jsonify-items.sh \
             "python-versions" \
-            "${{ steps.repo-config.outputs['python-versions'] }}" >>"$GITHUB_OUTPUT"
+            "${{ steps.repo-config.outputs['python-versions'] }}" \
+            "0-9." >>"$GITHUB_OUTPUT"
 
       - name: JSONify OSes
         id: oses
         run: |
           ./scripts/jsonify-items.sh \
             "oses" \
-            "${{ steps.repo-config.outputs['oses'] }}" >>"$GITHUB_OUTPUT"
+            "${{ steps.repo-config.outputs['oses'] }}" \
+            "^," >>"$GITHUB_OUTPUT"
     
   lint:
     name: Lint

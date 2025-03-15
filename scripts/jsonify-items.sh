@@ -1,2 +1,3 @@
 #!/bin/bash
-echo "$1=[$2]" | sed -r 's/([0-9.]+)/"\1"/g'
+# arguments: <variable_name> <string> <regex_value_chars>
+echo "$1=[$(echo "$2" | sed -r 's/(['"$3"']+)/"\1"/g')]"
