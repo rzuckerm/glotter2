@@ -117,7 +117,7 @@ specified by a <a class="reference internal" href="#project-key">project key</a>
 </ul>
 <p>Altogether, this should look like the following:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@project_fixture</span><span class="p">(</span><span class="s1">&#39;my_project_key&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">my_project_key</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_project_key</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">request</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
         <span class="k">yield</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span>
@@ -162,7 +162,7 @@ In other words <code class="docutils literal notranslate"><span class="pre">exec
 This can be saved off and used for assertions. (See <a class="reference external" href="http://doc.pytest.org/en/latest/assert.html">pytest assertion documentation</a> for more information.)</p>
 <p>Putting this all together a sample test might looks something like the following:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@project_test</span><span class="p">(</span><span class="s1">&#39;my_project_key&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">test_my_script</span><span class="p">(</span><span class="n">my_project_key</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_my_script</span><span class="p">(</span><span class="n">my_project_key</span><span class="p">):</span>
     <span class="n">actual</span> <span class="o">=</span> <span class="n">my_project_key</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
     <span class="k">assert</span> <span class="n">actual</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;script was run&#39;</span>
 </pre></div>
@@ -176,10 +176,10 @@ In order for tests to run properly the project key used here must refer to a pro
 <a class="reference external" href="global-glotter2-configuration.html#projects">global Glotter2 configuration</a>. It is case sensitive.</p>
 <p>In order to make things easier and prevent confusing typos, I recommend saving these strings as constants
 somewhere in your project or using an enum with a <code class="docutils literal notranslate"><span class="pre">key</span></code> method as seen below:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">auto</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">auto</span>
 
 
-<span class="k">class</span> <span class="nc">ProjectKeys</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ProjectKeys</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="n">Baklava</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
     <span class="n">BubbleSort</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
     <span class="n">EvenOdd</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
@@ -187,7 +187,7 @@ somewhere in your project or using an enum with a <code class="docutils literal 
     <span class="n">Factorial</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -202,11 +202,11 @@ must match the names of the enum values letter-for-letter.</p>
 <p>If we bring this all together, here is an example of a set of tests for a factorial project.
 Let’s suppose that the <code class="docutils literal notranslate"><span class="pre">ProjectKey</span></code> class is in <code class="docutils literal notranslate"><span class="pre">test/__init__.py</span></code>. Here’s how this
 would look:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pytest</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
 
-<span class="kn">from</span> <span class="nn">glotter</span> <span class="kn">import</span> <span class="n">project_test</span><span class="p">,</span> <span class="n">project_fixture</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">glotter</span><span class="w"> </span><span class="kn">import</span> <span class="n">project_test</span><span class="p">,</span> <span class="n">project_fixture</span>
 
-<span class="kn">from</span> <span class="nn">test</span> <span class="kn">import</span> <span class="n">ProjectType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">test</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProjectType</span>
 
 <span class="n">error_permutations</span> <span class="o">=</span> <span class="p">[</span>
     <span class="p">(</span>
@@ -246,7 +246,7 @@ would look:</p>
 
 
 <span class="nd">@project_fixture</span><span class="p">(</span><span class="n">ProjectType</span><span class="o">.</span><span class="n">Factorial</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">factorial</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">factorial</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
     <span class="n">request</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
     <span class="k">yield</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span>
     <span class="n">request</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
@@ -260,7 +260,7 @@ would look:</p>
         <span class="k">for</span> <span class="n">description</span><span class="p">,</span> <span class="n">cli_args</span><span class="p">,</span> <span class="n">expected</span> <span class="ow">in</span> <span class="n">working_permutations</span>
     <span class="p">]</span>
 <span class="p">)</span>
-<span class="k">def</span> <span class="nf">test_factorial</span><span class="p">(</span><span class="n">cli_args</span><span class="p">,</span> <span class="n">expected</span><span class="p">,</span> <span class="n">factorial</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_factorial</span><span class="p">(</span><span class="n">cli_args</span><span class="p">,</span> <span class="n">expected</span><span class="p">,</span> <span class="n">factorial</span><span class="p">):</span>
     <span class="n">actual</span> <span class="o">=</span> <span class="n">factorial</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">cli_args</span><span class="p">)</span>
     <span class="k">assert</span> <span class="n">actual</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="n">expected</span>
 
@@ -274,7 +274,7 @@ would look:</p>
         <span class="k">for</span> <span class="n">description</span><span class="p">,</span> <span class="n">cli_args</span><span class="p">,</span> <span class="n">expected</span> <span class="ow">in</span> <span class="n">error_permutations</span>
     <span class="p">]</span>
 <span class="p">)</span>
-<span class="k">def</span> <span class="nf">test_factorial_errors</span><span class="p">(</span><span class="n">cli_args</span><span class="p">,</span> <span class="n">expected</span><span class="p">,</span> <span class="n">factorial</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_factorial_errors</span><span class="p">(</span><span class="n">cli_args</span><span class="p">,</span> <span class="n">expected</span><span class="p">,</span> <span class="n">factorial</span><span class="p">):</span>
     <span class="n">actual</span> <span class="o">=</span> <span class="n">factorial</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">cli_args</span><span class="p">)</span>
     <span class="k">assert</span> <span class="n">actual</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="n">expected</span>
 </pre></div>
