@@ -15,7 +15,6 @@ jobs:
       first-python-version: "${{ steps.first-python-version.outputs.first-python-version }}"
       python-versions: "${{ steps.python-versions.outputs.python-versions }}"
       poetry-version: "${{ steps.repo-config.outputs['poetry-version'] }}"
-      oses: "${{ steps.oses.outputs.oses }}"
 
     steps:
       - uses: actions/checkout@v4
@@ -40,14 +39,6 @@ jobs:
             "python-versions" \
             "${{ steps.repo-config.outputs['python-versions'] }}" \
             "0-9." >>"$GITHUB_OUTPUT"
-
-      - name: JSONify OSes
-        id: oses
-        run: |
-          ./scripts/jsonify-items.sh \
-            "oses" \
-            "${{ steps.repo-config.outputs['oses'] }}" \
-            "^," >>"$GITHUB_OUTPUT"
     
   lint:
     name: Lint

@@ -78,7 +78,9 @@ The `repo-config.yml` contains the configuration for the repository, which inclu
 
 - `python-versions`: A comma-separated list of python versions used in testing.
 - `poetry-version`: The version of `poetry` to use.
-- `oses`: A comma-separated list of OSes to use.
+
+Note that the list of OSes is not in the configuration file. Instead, it is in
+`.github/workflows/makefile.yml` in the "Test" stage.
 
 ### Local Development
 
