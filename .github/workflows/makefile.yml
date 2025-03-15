@@ -13,7 +13,7 @@ jobs:
 
     outputs:
       first-python-version: "${{ steps.first-python-version.outputs.first-python-version }}"
-      python-versions: "[${{ steps.repo-config.outputs['python-versions'] }}]"
+      python-versions: "${{ steps.python-versions.outputs.python-versions }}"
       poetry-version: "${{ steps.repo-config.outputs['poetry-version'] }}"
 
     steps:
@@ -32,6 +32,14 @@ jobs:
             echo "first-python-version=${{ steps.repo-config.outputs['python-versions'] }}" | \
             sed 's/\s+//g' | \
             cut -d',' -f1 \
+          ) >>"$GITHUB_OUTPUT"
+
+      - name: JSONify python versions
+        id: python-versions
+        run: |
+          ( \
+            echo "[${{ steps.repo-config.outputs['python-versions'] }}]" | \
+            sed -r 's/([0-9.]+)/"\1"/g' \
           ) >>"$GITHUB_OUTPUT"
 
   lint:
