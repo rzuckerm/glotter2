@@ -24,7 +24,7 @@ Before you can build Glotter2, there a few things you will need.
 
 - [docker]: Glotter2 makes extensive use of docker. You will need to have docker installed on your
   machine.
-- [python], [pip], and [virtualenv]: Glotter2 is written in python and uses `pip` to install
+- [python], [pip], [poetry][python-poetry], and [virtualenv]: Glotter2 is written in python and uses `poetry` to install
   dependencies in a virtual environment that isolates the dependencies for this project
   from the dependencies on your host system.
 - [make]: Everything in Glotter2 is built and run using `make`. See the following installation
@@ -45,6 +45,7 @@ The file structure of Glotter2 looks like the following (with omissions):
 - `Makefile`
 - `pyproject.toml`
 - `poetry.lock`
+- `repo-config.yml`
 
 The `glotter` directory contains all source code for the project.
 
@@ -69,6 +70,11 @@ dependencies for build reproducibility. The project is based on
 The project used [black] to do code formatting and format linting and [pylint] for linting.
 
 This project uses [pytest] as its testing library, but it is also a wrapper around [pytest].
+
+The `repo-config.yml` contains the configuration for the repository, which includes:
+
+- `python-versions`: A list of python versions used in testing
+- `poetry-version`: The version of `poetry` to use.
 
 ### Local Development
 
