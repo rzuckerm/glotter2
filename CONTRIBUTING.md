@@ -39,6 +39,7 @@ The file structure of Glotter2 looks like the following (with omissions):
 
 - `glotter`
 - `doc`
+- `scripts`
 - `test`
   - `integration`
   - `unit`
@@ -54,11 +55,13 @@ The `doc` directory contains all the documentation for the project.
 [reStructuredText](https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html)
 to HTML.
 
+The `scripts` directory contains scripts used in the GitHub Actions.
+
 The `test` directory contains all tests for the project. It is split into two types: `unit` and
 `integration`. The difference for the sake of this project is that the unit tests are written in
-such a way to abstract our all external dependencies (docker, the filesystem, etc...). The
+such a way to abstract our all external dependencies (docker, the filesystem, etc.). The
 integration tests test the integration between the code and external dependencies (docker,
-the filesystem, etc...).
+the filesystem, etc.).
 
 `Makefile` contains all the rules for building and running the projects.
 
@@ -75,6 +78,7 @@ The `repo-config.yml` contains the configuration for the repository, which inclu
 
 - `python-versions`: A comma-separated list of python versions used in testing.
 - `poetry-version`: The version of `poetry` to use.
+- `oses`: A comma-separated list of OSes to use.
 
 ### Local Development
 

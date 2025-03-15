@@ -15,6 +15,7 @@ jobs:
       first-python-version: "${{ steps.first-python-version.outputs.first-python-version }}"
       python-versions: "${{ steps.python-versions.outputs.python-versions }}"
       poetry-version: "${{ steps.repo-config.outputs['poetry-version'] }}"
+      oses: "${{ steps.oses.outputs.oses }}"
 
     steps:
       - uses: actions/checkout@v4
@@ -28,20 +29,24 @@ jobs:
       - name: Get first python version
         id: first-python-version
         run: |
-          ( \
-            echo "first-python-version=${{ steps.repo-config.outputs['python-versions'] }}" | \
-            sed 's/\s+//g' | \
-            cut -d',' -f1 \
-          ) >>"$GITHUB_OUTPUT"
+          ./scripts/get-first-item.sh \
+            "first-python-version" \
+            "${{ steps.repo-config.outputs['python-versions'] }}" >>"$GITHUB_OUTPUT"
 
       - name: JSONify python versions
         id: python-versions
         run: |
-          ( \
-            echo "python-versions=[${{ steps.repo-config.outputs['python-versions'] }}]" | \
-            sed -r 's/([0-9.]+)/"\1"/g' \
-          ) >>"$GITHUB_OUTPUT"
+          ./scripts/jsonify-items.sh \
+            "python-versions" \
+            "${{ steps.repo-config.outputs['python-versions'] }}" >>"$GITHUB_OUTPUT"
 
+      - name: JSONify OSes
+        id: oses
+        run: |
+          ./scripts/jsonify-items.sh \
+            "oses" \
+            "${{ steps.repo-config.outputs['oses'] }}" >>"$GITHUB_OUTPUT"
+    
   lint:
     name: Lint
     runs-on: ubuntu-latest
@@ -71,7 +76,7 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ${{ fromJson(needs.read-config.outputs.python-versions) }}
-        os: [ubuntu-latest, macos-latest]
+        os: ${{ fromJson(needs.read-config.outputs.oses) }}
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -79,7 +84,7 @@ jobs:
 
     - uses: actions/setup-python@v5
       with:
-        python-version: ${{ matrix.python-version }}
+        python-version: "${{ matrix.python-version }}"
 
     - uses: snok/install-poetry@v1
       with:
