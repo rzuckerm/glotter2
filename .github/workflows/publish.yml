@@ -33,7 +33,7 @@ jobs:
 
       - uses: snok/install-poetry@v1
         with:
-          version: "${{ steps.repo-config.outputs['python-version'] }}"
+          version: "${{ steps.repo-config.outputs['poetry-version'] }}"
           virtualenvs-create: false
           virtualenvs-in-project: false
 
