@@ -8,10 +8,13 @@ on:
 
 jobs:
   read-config:
+    name: Read Config
     runs-on: ubuntu-latest
 
     outputs:
-      config: ${{ steps.repo-config.outputs }}
+      first-python-version: "${{ steps.first-python-version.outputs.first-python-version }}"
+      python-versions: "[${{ steps.repo-config.outputs['python-versions'] }}]"
+      poetry-version: "${{ steps.repo-config.outputs['poetry-version'] }}"
 
     steps:
       - uses: actions/checkout@v4
@@ -21,8 +24,18 @@ jobs:
         id: repo-config
         with:
           config: repo-config.yml
-  
+
+      - name: Get first python version
+        id: first-python-version
+        run: |
+          ( \
+            echo "first-python-version=${{ steps.repo-config.outputs['python-versions'] }}" | \
+            sed 's/\s+//g' | \
+            cut -d',' -f1 \
+          ) >>"$GITHUB_OUTPUT"
+
   lint:
+    name: Lint
     runs-on: ubuntu-latest
     needs: read-config
 
@@ -31,11 +44,11 @@ jobs:
 
     - uses: actions/setup-python@v5
       with:
-        python-version: "${{ needs.read-config.outputs.config['python-versions'][0] }}"
+        python-version: "${{ needs.read-config.outputs.first-python-version }}"
 
     - uses: snok/install-poetry@v1
       with:
-        version: "${{ needs.read-config.outputs.config['poetry-version'] }}"
+        version: "${{ needs.read-config.outputs.poetry-version }}"
         virtualenvs-create: false
         virtualenvs-in-project: false
 
@@ -43,12 +56,13 @@ jobs:
       run: make lint
 
   test:
+    name: Test
     needs: read-config
 
     strategy:
       fail-fast: false
       matrix:
-        python-version: ${{ needs.read-config.outputs.config['python-versions'] }}
+        python-version: ${{ fromJson(needs.read-config.outputs.python-versions) }}
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
 
@@ -61,7 +75,7 @@ jobs:
 
     - uses: snok/install-poetry@v1
       with:
-        version: "${{ needs.read-config.outputs.config['poetry-version'] }}"
+        version: "${{ needs.read-config.outputs.poetry-version }}"
         virtualenvs-create: false
         virtualenvs-in-project: false
 
@@ -77,13 +91,14 @@ jobs:
     steps:
       - run: |
           result="${{ needs.test.result }}"
-          if [[ $result == "success" || $result == "skipped" ]]; then
+          if [[ $result == "success" ]]; then
             exit 0
           else
             exit 1
           fi
 
   doc:
+    name: Doc
     runs-on: ubuntu-latest
     needs: read-config
 
@@ -92,11 +107,11 @@ jobs:
 
     - uses: actions/setup-python@v5
       with:
-        python-version: "${{ needs.read-config.outputs.config['python-versions'][0] }}"
+        python-version: "${{ needs.read-config.outputs.first-python-version }}"
 
     - uses: snok/install-poetry@v1
       with:
-        version: "${{ needs.read-config.outputs.config['poetry-version'] }}"
+        version: "${{ needs.read-config.outputs.poetry-version }}"
         virtualenvs-create: false
         virtualenvs-in-project: false
 

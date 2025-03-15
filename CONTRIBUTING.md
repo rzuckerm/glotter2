@@ -73,7 +73,7 @@ This project uses [pytest] as its testing library, but it is also a wrapper arou
 
 The `repo-config.yml` contains the configuration for the repository, which includes:
 
-- `python-versions`: A list of python versions used in testing
+- `python-versions`: A comma-separated list of python versions used in testing.
 - `poetry-version`: The version of `poetry` to use.
 
 ### Local Development
