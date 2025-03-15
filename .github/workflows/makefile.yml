@@ -38,7 +38,7 @@ jobs:
         id: python-versions
         run: |
           ( \
-            echo "[${{ steps.repo-config.outputs['python-versions'] }}]" | \
+            echo "python-versions=[${{ steps.repo-config.outputs['python-versions'] }}]" | \
             sed -r 's/([0-9.]+)/"\1"/g' \
           ) >>"$GITHUB_OUTPUT"
 
