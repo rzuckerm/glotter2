@@ -7,19 +7,33 @@ on:
 
 jobs:
   publish:
+    name: Publish
 
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Read repo config
+        uses: pietrobolcato/action-read-yaml@1.1.0
+        id: repo-config
+        with:
+          config: repo-config.yml
+
+      - name: Get first python version
+        id: first-python-version
+        run: |
+          ./scripts/get-first-item.sh \
+            "first-python-version" \
+            "${{ steps.repo-config.outputs['python-versions'] }}" >>"$GITHUB_OUTPUT"
+  
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.9"
+          python-version: "${{ steps.first-python-version.outputs.first-python-version }}"
 
       - uses: snok/install-poetry@v1
         with:
-          version: 2.1.1
+          version: "${{ steps.repo-config.outputs['poetry-version'] }}"
           virtualenvs-create: false
           virtualenvs-in-project: false
 

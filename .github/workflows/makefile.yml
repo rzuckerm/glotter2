@@ -28,20 +28,18 @@ jobs:
       - name: Get first python version
         id: first-python-version
         run: |
-          ( \
-            echo "first-python-version=${{ steps.repo-config.outputs['python-versions'] }}" | \
-            sed 's/\s+//g' | \
-            cut -d',' -f1 \
-          ) >>"$GITHUB_OUTPUT"
+          ./scripts/get-first-item.sh \
+            "first-python-version" \
+            "${{ steps.repo-config.outputs['python-versions'] }}" >>"$GITHUB_OUTPUT"
 
       - name: JSONify python versions
         id: python-versions
         run: |
-          ( \
-            echo "python-versions=[${{ steps.repo-config.outputs['python-versions'] }}]" | \
-            sed -r 's/([0-9.]+)/"\1"/g' \
-          ) >>"$GITHUB_OUTPUT"
-
+          ./scripts/jsonify-items.sh \
+            "python-versions" \
+            "${{ steps.repo-config.outputs['python-versions'] }}" \
+            "0-9." >>"$GITHUB_OUTPUT"
+    
   lint:
     name: Lint
     runs-on: ubuntu-latest
@@ -79,7 +77,7 @@ jobs:
 
     - uses: actions/setup-python@v5
       with:
-        python-version: ${{ matrix.python-version }}
+        python-version: "${{ matrix.python-version }}"
 
     - uses: snok/install-poetry@v1
       with:
