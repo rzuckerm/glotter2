@@ -25,12 +25,15 @@ If you'd like to contribute to Glotter2, read our [contributing guidelines](./CO
 
 ### Glotter2 releases
 
+* 0.10.2
+  * Fix bug where double quotes at the end of a string that is enclosed
+    in `"""` for a test value were not being escaped
 * 0.10.1
   * Run docker container with no entrypoint to allow docker images that
     specify `ENTRYPOINT` can be used
 * 0.10.0
   * Update poetry from 1.8.3 to 2.1.1
-  * Removed python 3.8 support
+  * Remove python 3.8 support
 * 0.9.0:
   * Add `check` command
 * 0.8.2:

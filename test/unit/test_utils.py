@@ -39,7 +39,7 @@ TRIPLE_DOUBLE_QUOTE = DOUBLE_QUOTE * 3
             f"{SINGLE_QUOTE}something{SINGLE_QUOTE} {DOUBLE_QUOTE}good{DOUBLE_QUOTE}",
             (
                 f"{TRIPLE_DOUBLE_QUOTE}{SINGLE_QUOTE}something{SINGLE_QUOTE} "
-                f"{DOUBLE_QUOTE}good{DOUBLE_QUOTE}{TRIPLE_DOUBLE_QUOTE}"
+                f"{DOUBLE_QUOTE}good{BACKSLASH}{DOUBLE_QUOTE}{TRIPLE_DOUBLE_QUOTE}"
             ),
             id="has-both-double-quote-end",
         ),
