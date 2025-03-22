@@ -15,7 +15,7 @@ def quote(value: str) -> str:
             quote_chars = '"""'
             if value.startswith('"'):
                 value = f"\\{value}"
-            
+
             if value.endswith('"'):
                 value = f'{value[:-1]}\\"'
         else:
