@@ -123,17 +123,21 @@ class TestDocSectionGenerator:
                 inputs = shlex.split(test_param.input)
                 extra_inputs = inputs[num_input_params:]
                 inputs = inputs[:num_input_params]
-                cells += [quote(value) for value in inputs]
+                cells += [_quote_and_escape_pipe(value) for value in inputs]
                 if extra_inputs:
-                    cells[-1] += " " + " ".join(quote(value) for value in extra_inputs)
+                    cells[-1] += " " + " ".join(
+                        _quote_and_escape_pipe(value) for value in extra_inputs
+                    )
 
             cells += [""] * (num_input_params - len(inputs))
 
             if has_output_column:
                 if isinstance(output, str):
-                    cells.append(quote(output))
+                    cells.append(_quote_and_escape_pipe(output))
                 else:
-                    cells.append("<br>".join(quote(item) for item in output))
+                    cells.append(
+                        "<br>".join(_quote_and_escape_pipe(item) for item in output)
+                    )
 
             doc.append(_cells_to_table_line(cells))
 
@@ -152,3 +156,7 @@ class TestDocSectionGenerator:
 
 def _cells_to_table_line(cells):
     return "| " + " | ".join(cells) + " |"
+
+
+def _quote_and_escape_pipe(value):
+    return quote(value.replace("|", "\\|"))

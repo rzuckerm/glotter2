@@ -145,6 +145,7 @@ EXTRA_INPUTS_PROJECT = {
                     "input": '"6" "7" "8"',
                     "expected": "99",
                 },
+                {"name": "some input 3", "input": '"{" "|" "}"', "expected": "{|}"},
             ]
         }
     },
