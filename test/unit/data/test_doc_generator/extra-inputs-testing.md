@@ -7,3 +7,4 @@ In this section, we specify the set of tests specific to Extra Inputs.
 | ----------- | ----- | ------ |
 | Some Input 1 | "4" "5" | "42" |
 | Some Input 2 | "6" "7" "8" | "99" |
+| Some Input 3 | "{" "\|" "}" | "{\|}" |
