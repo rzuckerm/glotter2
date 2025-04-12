@@ -1,6 +1,6 @@
 [project]
 name = "glotter2"
-version = "0.10.3"
+version = "0.11.0"
 description = "An execution library for scripts written in any language. This is a fork of https://github.com/auroq/glotter"
 authors = [
     {name = "auroq"}, 

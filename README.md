@@ -25,6 +25,9 @@ If you'd like to contribute to Glotter2, read our [contributing guidelines](./CO
 
 ### Glotter2 releases
 
+* 0.11.0
+  * Modified `self` expected output to be more strict so the actual code and
+    generated code can only be different by a single newline
 * 0.10.2
   * Fix bug where double quotes at the end of a string that is enclosed
     in `"""` for a test value were not being escaped
