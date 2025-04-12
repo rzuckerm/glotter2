@@ -371,7 +371,7 @@ with open({project_name_underscores}.full_path, "r", encoding="utf-8") as file:
 """
 
     if "self" in expected_output:
-        test_code += f"""\
+        test_code += """\
 diff_len = len(actual) - len(expected)
 if diff_len > 0:
     expected += "\\n"
