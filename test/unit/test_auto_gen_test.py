@@ -663,6 +663,11 @@ def test_auto_gen_test_get_test_function_and_run(
             """\
 with open(project5.full_path, "r", encoding="utf-8") as file:
     expected = file.read()
+diff_len = len(actual) - len(expected)
+if diff_len > 0:
+    expected += "\\n"
+elif diff_len < 0:
+    actual += "\\n"
 """,
             id="expected-self",
         ),
@@ -712,7 +717,6 @@ def test_auto_gen_test_get_expected_output(
                 "name": "quine",
                 "requires_parameters": False,
                 "params": [{"expected": {"self": ""}}],
-                "transformations": ["strip", "strip_expected"],
             },
             "no_requires_params_self",
             id="project-no-params-self",

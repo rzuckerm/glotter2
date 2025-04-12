@@ -365,10 +365,21 @@ def _get_expected_file(
         script = quote(expected_output["exec"])
         return f"expected = {project_name_underscores}.exec({script})\n"
 
-    return f"""\
+    test_code = f"""\
 with open({project_name_underscores}.full_path, "r", encoding="utf-8") as file:
     expected = file.read()
 """
+
+    if "self" in expected_output:
+        test_code += f"""\
+diff_len = len(actual) - len(expected)
+if diff_len > 0:
+    expected += "\\n"
+elif diff_len < 0:
+    actual += "\\n"
+"""
+
+    return test_code
 
 
 def _get_assert(actual_var: str, expected_var: str, expected_output) -> str:
