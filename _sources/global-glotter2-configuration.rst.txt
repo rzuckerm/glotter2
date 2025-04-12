@@ -203,8 +203,15 @@ Params
   As a dictionary may be one of the following:
 
   - ``exec: "command"`` - Execute a command in the language-specific docker container.
-  - ``self: ""`` - The expect value is the project code (i.e., a 
-    `quine <https://en.wikipedia.org/wiki/Quine_(computing)>`_)
+  - ``self: ""`` - The expected value is the project code (i.e., a
+    `quine <https://en.wikipedia.org/wiki/Quine_(computing)>`_). The generated code and
+    the actual code are allowed to differ by a single newline character:
+
+    - If the generated code is longer than the actual code, the actual code plus a
+      newline is compared to the generated code.
+    - If the generated code is shorter than tbe actual code, the generated code plus a
+      newline is compared to the actual code.
+    - If the generated code and the actual code, the two are compared.
 
 Transformations
 ~~~~~~~~~~~~~~~
@@ -388,9 +395,6 @@ The ``projects`` section would look like this:
                 params:
                   - expected:
                     - self: ""
-                transformations:
-                  - "strip"
-                  - "strip_expected"
       bubblesort:
         words:
           - "bubble"
@@ -493,9 +497,6 @@ The following is an example of a full ``.glotter.yml``
                 params:
                   - expected:
                     - self: ""
-                transformations:
-                  - "strip"
-                  - "strip_expected"
       bubblesort:
         words:
           - "bubble"

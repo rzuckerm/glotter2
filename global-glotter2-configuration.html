@@ -302,8 +302,17 @@ contain a key and a string value:</p>
 <p>As a dictionary may be one of the following:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">exec:</span> <span class="pre">&quot;command&quot;</span></code> - Execute a command in the language-specific docker container.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">self:</span> <span class="pre">&quot;&quot;</span></code> - The expect value is the project code (i.e., a
-<a class="reference external" href="https://en.wikipedia.org/wiki/Quine_(computing)">quine</a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">self:</span> <span class="pre">&quot;&quot;</span></code> - The expected value is the project code (i.e., a
+<a class="reference external" href="https://en.wikipedia.org/wiki/Quine_(computing)">quine</a>). The generated code and
+the actual code are allowed to differ by a single newline character:</p>
+<ul>
+<li><p>If the generated code is longer than the actual code, the actual code plus a
+newline is compared to the generated code.</p></li>
+<li><p>If the generated code is shorter than tbe actual code, the generated code plus a
+newline is compared to the actual code.</p></li>
+<li><p>If the generated code and the actual code, the two are compared.</p></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -482,9 +491,6 @@ MergeSort uses tests from BubbleSort.</p>
 <span class="w">            </span><span class="nt">params</span><span class="p">:</span>
 <span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">expected</span><span class="p">:</span>
 <span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">self</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
-<span class="w">            </span><span class="nt">transformations</span><span class="p">:</span>
-<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;strip&quot;</span>
-<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;strip_expected&quot;</span>
 <span class="w">  </span><span class="nt">bubblesort</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">words</span><span class="p">:</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;bubble&quot;</span>
@@ -586,9 +592,6 @@ MergeSort uses tests from BubbleSort.</p>
 <span class="w">            </span><span class="nt">params</span><span class="p">:</span>
 <span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">expected</span><span class="p">:</span>
 <span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">self</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
-<span class="w">            </span><span class="nt">transformations</span><span class="p">:</span>
-<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;strip&quot;</span>
-<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;strip_expected&quot;</span>
 <span class="w">  </span><span class="nt">bubblesort</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">words</span><span class="p">:</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;bubble&quot;</span>
