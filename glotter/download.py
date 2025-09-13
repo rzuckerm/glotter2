@@ -1,14 +1,14 @@
 from concurrent.futures import ThreadPoolExecutor
 
-from glotter.source import get_sources, filter_sources
-from glotter.settings import Settings
 from glotter.containerfactory import ContainerFactory
+from glotter.settings import Settings
+from glotter.source import filter_sources, get_sources
 
 
 def download(args):
     sources_by_type = filter_sources(args, get_sources(Settings().source_root))
     containers = {
-        f"{source.test_info.container_info.image}:{str(source.test_info.container_info.tag)}": source.test_info.container_info
+        f"{source.test_info.container_info.image}:{source.test_info.container_info.tag!s}": source.test_info.container_info
         for sources in sources_by_type.values()
         for source in sources
     }

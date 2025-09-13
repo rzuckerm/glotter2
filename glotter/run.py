@@ -1,5 +1,5 @@
-from glotter.source import get_sources, filter_sources
 from glotter.settings import Settings
+from glotter.source import filter_sources, get_sources
 
 
 def run(args):

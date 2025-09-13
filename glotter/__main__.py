@@ -1,12 +1,12 @@
-import sys
 import argparse
+import sys
 
-from glotter.run import run
-from glotter.test import test
-from glotter.download import download
-from glotter.report import report
 from glotter.batch import batch
 from glotter.check import check
+from glotter.download import download
+from glotter.report import report
+from glotter.run import run
+from glotter.test import test
 
 
 def main():
@@ -125,9 +125,7 @@ def parse_batch():
         description="Download images, run tests, and optionally remove image in batches"
         "project, or a single source. Only one option may be specified.",
     )
-    parser.add_argument(
-        "num_batches", metavar="NUM_BATCHES", type=int, help="number of batches"
-    )
+    parser.add_argument("num_batches", metavar="NUM_BATCHES", type=int, help="number of batches")
     _add_parallel_arg(
         parser,
         "Download images, run tests, and optionally remove images in parallel for each batch",

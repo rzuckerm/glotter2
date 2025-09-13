@@ -5,8 +5,8 @@ import shutil
 import pytest
 from pydantic import ValidationError
 
-from glotter.settings import SettingsParser, Settings
 from glotter.project import AcronymScheme
+from glotter.settings import Settings, SettingsParser
 from glotter.singleton import Singleton
 
 TEST_DATA_PATH = os.path.abspath(os.path.join("test", "integration", "data"))
@@ -36,9 +36,7 @@ def test_locate_yml_when_glotter_yml_does_exist(tmp_dir, glotter_yml, recwarn):
 
 
 def test_locate_yml_when_glotter_yml_is_not_at_root(tmp_dir, glotter_yml, recwarn):
-    expected = os.path.join(
-        tmp_dir, "this", "is", "a", "few", "levels", "deeper", ".glotter.yml"
-    )
+    expected = os.path.join(tmp_dir, "this", "is", "a", "few", "levels", "deeper", ".glotter.yml")
     settings_parser = setup_settings_parser(tmp_dir, expected, glotter_yml)
     assert settings_parser.yml_path == expected
     assert len(recwarn.list) == 0
@@ -391,9 +389,7 @@ projects:
         ),
     ],
 )
-def test_bad_glotter_yml(
-    src_filename, expected_errors, tmp_dir_chdir, clear_singleton, capsys
-):
+def test_bad_glotter_yml(src_filename, expected_errors, tmp_dir_chdir, clear_singleton, capsys):
     src_path = os.path.join(TEST_DATA_PATH, src_filename)
     shutil.copy(src_path, ".glotter.yml")
 

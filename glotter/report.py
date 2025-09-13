@@ -1,7 +1,7 @@
 import csv
 
-from glotter.source import get_sources
 from glotter.settings import Settings
+from glotter.source import get_sources
 
 
 def report(args):
@@ -33,9 +33,7 @@ class Reporter:
                 if source.language not in language_stats:
                     language_stats[source.language] = {p: "" for p in self._projects}
                     language_stats[source.language]["Name"] = source.language
-                language_stats[source.language][
-                    display_name
-                ] = f"{source.name}{source.extension}"
+                language_stats[source.language][display_name] = f"{source.name}{source.extension}"
 
         return language_stats
 
@@ -74,8 +72,7 @@ class Reporter:
             for lang in self._languages:
                 if project in self._language_stats[lang]:
                     entry_len = len(self._language_stats[lang][project])
-                    if entry_len > max_len:
-                        max_len = entry_len
+                    max_len = max(max_len, entry_len)
 
             column_widths[project] = max_len
         return column_widths

@@ -7,8 +7,7 @@ from glotter import source
 
 def get_hello_world(language):
     return {
-        "python": "def main():\n  print('Hello, world!')\n\nif __name__ == '__main__':\n  main()"
-        "",
+        "python": "def main():\n  print('Hello, world!')\n\nif __name__ == '__main__':\n  main()",
         "go": 'package main\n\nimport "fmt"\n\nfunc main() {\n\tfmt.Println("Hello, World!")\n}',
     }[language]
 

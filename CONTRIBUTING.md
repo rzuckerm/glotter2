@@ -24,9 +24,9 @@ Before you can build Glotter2, there a few things you will need.
 
 - [docker]: Glotter2 makes extensive use of docker. You will need to have docker installed on your
   machine.
-- [python], [pip], [uv][uv], and [virtualenv]: Glotter2 is written in python and uses `uv` to install
-  dependencies in a virtual environment that isolates the dependencies for this project
-  from the dependencies on your host system.
+- [python] and [uv][uv]: Glotter2 is written in python and uses `uv` to install dependencies in
+  a virtual environment that isolates the dependencies for this project from the dependencies
+  on your host system.
 - [make]: Everything in Glotter2 is built and run using `make`. See the following installation
   guides:
   - [Installing make on Linux]
@@ -70,7 +70,7 @@ dependencies as well as configuration. The `uv.lock` locks down the exact versio
 dependencies for build reproducibility. The project is based on
 [uv]().
 
-The project used [black] to do code formatting and format linting and [pylint] for linting.
+The project uses [ruff] to do code formatting, format checking, and linting.
 
 This project uses [pytest] as its testing library, but it is also a wrapper around [pytest].
 
@@ -88,8 +88,9 @@ Everything associated with this project is done through `make` targets:
 
 * `clean` - Delete output file
 * `doc` - Make documentation
-* `format` - Format the code using `black`
-* `lint` - Lint the code using `black` and `pylint`
+* `fix` - Fix formatting and linting errors using `ruff`
+* `format` - Format the code using `ruff`
+* `lint` - Check the format and lint the code using `ruff`
 
 ## Running Tests
 
@@ -112,20 +113,20 @@ failure, and open the python debugger on that failure:
 
 ## Final Requirements for Contributing
 
-- Run `make format` and `make lint` before committing your changes.
-- Fix any linting errors, or add a "disable" rule to the `disable` item in the
-  `tool.pylint.message` section of `pyproject.toml`. If you disable the linting, please
-  be prepared to explain why this is being done. Alternatively, you can disable
+- Run `make fix` and `make lint` before committing your changes.
+- Fix any linting errors, or add an "ignore" rule to the `ignore` item in the
+  `tool.ruff.` section of `pyproject.toml`. If you ignore the linting, please
+  be prepared to explain why this is being done. Alternatively, you can ignore
   the linting error by adding something like this to the line in question:
 
   ```
-  # pylint: disable=<error-code>
+  # noqa: <error-code>
   ```
 
   For example:
 
   ```
-  # pylint: disable=too-few-methods
+  # noqa: F401
   ```
 - Please write tests for new functionality. No pull requests will be accepted without applicable
   new or existing unit or integration tests.
@@ -145,9 +146,8 @@ failure, and open the python debugger on that failure:
 [docs-integrating]: https://rzuckerm.github.io/glotter2/index.html#integrating-with-glotter2
 
 [Sphinx]: https://pypi.org/project/sphinx
-[black]: https://pypi.org/project/black
-[pylint]: https://pypi.org/project/pylint
-[uv]: https://docs.astral.sh/uv/
+[ruff]: https://pypi.org/project/ruff
+[uv]: https://pypi.org/project/uv
 [pytest]: https://pypi.org/project/pytest
 
 [reStructuredText]: https://www.sphinx-doc.org/en/master/usage/restructuredtext/

@@ -6,7 +6,7 @@ UV_VERSION = $(shell sed -nr 's/uv-version: "([^"]+)"/\1/p' repo-config.yml)
 
 SHELL := bash
 
-VENV := venv
+VENV := .venv
 
 UV := uv
 RUN := $(UV) run
@@ -26,28 +26,24 @@ help:
 	@echo "clean          - Delete output files"
 	@echo "coverage-badge - Make coverage badge"
 	@echo "doc            - Make documentation"
-	@echo "format         - Format code with black"
-	@echo "lint           - Lint code with black and pylint"
-	@echo "lint-black     - Lint code with black"
-	@echo "lint-pylint    - Lint code with pylint"
+	@echo "fix            - Format code and fix linting errors with ruff"
+	@echo "format         - Format code with ruff"
+	@echo "lint           - Lint code with ruff"
 	@echo "test           - Run unit tests with pytest."
 	@echo "                 Use PYTEST_ARGS to override options"
 
-$(META): | $(VENV)
-	mkdir -p $@
-
-$(VENV):
+$(META):
 	mkdir -p $@
 
 $(META_INSTALL): $(CONFIG_FILE) | $(META)
-	$(UV) sync --directory $(VENV)
+	$(UV) sync
 	touch $@
 
 .PHONY: build
 build:
 	@echo "** Building package ***"
 	rm -rf dist
-	$(POETRY) build
+	$(UV) build
 	@echo ""
 
 .PHONY: clean
@@ -56,8 +52,9 @@ clean:
 		$(TESTS)/__pycache__/ \
 		$(META)/ \
 		.pytest_cache/ \
+		.ruff_cache/ \
 		dist \
-		venv
+		$(VENV)
 	rm -f .coverage .coverage.*
 
 .PHONY: coverage-badge
@@ -74,24 +71,22 @@ doc: $(META_INSTALL)
 	$(RUN) sphinx-build -b html doc $(META)/doc
 	@echo ""
 
+.PHONY: fix
+fix: $(META_INSTALL) format
+	@echo "*** Fixing with ruff ***"
+	$(RUN) ruff check --fix $(ALL)
+
 .PHONY: format
 format: $(META_INSTALL)
-	$(RUN) black $(ALL)
-
-.PHONY: lint
-lint: lint-black lint-pylint
-
-.PHONY: lint-black
-lint-black: $(META_INSTALL)
-	@echo "*** Linting with black ***"
-	$(RUN) black --check $(ALL)
+	@echo "*** Formatting with ruff ***"
+	$(RUN) ruff format $(ALL)
 	@echo ""
 
-.PHONY: lint-pylint
-lint-pylint: $(META_INSTALL)
-	@echo "*** Linting with pylint ***"
-	$(RUN) pylint --rcfile $(CONFIG_FILE) $(PACKAGE)
-	$(RUN) pylint --rcfile $(TESTS)/$(CONFIG_FILE) $(TESTS)
+.PHONY: lint
+lint:
+	@echo "*** Linting with ruff ***"
+	$(RUN) ruff format --check $(ALL)
+	$(RUN) ruff check $(ALL)
 	@echo ""
 
 .PHONY: test

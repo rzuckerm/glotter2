@@ -1,14 +1,12 @@
-# pylint hates pydantic
-# pylint: disable=E0213,E0611
-from typing import Optional, Dict
 import os
+from typing import Dict, Optional
 from warnings import warn
 
 import yaml
-from pydantic import BaseModel, validator, root_validator, ValidationError
+from pydantic import BaseModel, ValidationError, root_validator, validator
 from pydantic.error_wrappers import ErrorWrapper
 
-from glotter.project import Project, AcronymScheme
+from glotter.project import AcronymScheme, Project
 from glotter.singleton import Singleton
 from glotter.utils import error_and_exit, indent
 
@@ -144,9 +142,7 @@ class SettingsConfig(BaseModel):
             return values
 
         projects_with_use_tests = {
-            project_name: project
-            for project_name, project in projects.items()
-            if project.use_tests
+            project_name: project for project_name, project in projects.items() if project.use_tests
         }
 
         errors = []
@@ -158,9 +154,7 @@ class SettingsConfig(BaseModel):
             if use_tests_name not in projects:
                 errors.append(
                     ErrorWrapper(
-                        ValueError(
-                            f"refers to a non-existent project {project.use_tests.name}"
-                        ),
+                        ValueError(f"refers to a non-existent project {project.use_tests.name}"),
                         loc=loc,
                     )
                 )
@@ -168,9 +162,7 @@ class SettingsConfig(BaseModel):
             elif use_tests_name in projects_with_use_tests:
                 errors.append(
                     ErrorWrapper(
-                        ValueError(
-                            f'refers to another "use_tests" project {use_tests_name}'
-                        ),
+                        ValueError(f'refers to another "use_tests" project {use_tests_name}'),
                         loc=loc,
                     )
                 )

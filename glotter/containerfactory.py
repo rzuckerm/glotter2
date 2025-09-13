@@ -59,9 +59,7 @@ class ContainerFactory(metaclass=Singleton):
         :param parallel: whether image download is occurring in parallel
         :return: a docker image
         """
-        images = self._client.images.list(
-            name=f"{container_info.image}:{str(container_info.tag)}"
-        )
+        images = self._client.images.list(name=f"{container_info.image}:{container_info.tag!s}")
         if len(images) == 1:
             return images[0]
         if not quiet:
@@ -78,11 +76,7 @@ class ContainerFactory(metaclass=Singleton):
             stream=True,
             decode=True,
         ):
-            if (
-                not quiet
-                and not parallel
-                and datetime.now() - last_update > timedelta(seconds=5)
-            ):
+            if not quiet and not parallel and datetime.now() - last_update > timedelta(seconds=5):
                 print("... ", end="", flush=True)
                 last_update = datetime.now()
         if not quiet:
@@ -94,9 +88,7 @@ class ContainerFactory(metaclass=Singleton):
             else:
                 print("done", flush=True)
 
-        images = self._client.images.list(
-            name=f"{container_info.image}:{str(container_info.tag)}"
-        )
+        images = self._client.images.list(name=f"{container_info.image}:{container_info.tag!s}")
         if len(images) == 1:
             return images[0]
 
@@ -109,10 +101,8 @@ class ContainerFactory(metaclass=Singleton):
         :param container_info: metadata about the image to remove
         """
 
-        image_name = f"{container_info.image}:{str(container_info.tag)}"
-        images = self._client.images.list(
-            name=f"{container_info.image}:{str(container_info.tag)}"
-        )
+        image_name = f"{container_info.image}:{container_info.tag!s}"
+        images = self._client.images.list(name=f"{container_info.image}:{container_info.tag!s}")
         if len(images) == 1:
             print(f"Removing {image_name}", flush=True)
             self._client.images.remove(image=image_name, force=True)

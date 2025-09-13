@@ -62,8 +62,7 @@ class TestDocGenerator:
                 "",
             ]
             doc += [
-                "- " + _get_test_section_title(test_obj)
-                for test_obj in self.project.tests.values()
+                "- " + _get_test_section_title(test_obj) for test_obj in self.project.tests.values()
             ]
 
         return doc + [""]
@@ -82,9 +81,7 @@ class TestDocSectionGenerator:
 
     def get_test_section(self):
         return (
-            self._get_test_section_header()
-            + self._get_test_table_header()
-            + self._get_test_table()
+            self._get_test_section_header() + self._get_test_table_header() + self._get_test_table()
         )
 
     def _get_test_section_header(self):
@@ -105,10 +102,7 @@ class TestDocSectionGenerator:
             return True
 
         first_expected = self.test_obj.params[0].expected
-        return any(
-            test_param.expected != first_expected
-            for test_param in self.test_obj.params[1:]
-        )
+        return any(test_param.expected != first_expected for test_param in self.test_obj.params[1:])
 
     def _get_test_table(self):
         doc = []
@@ -135,9 +129,7 @@ class TestDocSectionGenerator:
                 if isinstance(output, str):
                     cells.append(_quote_and_escape_pipe(output))
                 else:
-                    cells.append(
-                        "<br>".join(_quote_and_escape_pipe(item) for item in output)
-                    )
+                    cells.append("<br>".join(_quote_and_escape_pipe(item) for item in output))
 
             doc.append(_cells_to_table_line(cells))
 
