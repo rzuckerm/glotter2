@@ -3,7 +3,7 @@
 [![Makefile CI](https://github.com/rzuckerm/glotter2/actions/workflows/makefile.yml/badge.svg)](https://github.com/rzuckerm/glotter2/actions/workflows/makefile.yml)
 [![Coverage](https://rzuckerm.github.io/glotter2/badge.svg)](https://rzuckerm.github.io/glotter2/html_cov)
 [![PyPI version](https://img.shields.io/pypi/v/glotter2)](https://pypi.org/project/glotter2)
-[![Python Versions](https://img.shields.io/pypi/pyversions/poetry)](https://pypi.org/project/glotter2)
+[![Python Versions](https://img.shields.io/pypi/pyversions/glotter2)](https://pypi.org/project/glotter2)
 [![Python wheel](https://img.shields.io/pypi/wheel/glotter2)](https://pypi.org/project/glotter2)
 
 [![Glotter2 logo](https://rzuckerm.github.io/glotter2/_static/glotter2_small.png)](https://rzuckerm.github.io/glotter2/)
@@ -25,6 +25,8 @@ If you'd like to contribute to Glotter2, read our [contributing guidelines](./CO
 
 ### Glotter2 releases
 
+* Future release:
+  * Convert to use `uv` instead of `poetry`
 * 0.11.0
   * Modified `self` expected output to be more strict so the actual code and
     generated code can only be different by a single newline

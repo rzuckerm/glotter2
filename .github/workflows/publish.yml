@@ -27,15 +27,11 @@ jobs:
             "first-python-version" \
             "${{ steps.repo-config.outputs['python-versions'] }}" >>"$GITHUB_OUTPUT"
   
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v6
         with:
+          version: "${{ steps.repo-config.outputs['uv-version'] }}"
           python-version: "${{ steps.first-python-version.outputs.first-python-version }}"
 
-      - uses: snok/install-poetry@v1
-        with:
-          version: "${{ steps.repo-config.outputs['poetry-version'] }}"
-          virtualenvs-create: false
-          virtualenvs-in-project: false
-
       - name: Publish to pypi
-        run: poetry config pypi-token.pypi "${{secrets.PYPI_TOKEN}}" && poetry publish --build
+        run: |
+          uv build && uv publish --token "${{secrets.PYPI_TOKEN}}"
