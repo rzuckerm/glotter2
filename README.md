@@ -27,8 +27,8 @@ If you'd like to contribute to Glotter2, read our [contributing guidelines](./CO
 
 * Future release:
   * Convert to use `uv` instead of `poetry`
-  * Convert to use `ruff` instead of `pylint` and `black` (although `black` is still
-    used to format generated tests)
+  * Convert to use `ruff` instead of `pylint` and `black`
+  * Use `ruff format` instead of `black` to format generated tests
 * 0.11.0
   * Modified `self` expected output to be more strict so the actual code and
     generated code can only be different by a single newline
