@@ -29,6 +29,7 @@ If you'd like to contribute to Glotter2, read our [contributing guidelines](./CO
   * Convert to use `uv` instead of `poetry`
   * Convert to use `ruff` instead of `pylint` and `black` (although `black` is still
     used to format generated tests)
+  * Add support for python 3.14
 * 0.11.0
   * Modified `self` expected output to be more strict so the actual code and
     generated code can only be different by a single newline
