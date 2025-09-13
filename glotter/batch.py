@@ -1,11 +1,11 @@
 import argparse
 import sys
 
-from glotter.source import get_sources
-from glotter.settings import Settings
-from glotter.utils import error_and_exit
 from glotter.download import download, remove_images
+from glotter.settings import Settings
+from glotter.source import get_sources
 from glotter.test import test
+from glotter.utils import error_and_exit
 
 
 def batch(args):
@@ -19,11 +19,7 @@ def batch(args):
     # Get all of the languages
     all_sources = get_sources(Settings().source_root)
     languages = sorted(
-        {
-            source.language.lower()
-            for sources in all_sources.values()
-            for source in sources
-        }
+        {source.language.lower() for sources in all_sources.values() for source in sources}
     )
     num_languages = len(languages)
     num_batches = min(num_languages, args.num_batches)
@@ -47,9 +43,7 @@ def batch(args):
             project=None,
             language=set(
                 languages[
-                    (n * num_languages // num_batches) : (
-                        (n + 1) * num_languages // num_batches
-                    )
+                    (n * num_languages // num_batches) : ((n + 1) * num_languages // num_batches)
                 ]
             ),
             parallel=args.parallel,

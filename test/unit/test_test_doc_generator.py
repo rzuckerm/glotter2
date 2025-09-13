@@ -1,10 +1,10 @@
-from unittest.mock import patch
 import os
+from unittest.mock import patch
 
 import pytest
 
-from glotter.test_doc_generator import TestDocGenerator, generate_test_docs
 from glotter.project import Project
+from glotter.test_doc_generator import TestDocGenerator, generate_test_docs
 
 REPO_NAME = "Some Repo"
 REPO_URL = "https://github.com/some-user/some-repo"
@@ -151,9 +151,7 @@ EXTRA_INPUTS_PROJECT = {
     },
 }
 
-UNIT_TEST_DATA_PATH = os.path.abspath(
-    os.path.join("test", "unit", "data", "test_doc_generator")
-)
+UNIT_TEST_DATA_PATH = os.path.abspath(os.path.join("test", "unit", "data", "test_doc_generator"))
 
 
 def test_test_doc_generator_with_no_tests():
@@ -204,9 +202,7 @@ def test_generate_tests(mock_settings, temp_dir_chdir):
             contents = f.read()
 
         with open(
-            os.path.join(
-                "generated", filename.replace("-testing.md", f"{os.path.sep}testing.md")
-            ),
+            os.path.join("generated", filename.replace("-testing.md", f"{os.path.sep}testing.md")),
             encoding="utf-8",
         ) as f:
             expected_contents = f.read()

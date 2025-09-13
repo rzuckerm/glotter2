@@ -82,9 +82,7 @@ def test_build_runs_build_command(factory, source_with_build, monkeypatch, no_io
     assert actual["workdir"] == "/src"
 
 
-def test_build_raises_error_on_non_zero_exit_code_from_exec(
-    source_with_build, monkeypatch, no_io
-):
+def test_build_raises_error_on_non_zero_exit_code_from_exec(source_with_build, monkeypatch, no_io):
     monkeypatch.setattr(
         "glotter.source.Source._container_exec",
         lambda *args, **kwargs: (1, "error message".encode("utf-8")),
@@ -114,9 +112,7 @@ def test_run_execs_run_command_with_params(factory, source_no_build, no_io):
     assert actual["workdir"] == "/src"
 
 
-def test_run_on_non_zero_exit_code_from_exec_raises_no_error(
-    source_no_build, monkeypatch, no_io
-):
+def test_run_on_non_zero_exit_code_from_exec_raises_no_error(source_no_build, monkeypatch, no_io):
     monkeypatch.setattr(
         "glotter.source.Source._container_exec",
         lambda *args, **kwargs: (1, "error message".encode("utf-8")),
@@ -134,9 +130,7 @@ def test_exec_runs_command(factory, source_no_build, no_io):
     assert actual["workdir"] == "/src"
 
 
-def test_exec_on_non_zero_exit_code_raises_no_error(
-    source_no_build, monkeypatch, no_io
-):
+def test_exec_on_non_zero_exit_code_raises_no_error(source_no_build, monkeypatch, no_io):
     exec_cmd = "command -p param1 --longparam"
     monkeypatch.setattr(
         "glotter.source.Source._container_exec",
@@ -231,9 +225,7 @@ def test_filter_languages_not_found(mock_sources, capsys):
 def test_filter_source(source, project, indices, mock_sources):
     args = MockArgs(source=source)
     filtered_sources = filter_sources(args, mock_sources)
-    assert filtered_sources == {
-        project: [mock_sources[project][index] for index in indices]
-    }
+    assert filtered_sources == {project: [mock_sources[project][index] for index in indices]}
 
 
 def test_filter_source_not_found(mock_sources, capsys):

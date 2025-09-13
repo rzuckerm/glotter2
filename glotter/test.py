@@ -3,8 +3,8 @@ import sys
 
 import pytest
 
-from glotter.source import get_sources, filter_sources
 from glotter.settings import Settings
+from glotter.source import filter_sources, get_sources
 from glotter.test_generator import generate_tests
 from glotter.utils import error_and_exit
 
@@ -36,9 +36,7 @@ def _get_tests(project_type, all_tests, src=None):
             pattern = rf"^(\w/?)*\.py::{test_func}\[{re.escape(test_id)}(-.*)?\]$"
         else:
             pattern = rf"^(\w/?)*\.py::{test_func}\[.+\]$"
-        tests.extend(
-            [tst for tst in all_tests if re.fullmatch(pattern, tst) is not None]
-        )
+        tests.extend([tst for tst in all_tests if re.fullmatch(pattern, tst) is not None])
     return tests
 
 
@@ -58,9 +56,7 @@ class TestCollectionPlugin:
 
 
 def _collect_tests():
-    print(
-        "============================= collect test totals =============================="
-    )
+    print("============================= collect test totals ==============================")
     plugin = TestCollectionPlugin()
     pytest.main(["-qq", "--collect-only"], plugins=[plugin])
     return plugin.collected

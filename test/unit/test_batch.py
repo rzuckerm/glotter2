@@ -1,7 +1,7 @@
-from unittest.mock import patch, call
+import argparse
 import os
 import sys
-import argparse
+from unittest.mock import call, patch
 
 import pytest
 
@@ -12,9 +12,7 @@ LANGUAGES = ["bar", "bart", "cool", "d", "eiffel"]
 
 
 @pytest.mark.parametrize("num_batches", [-1, 0])
-def test_invalid_num_batches(
-    num_batches, mock_download, mock_test, mock_remove, capsys
-):
+def test_invalid_num_batches(num_batches, mock_download, mock_test, mock_remove, capsys):
     with pytest.raises(SystemExit) as e:
         batch_command(num_batches=num_batches)
 
@@ -29,9 +27,7 @@ def test_invalid_num_batches(
 
 
 @pytest.mark.parametrize("batch_num,num_batches", [(0, 3), (5, 4)])
-def test_invalid_batch_num(
-    batch_num, num_batches, mock_download, mock_test, mock_remove, capsys
-):
+def test_invalid_batch_num(batch_num, num_batches, mock_download, mock_test, mock_remove, capsys):
     with pytest.raises(SystemExit) as e:
         batch_command(num_batches=num_batches, batch_num=batch_num)
 
@@ -101,14 +97,10 @@ def test_without_batch_num(
         dict(mock_containers[start_index:end_index])
         for start_index, end_index in test_options["indices"]
     ]
-    mock_test.side_effect = [
-        SystemExit(exit_code) for exit_code in test_options["exit_codes"]
-    ]
+    mock_test.side_effect = [SystemExit(exit_code) for exit_code in test_options["exit_codes"]]
 
     with pytest.raises(SystemExit) as e:
-        batch_command(
-            num_batches=test_options["num_batches"], parallel=parallel, remove=remove
-        )
+        batch_command(num_batches=test_options["num_batches"], parallel=parallel, remove=remove)
 
     assert e.value.code == test_options["expected_exit_code"]
 
@@ -174,9 +166,7 @@ def test_without_batch_num(
         ),
     ],
 )
-def test_with_batch_num(
-    test_options, mock_download, mock_test, mock_remove, mock_containers
-):
+def test_with_batch_num(test_options, mock_download, mock_test, mock_remove, mock_containers):
     start_index = test_options["start_index"]
     end_index = test_options["end_index"]
     mock_download.return_value = dict(mock_containers[start_index:end_index])
@@ -200,9 +190,7 @@ def test_with_batch_num(
     mock_test.assert_called_once_with(expected_mock_batch_args)
     if test_options["remove"]:
         expected_remove_args = dict(mock_containers[start_index:end_index])
-        mock_remove.assert_called_once_with(
-            expected_remove_args, test_options["parallel"]
-        )
+        mock_remove.assert_called_once_with(expected_remove_args, test_options["parallel"])
     else:
         mock_remove.assert_not_called()
 
@@ -235,9 +223,7 @@ def batch_command(num_batches, batch_num=None, parallel=False, remove=False):
 
 
 def mock_batch_args(languages, parallel):
-    return argparse.Namespace(
-        source=None, project=None, language=set(languages), parallel=parallel
-    )
+    return argparse.Namespace(source=None, project=None, language=set(languages), parallel=parallel)
 
 
 @pytest.fixture()

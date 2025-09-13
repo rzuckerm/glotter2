@@ -3,7 +3,7 @@ import string
 import pytest
 from pydantic import ValidationError
 
-from glotter.project import Project, NamingScheme, AcronymScheme
+from glotter.project import AcronymScheme, NamingScheme, Project
 
 VALID_CHARS = string.ascii_letters + string.digits
 BAD_WORDS = ["a#xyz", "z_x blah", "yoo-hoo"]
@@ -331,9 +331,7 @@ def test_good_project(value, expected_value):
         for bad_word in BAD_WORDS
     ]
     + [
-        pytest.param(
-            {"words": None}, ["words\n  none is not an allowed"], id="words-none"
-        ),
+        pytest.param({"words": None}, ["words\n  none is not an allowed"], id="words-none"),
         pytest.param(
             {"words": {"some": "thing"}},
             ["words\n  value is not a valid list"],
@@ -403,11 +401,7 @@ def test_good_project(value, expected_value):
                 "words": ["foo"],
                 "requires_parameters": True,
                 "tests": {
-                    "blah": {
-                        "params": [
-                            {"name": "whatever", "input": None, "expected": "stuff"}
-                        ]
-                    },
+                    "blah": {"params": [{"name": "whatever", "input": None, "expected": "stuff"}]},
                     "xyz": 32,
                 },
             },
@@ -424,9 +418,7 @@ def test_good_project(value, expected_value):
                 "tests": {
                     "blah": {
                         "inputs": ["Input1", 2, 3],
-                        "params": [
-                            {"name": "whatever", "input": None, "expected": "stuff"}
-                        ],
+                        "params": [{"name": "whatever", "input": None, "expected": "stuff"}],
                     }
                 },
             },
@@ -550,9 +542,7 @@ def test_set_tests():
 
 
 def test_set_tests_no_use_tests():
-    project = Project(
-        **{"words": ["foo"], "tests": {"valid": {"params": [{"expected": "blah"}]}}}
-    )
+    project = Project(**{"words": ["foo"], "tests": {"valid": {"params": [{"expected": "blah"}]}}})
     expected_project = project.copy()
 
     other_project = Project(

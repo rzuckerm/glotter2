@@ -1,7 +1,7 @@
 import os
 import shutil
 
-from black import format_str, Mode
+from black import Mode, format_str
 
 from glotter.settings import Settings
 

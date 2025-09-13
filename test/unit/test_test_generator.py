@@ -1,10 +1,10 @@
-from unittest.mock import patch
 import os
+from unittest.mock import patch
 
 import pytest
 
-from glotter.test_generator import TestGenerator, generate_tests, AUTO_GEN_TEST_PATH
 from glotter.project import Project
+from glotter.test_generator import AUTO_GEN_TEST_PATH, TestGenerator, generate_tests
 
 NO_TESTS_PROJECT = {"words": ["no", "tests"]}
 HELLO_WORLD_PROJECT = {
@@ -53,9 +53,7 @@ PRIME_NUMBER_PROJECT = {
     },
 }
 
-UNIT_TEST_DATA_PATH = os.path.abspath(
-    os.path.join("test", "unit", "data", "test_generator")
-)
+UNIT_TEST_DATA_PATH = os.path.abspath(os.path.join("test", "unit", "data", "test_generator"))
 
 
 def test_test_generator_with_no_tests():
@@ -100,9 +98,7 @@ def test_generate_tests(mock_settings, temp_dir_chdir):
 
     for filename in filenames:
         with open(
-            os.path.join(
-                UNIT_TEST_DATA_PATH, filename.replace("test_", "").replace(".py", "")
-            ),
+            os.path.join(UNIT_TEST_DATA_PATH, filename.replace("test_", "").replace(".py", "")),
             encoding="utf-8",
         ) as f:
             contents = f.read()

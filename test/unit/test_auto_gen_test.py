@@ -1,14 +1,12 @@
-import string
 import os
+import string
 
 import pytest
 from pydantic import ValidationError
 
 from glotter.auto_gen_test import AutoGenParam, AutoGenTest, AutoGenUseTests
 
-UNIT_TEST_DATA_PATH = os.path.abspath(
-    os.path.join("test", "unit", "data", "auto_gen_test")
-)
+UNIT_TEST_DATA_PATH = os.path.abspath(os.path.join("test", "unit", "data", "auto_gen_test"))
 
 VALID_CHARS = string.ascii_letters + string.digits + "_"
 BAD_NAMES = ["a#xyz", "z_x blah", "yoo-hoo"]
@@ -168,9 +166,7 @@ def test_auto_gen_param_get_pytest_param(value, expected_pytest_param):
                 "name": char,
                 "requires_parameters": False,
                 "inputs": ["Input"],
-                "params": [
-                    {"name": "some-name", "input": None, "expected": "some-str"}
-                ],
+                "params": [{"name": "some-name", "input": None, "expected": "some-str"}],
                 "transformations": ["strip"],
             },
             id=f"name_{char}-single_param-single_transformation",
@@ -201,9 +197,7 @@ def test_auto_gen_param_get_pytest_param(value, expected_pytest_param):
                 "name": f"foo_{char}_bar",
                 "requires_parameters": False,
                 "inputs": ["Input"],
-                "params": [
-                    {"name": "some-name", "input": None, "expected": "some-str"}
-                ],
+                "params": [{"name": "some-name", "input": None, "expected": "some-str"}],
                 "transformations": ["strip"],
             },
             id=f"name_foo_{char}_bar-single_param-single_transformation",
@@ -315,9 +309,7 @@ def test_auto_gen_test_good(value, expected_value):
         for bad_name in BAD_NAMES
     ]
     + [
-        pytest.param(
-            {"name": "test_name1", "params": []}, "at least 1 item", id="empty-params"
-        ),
+        pytest.param({"name": "test_name1", "params": []}, "at least 1 item", id="empty-params"),
         pytest.param(
             {
                 "name": "test_name2",
@@ -422,9 +414,7 @@ def test_auto_gen_test_bad(value, expected_error):
     ("transformations", "expected_actual_var", "expected_expected_var"),
     [
         pytest.param(["strip"], "actual.strip()", "expected", id="strip-scalar"),
-        pytest.param(
-            ["splitlines"], "actual.splitlines()", "expected", id="splitlines"
-        ),
+        pytest.param(["splitlines"], "actual.splitlines()", "expected", id="splitlines"),
         pytest.param(["lower"], "actual.lower()", "expected", id="lower"),
         pytest.param(
             ["any_order"],
@@ -432,9 +422,7 @@ def test_auto_gen_test_bad(value, expected_error):
             "sorted(set(expected))",
             id="any_order",
         ),
-        pytest.param(
-            ["strip_expected"], "actual", "expected.strip()", id="strip_expected"
-        ),
+        pytest.param(["strip_expected"], "actual", "expected.strip()", id="strip_expected"),
         pytest.param(
             [{"remove": ["x", "y", '"']}],
             """actual.replace("x", "").replace("y", "").replace('"', "")""",
@@ -455,9 +443,7 @@ def test_auto_gen_test_bad(value, expected_error):
         ),
     ],
 )
-def test_auto_gen_transform_vars(
-    transformations, expected_actual_var, expected_expected_var
-):
+def test_auto_gen_transform_vars(transformations, expected_actual_var, expected_expected_var):
     value = {
         "name": "some_name",
         "params": [{"name": "some-param", "expected": "some-output"}],
@@ -473,9 +459,7 @@ def test_auto_gen_transform_vars(
 @pytest.mark.parametrize(
     ("transformation", "expected_errors"),
     [
-        pytest.param(
-            "foo", ['transformations -> 0\n  invalid transformation "foo"'], id="scalar"
-        ),
+        pytest.param("foo", ['transformations -> 0\n  invalid transformation "foo"'], id="scalar"),
         pytest.param(
             {"bar": ["x"]},
             ['transformations -> 0\n  invalid transformation "bar"'],
@@ -486,9 +470,7 @@ def test_auto_gen_transform_vars(
             ["transformations -> 0\n  str or dict type expected"],
             id="bad-type-list",
         ),
-        pytest.param(
-            3, ["transformations -> 0\n  str or dict type expected"], id="bad-type-int"
-        ),
+        pytest.param(3, ["transformations -> 0\n  str or dict type expected"], id="bad-type-int"),
         pytest.param(
             None,
             ["transformations -> 0\n  str or dict type expected"],
@@ -603,9 +585,7 @@ def test_something(in_params, expected, some_project):
         ),
     ],
 )
-def test_auto_gen_test_get_test_function_and_run(
-    value, project_name_underscores, expected_value
-):
+def test_auto_gen_test_get_test_function_and_run(value, project_name_underscores, expected_value):
     test = AutoGenTest(**value)
     assert test.get_test_function_and_run(project_name_underscores) == expected_value
 
@@ -673,9 +653,7 @@ elif diff_len < 0:
         ),
     ],
 )
-def test_auto_gen_test_get_expected_output(
-    value, project_name_underscores, expected_value
-):
+def test_auto_gen_test_get_expected_output(value, project_name_underscores, expected_value):
     test = AutoGenTest(**value)
     assert test.get_expected_output(project_name_underscores) == expected_value
 

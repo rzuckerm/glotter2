@@ -1,9 +1,9 @@
 # pylint hates pydantic
 # pylint: disable=E0213,E0611
-from typing import Dict, Optional, ClassVar
 from enum import Enum, auto
+from typing import ClassVar, Dict, Optional
 
-from pydantic import BaseModel, validator, conlist, constr
+from pydantic import BaseModel, conlist, constr, validator
 
 from glotter.auto_gen_test import AutoGenTest, AutoGenUseTests
 
@@ -68,13 +68,9 @@ class Project(BaseModel):
 
         if self.use_tests:
             self.tests = {}
-            for test_name, test in project.tests.items():
-                test_name = test_name.replace(
-                    self.use_tests.search, self.use_tests.replace
-                )
-                self.tests[test_name] = AutoGenTest(
-                    **test.dict(exclude={"name"}), name=test_name
-                )
+            for test_name_, test in project.tests.items():
+                test_name = test_name_.replace(self.use_tests.search, self.use_tests.replace)
+                self.tests[test_name] = AutoGenTest(**test.dict(exclude={"name"}), name=test_name)
 
             self.requires_parameters = project.requires_parameters
             self.use_tests = None
@@ -102,25 +98,19 @@ class Project(BaseModel):
             raise KeyError(f'Unknown naming scheme "{naming}"') from e
 
     def _as_hyphen(self):
-        return "-".join(
-            self._try_as_acronym(word, NamingScheme.hyphen) for word in self.words
-        )
+        return "-".join(self._try_as_acronym(word, NamingScheme.hyphen) for word in self.words)
 
     def _as_underscore(self):
-        return "_".join(
-            self._try_as_acronym(word, NamingScheme.underscore) for word in self.words
-        )
+        return "_".join(self._try_as_acronym(word, NamingScheme.underscore) for word in self.words)
 
     def _as_camel(self):
         return self.words[0].lower() + "".join(
-            self._try_as_acronym(word.title(), NamingScheme.camel)
-            for word in self.words[1:]
+            self._try_as_acronym(word.title(), NamingScheme.camel) for word in self.words[1:]
         )
 
     def _as_pascal(self):
         return "".join(
-            self._try_as_acronym(word.title(), NamingScheme.pascal)
-            for word in self.words
+            self._try_as_acronym(word.title(), NamingScheme.pascal) for word in self.words
         )
 
     def _as_lower(self):
@@ -128,8 +118,7 @@ class Project(BaseModel):
 
     def _as_display(self):
         return " ".join(
-            self._try_as_acronym(word.title(), NamingScheme.underscore)
-            for word in self.words
+            self._try_as_acronym(word.title(), NamingScheme.underscore) for word in self.words
         )
 
     def _is_acronym(self, word):
@@ -141,11 +130,10 @@ class Project(BaseModel):
                 return word.upper()
             elif self.acronym_scheme == AcronymScheme.lower:
                 return word.lower()
-            else:
-                if len(word) <= 2 and naming_scheme in [
-                    NamingScheme.camel,
-                    NamingScheme.pascal,
-                ]:
-                    return word.upper()
+            elif len(word) <= 2 and naming_scheme in [
+                NamingScheme.camel,
+                NamingScheme.pascal,
+            ]:
+                return word.upper()
 
         return word

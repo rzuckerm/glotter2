@@ -1,7 +1,7 @@
 import sys
 
-from glotter.source import get_sources, BAD_SOURCES
 from glotter.settings import Settings
+from glotter.source import BAD_SOURCES, get_sources
 
 
 def check(_args):

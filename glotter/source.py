@@ -4,8 +4,8 @@ from functools import lru_cache
 import yaml
 
 from glotter import testinfo
-from glotter.settings import Settings
 from glotter.containerfactory import ContainerFactory
+from glotter.settings import Settings
 from glotter.utils import error_and_exit
 
 BAD_SOURCES = "__bad_sources__"
@@ -68,7 +68,7 @@ class Source:
             if result[0] != 0:
                 raise RuntimeError(
                     f'unable to build using cmd "{self.test_info.container_info.build} {params}":\n'
-                    f'{result[1].decode("utf-8")}'
+                    f"{result[1].decode('utf-8')}"
                 )
 
     def run(self, params=None):
@@ -131,21 +131,13 @@ def get_sources(path, check_bad_sources=False):
     for root, _, files in os.walk(path):
         path = os.path.abspath(root)
         if "testinfo.yml" in files:
-            with open(
-                os.path.join(path, "testinfo.yml"), "r", encoding="utf-8"
-            ) as file:
+            with open(os.path.join(path, "testinfo.yml"), "r", encoding="utf-8") as file:
                 test_info_string = file.read()
-            folder_info = testinfo.FolderInfo.from_dict(
-                yaml.safe_load(test_info_string)["folder"]
-            )
-            folder_project_names = folder_info.get_project_mappings(
-                include_extension=True
-            )
+            folder_info = testinfo.FolderInfo.from_dict(yaml.safe_load(test_info_string)["folder"])
+            folder_project_names = folder_info.get_project_mappings(include_extension=True)
             for project_type, project_name in folder_project_names.items():
                 if project_name in files:
-                    source = Source(
-                        project_name, os.path.basename(path), path, test_info_string
-                    )
+                    source = Source(project_name, os.path.basename(path), path, test_info_string)
                     sources[project_type].append(source)
 
             if check_bad_sources:
@@ -178,9 +170,7 @@ def filter_sources(args, sources):
 
     filtered_sources_by_type = {}
     for project_type, sources_by_type in sources.items():
-        filtered_sources = [
-            source for source in sources_by_type if _matches_source(args, source)
-        ]
+        filtered_sources = [source for source in sources_by_type if _matches_source(args, source)]
         if filtered_sources:
             filtered_sources_by_type[project_type] = filtered_sources
 
@@ -192,8 +182,7 @@ def filter_sources(args, sources):
         if args.language:
             if isinstance(args.language, set):
                 errors.append(
-                    "languages "
-                    + ", ".join(f'"{language}"' for language in sorted(args.language))
+                    "languages " + ", ".join(f'"{language}"' for language in sorted(args.language))
                 )
             else:
                 errors.append(f'language "{args.language}"')
@@ -203,9 +192,7 @@ def filter_sources(args, sources):
 
         if errors:
             error_msg = ", ".join(errors)
-            error_and_exit(
-                f"No valid sources found for the following combination: {error_msg}"
-            )
+            error_and_exit(f"No valid sources found for the following combination: {error_msg}")
 
     return filtered_sources_by_type
 
@@ -218,7 +205,4 @@ def _matches_source(args, source):
         elif source.language.lower() != args.language.lower():
             return False
 
-    return (
-        not args.source
-        or f"{source.name}{source.extension}".lower() == args.source.lower()
-    )
+    return not args.source or f"{source.name}{source.extension}".lower() == args.source.lower()

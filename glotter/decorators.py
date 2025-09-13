@@ -24,7 +24,5 @@ def project_fixture(project_type):
     return pytest.fixture(
         scope="module",
         params=sources,
-        ids=[
-            f"{source.language}/{source.name}{source.extension}" for source in sources
-        ],
+        ids=[f"{source.language}/{source.name}{source.extension}" for source in sources],
     )

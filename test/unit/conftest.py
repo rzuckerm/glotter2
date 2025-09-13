@@ -1,14 +1,14 @@
-from uuid import uuid4 as uuid
 import os
 import tempfile
+from uuid import uuid4 as uuid
 
 import pytest
 
 from glotter import containerfactory
 from glotter.project import Project
+from glotter.singleton import Singleton
 from glotter.source import Source
 from glotter.testinfo import ContainerInfo
-from glotter.singleton import Singleton
 
 from .mockdocker import DockerMock
 
@@ -100,9 +100,7 @@ def glotter_yml_projects():
             words=["baklava"],
             requires_parameters=False,
         ),
-        "fileio": Project(
-            words=["file", "io"], requires_parameters=False, acronyms=["io"]
-        ),
+        "fileio": Project(words=["file", "io"], requires_parameters=False, acronyms=["io"]),
         "fibonacci": Project(words=["fibonacci"], requires_parameters=True),
         "helloworld": Project(words=["hello", "world"], requires_parameters=False),
     }
@@ -110,9 +108,7 @@ def glotter_yml_projects():
 
 @pytest.fixture
 def mock_projects(glotter_yml_projects, monkeypatch):
-    return monkeypatch.setattr(
-        "glotter.settings.Settings.projects", glotter_yml_projects
-    )
+    return monkeypatch.setattr("glotter.settings.Settings.projects", glotter_yml_projects)
 
 
 @pytest.fixture
@@ -166,15 +162,19 @@ def mock_sources(test_info_string_no_build):
 @pytest.fixture()
 def temp_dir_chdir():
     curr_cwd = os.getcwd()
-    with tempfile.TemporaryDirectory() as tmp_dir:
-        tmp_dir = os.path.realpath(tmp_dir)
+    with tempfile.TemporaryDirectory() as tmp_dir_:
+        tmp_dir = os.path.realpath(tmp_dir_)
         os.chdir(tmp_dir)
-        yield tmp_dir
-        os.chdir(curr_cwd)
+        try:
+            yield tmp_dir
+        finally:
+            os.chdir(curr_cwd)
 
 
 @pytest.fixture(autouse=True)
 def clear_singleton():
     Singleton.clear()
-    yield
-    Singleton.clear()
+    try:
+        yield
+    finally:
+        Singleton.clear()

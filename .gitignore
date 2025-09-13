@@ -114,3 +114,6 @@ venv.bak/
 
 # Doctree
 _build/
+
+# ruff
+.ruff_cache/

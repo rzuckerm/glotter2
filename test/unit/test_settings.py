@@ -3,8 +3,8 @@ import shutil
 
 import pytest
 
-from glotter.settings import Settings
 from glotter.project import Project
+from glotter.settings import Settings
 
 UNIT_TEST_PATH = os.path.abspath(os.path.join("test", "unit"))
 
@@ -44,9 +44,7 @@ def test_get_test_mapping_name_when_project_type_not_found(temp_dir_copy_glotter
 def test_projects(temp_dir_copy_glotter_yml):
     assert Settings().projects == {
         "baklava": Project(words=["baklava"], requires_parameters=False),
-        "fileio": Project(
-            words=["file", "io"], requires_parameters=False, acronyms=["io"]
-        ),
+        "fileio": Project(words=["file", "io"], requires_parameters=False, acronyms=["io"]),
         "fibonacci": Project(words=["fibonacci"], requires_parameters=True),
     }
 

@@ -1,19 +1,19 @@
 # pylint hates pydantic
 # pylint: disable=E0213,E0611
-from typing import Optional, List, Dict, Tuple, Callable, ClassVar, Any
 from functools import partial
+from typing import Any, Callable, ClassVar, Dict, List, Optional, Tuple
 
 from pydantic import (
     BaseModel,
-    validator,
-    root_validator,
-    constr,
-    conlist,
     ValidationError,
+    conlist,
+    constr,
+    root_validator,
+    validator,
 )
 from pydantic.error_wrappers import ErrorWrapper
 
-from glotter.utils import quote, indent
+from glotter.utils import indent, quote
 
 TransformationScalarFuncT = Callable[[str, str], Tuple[str, str]]
 TransformationDictFuncT = Callable[[List[str], str, str], Tuple[str, str]]
@@ -54,11 +54,7 @@ class AutoGenParam(BaseModel):
                     )
                 if not item:
                     raise ValidationError(
-                        [
-                            ErrorWrapper(
-                                ValueError("value must not be empty"), loc="exec"
-                            )
-                        ],
+                        [ErrorWrapper(ValueError("value must not be empty"), loc="exec")],
                         model=cls,
                     )
             elif key != "self":
@@ -88,9 +84,7 @@ class AutoGenParam(BaseModel):
         if isinstance(expected_output, str):
             expected_output = quote(expected_output)
 
-        return (
-            f"pytest.param({input_param}, {expected_output}, id={quote(self.name)}),\n"
-        )
+        return f"pytest.param({input_param}, {expected_output}, id={quote(self.name)}),\n"
 
 
 def _validate_str_list(cls, values, item_name: str = ""):
@@ -111,30 +105,22 @@ def _validate_str_list(cls, values, item_name: str = ""):
         raise ValidationError(errors, model=cls)
 
 
-def _append_method_to_actual(
-    method: str, actual_var: str, expected_var
-) -> Tuple[str, str]:
+def _append_method_to_actual(method: str, actual_var: str, expected_var) -> Tuple[str, str]:
     return f"{actual_var}.{method}()", expected_var
 
 
-def _append_method_to_expected(
-    method: str, actual_var: str, expected_var: str
-) -> Tuple[str, str]:
+def _append_method_to_expected(method: str, actual_var: str, expected_var: str) -> Tuple[str, str]:
     return actual_var, f"{expected_var}.{method}()"
 
 
-def _remove_chars(
-    values: List[str], actual_var: str, expected_var: str
-) -> Tuple[str, str]:
+def _remove_chars(values: List[str], actual_var: str, expected_var: str) -> Tuple[str, str]:
     for value in values:
         actual_var += f'.replace({quote(value)}, "")'
 
     return actual_var, expected_var
 
 
-def _strip_chars(
-    values: List[str], actual_var: str, expected_var: str
-) -> Tuple[str, str]:
+def _strip_chars(values: List[str], actual_var: str, expected_var: str) -> Tuple[str, str]:
     for value in values:
         actual_var += f".strip({quote(value)})"
 
@@ -267,9 +253,9 @@ class AutoGenTest(BaseModel):
         expected_var = "expected"
         for transfomation in self.transformations:
             if isinstance(transfomation, str):
-                actual_var, expected_var = self.SCALAR_TRANSFORMATION_FUNCS[
-                    transfomation
-                ](actual_var, expected_var)
+                actual_var, expected_var = self.SCALAR_TRANSFORMATION_FUNCS[transfomation](
+                    actual_var, expected_var
+                )
             else:
                 key, item = tuple(*transfomation.items())
                 actual_var, expected_var = self.DICT_TRANSFORMATION_FUNCS[key](
@@ -352,15 +338,11 @@ def test_{self.name}({func_params}{project_name_underscores}):
         test_code += self.get_test_function_and_run(project_name_underscores)
         test_code += indent(self.get_expected_output(project_name_underscores), 4)
         actual_var, expected_var = self.transform_vars()
-        test_code += indent(
-            _get_assert(actual_var, expected_var, self.params[0].expected), 4
-        )
+        test_code += indent(_get_assert(actual_var, expected_var, self.params[0].expected), 4)
         return test_code
 
 
-def _get_expected_file(
-    project_name_underscores: str, expected_output: Dict[str, str]
-) -> str:
+def _get_expected_file(project_name_underscores: str, expected_output: Dict[str, str]) -> str:
     if "exec" in expected_output:
         script = quote(expected_output["exec"])
         return f"expected = {project_name_underscores}.exec({script})\n"

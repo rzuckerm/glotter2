@@ -1,5 +1,5 @@
 import yaml
-from jinja2 import Environment, BaseLoader
+from jinja2 import BaseLoader, Environment
 
 from glotter.project import NamingScheme
 from glotter.settings import Settings
@@ -172,7 +172,4 @@ class TestInfo:
         return cls.from_dict(info_yaml)
 
     def __eq__(self, other):
-        return (
-            self.container_info == other.container_info
-            and self.file_info == other.file_info
-        )
+        return self.container_info == other.container_info and self.file_info == other.file_info
