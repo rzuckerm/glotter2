@@ -2,33 +2,14 @@ PACKAGE := glotter
 TESTS := test
 CONFIG_FILE = pyproject.toml
 ALL = $(PACKAGE) $(TESTS)
-POETRY_VERSION = 2.1.1
+UV_VERSION = $(shell sed -nr 's/uv-version: "([^"]+)"/\1/p' repo-config.yml)
 
 SHELL := bash
 
 VENV := venv
 
-ifeq ($(OS),Windows_NT)
-	ifneq ($(GITHUB_PATH),)
-		ACT :=
-		CREATE_VIRTUALENV :=
-		POETRY := /c/Users/runneradmin/.local/venv/Scripts/poetry.exe
-	else
-		ACT := $(VENV)/bin/activate
-	endif
-else
-	ifneq ($(GITHUB_PATH),)
-		ACT :=
-		CREATE_VIRTUALENV :=
-		POETRY:= poetry
-	else
-		ACT := source $(VENV)/bin/activate &&
-		CREATE_VIRTUALENV := if ! virtualenv -p python3 $(VENV) 2>/dev/null; then python -m venv $(VENV); fi
-		POETRY := $(ACT) poetry
-	endif
-endif
-
-RUN := $(POETRY) run
+UV := uv
+RUN := $(UV) run
 META := .meta
 META_INSTALL := $(META)/.install
 
@@ -52,22 +33,14 @@ help:
 	@echo "test           - Run unit tests with pytest."
 	@echo "                 Use PYTEST_ARGS to override options"
 
-ifneq ($(GITHUB_PATH),)
-$(META):
-	mkdir -p $@
-else
 $(META): | $(VENV)
 	mkdir -p $@
 
 $(VENV):
-	@echo "*** Initializing environment ***"
-	$(CREATE_VIRTUALENV)
-	$(ACT) pip install 'poetry==$(POETRY_VERSION)'
-	@echo ""
-endif
+	mkdir -p $@
 
 $(META_INSTALL): $(CONFIG_FILE) | $(META)
-	$(POETRY) install
+	$(UV) sync --directory $(VENV)
 	touch $@
 
 .PHONY: build

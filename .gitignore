@@ -106,8 +106,8 @@ venv.bak/
 # mkdocs documentation
 /site
 
-# Poetry lock
-!/poetry.lock
+# uv lock
+!/uv.lock
 
 # Meta directory
 /.meta

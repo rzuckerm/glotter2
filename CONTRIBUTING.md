@@ -24,7 +24,7 @@ Before you can build Glotter2, there a few things you will need.
 
 - [docker]: Glotter2 makes extensive use of docker. You will need to have docker installed on your
   machine.
-- [python], [pip], [poetry][python-poetry], and [virtualenv]: Glotter2 is written in python and uses `poetry` to install
+- [python], [pip], [uv][uv], and [virtualenv]: Glotter2 is written in python and uses `uv` to install
   dependencies in a virtual environment that isolates the dependencies for this project
   from the dependencies on your host system.
 - [make]: Everything in Glotter2 is built and run using `make`. See the following installation
@@ -45,7 +45,7 @@ The file structure of Glotter2 looks like the following (with omissions):
   - `unit`
 - `Makefile`
 - `pyproject.toml`
-- `poetry.lock`
+- `uv.lock`
 - `repo-config.yml`
 
 The `glotter` directory contains all source code for the project.
@@ -66,9 +66,9 @@ the filesystem, etc.).
 `Makefile` contains all the rules for building and running the projects.
 
 The `pyproject.toml` contains all the dependenies of Glotter2 and all of the development
-dependencies as well as configuration. The `poetry.lock` locks down the exact version
+dependencies as well as configuration. The `uv.lock` locks down the exact version
 dependencies for build reproducibility. The project is based on
-[python-poetry](https://python-poetry.org/docs/).
+[uv]().
 
 The project used [black] to do code formatting and format linting and [pylint] for linting.
 
@@ -77,7 +77,7 @@ This project uses [pytest] as its testing library, but it is also a wrapper arou
 The `repo-config.yml` contains the configuration for the repository, which includes:
 
 - `python-versions`: A comma-separated list of python versions used in testing.
-- `poetry-version`: The version of `poetry` to use.
+- `uv-version`: The version of `uv` to use.
 
 Note that the list of OSes is not in the configuration file. Instead, it is in
 `.github/workflows/makefile.yml` in the "Test" stage.
@@ -147,7 +147,7 @@ failure, and open the python debugger on that failure:
 [Sphinx]: https://pypi.org/project/sphinx
 [black]: https://pypi.org/project/black
 [pylint]: https://pypi.org/project/pylint
-[python-poetry]: https://pypi.org/project/poetry
+[uv]: https://docs.astral.sh/uv/
 [pytest]: https://pypi.org/project/pytest
 
 [reStructuredText]: https://www.sphinx-doc.org/en/master/usage/restructuredtext/
