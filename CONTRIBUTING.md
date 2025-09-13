@@ -88,7 +88,7 @@ Everything associated with this project is done through `make` targets:
 
 * `clean` - Delete output file
 * `doc` - Make documentation
-* `fix` - Fix formatting and linting errs using `ruff`
+* `fix` - Fix formatting and linting errors using `ruff`
 * `format` - Format the code using `ruff`
 * `lint` - Check the format and lint the code using `ruff`
 
@@ -114,7 +114,7 @@ failure, and open the python debugger on that failure:
 ## Final Requirements for Contributing
 
 - Run `make fix` and `make lint` before committing your changes.
-- Fix any linting errors, or add a "ignore" rule to the `ignore` item in the
+- Fix any linting errors, or add an "ignore" rule to the `ignore` item in the
   `tool.ruff.` section of `pyproject.toml`. If you ignore the linting, please
   be prepared to explain why this is being done. Alternatively, you can ignore
   the linting error by adding something like this to the line in question:

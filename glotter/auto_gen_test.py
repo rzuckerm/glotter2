@@ -1,5 +1,3 @@
-# pylint hates pydantic
-# pylint: disable=E0213,E0611
 from functools import partial
 from typing import Any, Callable, ClassVar, Dict, List, Optional, Tuple
 

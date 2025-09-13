@@ -1,5 +1,3 @@
-# pylint hates pydantic
-# pylint: disable=E0213,E0611
 import os
 from typing import Dict, Optional
 from warnings import warn

@@ -1,5 +1,3 @@
-# pylint hates pydantic
-# pylint: disable=E0213,E0611
 from enum import Enum, auto
 from typing import ClassVar, Dict, Optional
 
