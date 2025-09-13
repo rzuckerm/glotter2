@@ -1,7 +1,7 @@
 import os
 import shutil
-
-from black import Mode, format_str
+import subprocess
+import tempfile
 
 from glotter.settings import Settings
 
@@ -45,7 +45,7 @@ class TestGenerator:
         for test_obj in self.project.tests.values():
             test_code += test_obj.generate_test(self.long_project_name)
 
-        return format_str(test_code, mode=Mode())
+        return format_str(test_code)
 
     def _get_imports(self):
         test_code = ""
@@ -75,3 +75,20 @@ def {self.long_project_name}(request):
             encoding="utf-8",
         ) as f:
             f.write(test_code)
+
+
+def format_str(test_code):
+    with tempfile.NamedTemporaryFile(mode="r+", encoding="utf-8") as tmp_file:
+        tmp_file.write(test_code)
+        tmp_file.flush()
+        tmp_file.seek(0)
+        subprocess.run(
+            ["ruff", "format", "--line-length=100", tmp_file.name],
+            check=True,
+            stdout=subprocess.DEVNULL,
+        )
+
+        tmp_file.seek(0)
+        contents = tmp_file.read()
+
+    return contents
