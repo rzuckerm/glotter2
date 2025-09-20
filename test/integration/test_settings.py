@@ -3,7 +3,7 @@ import platform
 import shutil
 
 import pytest
-from pydantic import ValidationError
+from pydantic.v1 import ValidationError
 
 from glotter.project import AcronymScheme
 from glotter.settings import Settings, SettingsParser

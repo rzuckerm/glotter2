@@ -2,7 +2,7 @@ import os
 import string
 
 import pytest
-from pydantic import ValidationError
+from pydantic.v1 import ValidationError
 
 from glotter.auto_gen_test import AutoGenParam, AutoGenTest, AutoGenUseTests
 

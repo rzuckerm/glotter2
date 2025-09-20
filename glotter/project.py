@@ -1,7 +1,7 @@
 from enum import Enum, auto
 from typing import ClassVar, Dict, Optional
 
-from pydantic import BaseModel, conlist, constr, validator
+from pydantic.v1 import BaseModel, conlist, constr, validator
 
 from glotter.auto_gen_test import AutoGenTest, AutoGenUseTests
 
