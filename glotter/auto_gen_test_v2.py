@@ -5,7 +5,6 @@ from pydantic import (
     ValidationError,
     field_validator,
 )
-from pydantic_core import InitErrorDetails, PydanticCustomError
 
 from glotter.utils import get_error_details, quote, raise_simple_validation_error
 
@@ -42,16 +41,7 @@ class AutoGenParam(BaseModel):
                 if not isinstance(item, str):
                     raise_simple_validation_error(cls, "str type expected", item, (key,))
                 if not item:
-                    raise ValidationError.from_exception_data(
-                        title=cls.__name__,
-                        line_errors=[
-                            InitErrorDetails(
-                                type=PydanticCustomError("", "value must not be empty"),
-                                loc=(key,),
-                                input=item,
-                            )
-                        ],
-                    )
+                    raise_simple_validation_error(cls, "value must not be empty", item, (key,))
             elif key != "self":
                 raise_simple_validation_error(cls, 'invalid "expected" type', item)
         elif isinstance(value, list):

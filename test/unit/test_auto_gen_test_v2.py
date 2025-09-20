@@ -100,6 +100,11 @@ def test_auto_gen_param_good(value, expected_value):
             id="too-many-expected-dict",
         ),
         pytest.param(
+            {"name": "x", "input": "some-str", "expected": {"exec": 42}},
+            "expected.exec\n  str type expected",
+            id="invalid-self-exec",
+        ),
+        pytest.param(
             {"name": "x", "input": "some-str", "expected": {}},
             "expected\n  too few items",
             id="too-few-expected-dict",
