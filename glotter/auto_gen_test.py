@@ -1,7 +1,7 @@
 from functools import partial
 from typing import Any, Callable, ClassVar, Dict, List, Optional, Tuple
 
-from pydantic import (
+from pydantic.v1 import (
     BaseModel,
     ValidationError,
     conlist,
@@ -9,7 +9,7 @@ from pydantic import (
     root_validator,
     validator,
 )
-from pydantic.error_wrappers import ErrorWrapper
+from pydantic.v1.error_wrappers import ErrorWrapper
 
 from glotter.utils import indent, quote
 

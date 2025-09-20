@@ -3,8 +3,8 @@ from typing import Dict, Optional
 from warnings import warn
 
 import yaml
-from pydantic import BaseModel, ValidationError, root_validator, validator
-from pydantic.error_wrappers import ErrorWrapper
+from pydantic.v1 import BaseModel, ValidationError, root_validator, validator
+from pydantic.v1.error_wrappers import ErrorWrapper
 
 from glotter.project import AcronymScheme, Project
 from glotter.singleton import Singleton
