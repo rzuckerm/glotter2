@@ -2,8 +2,8 @@ from functools import partial
 from typing import Any, Callable, ClassVar, Dict, List, Optional, Tuple
 
 from pydantic.v1 import (
-    BaseModel,
-    ValidationError,
+    BaseModel as BaseModelV1,
+    ValidationError as ValidationErrorV1,
     conlist,
     constr,
     root_validator,
@@ -17,7 +17,7 @@ TransformationScalarFuncT = Callable[[str, str], Tuple[str, str]]
 TransformationDictFuncT = Callable[[List[str], str, str], Tuple[str, str]]
 
 
-class AutoGenParam(BaseModel):
+class AutoGenParam(BaseModelV1):
     """Object used to auto-generated a test parameter"""
 
     name: str = ""
@@ -44,14 +44,14 @@ class AutoGenParam(BaseModel):
             key, item = tuple(*value.items())
             if key == "exec":
                 if not isinstance(item, str):
-                    raise ValidationError(
+                    raise ValidationErrorV1(
                         [
                             ErrorWrapper(ValueError("str type expected"), loc="exec"),
                         ],
                         model=cls,
                     )
                 if not item:
-                    raise ValidationError(
+                    raise ValidationErrorV1(
                         [ErrorWrapper(ValueError("value must not be empty"), loc="exec")],
                         model=cls,
                     )
@@ -100,7 +100,7 @@ def _validate_str_list(cls, values, item_name: str = ""):
         ]
 
     if errors:
-        raise ValidationError(errors, model=cls)
+        raise ValidationErrorV1(errors, model=cls)
 
 
 def _append_method_to_actual(method: str, actual_var: str, expected_var) -> Tuple[str, str]:
@@ -129,7 +129,7 @@ def _unique_sort(actual_var, expected_var):
     return f"sorted(set({actual_var}))", f"sorted(set({expected_var}))"
 
 
-class AutoGenTest(BaseModel):
+class AutoGenTest(BaseModelV1):
     """Object used to auto-generated a test"""
 
     name: constr(strict=True, min_length=1, regex="^[a-zA-Z][0-9a-zA-Z_]*$")
@@ -212,7 +212,7 @@ class AutoGenTest(BaseModel):
                 )
 
             if errors:
-                raise ValidationError(errors, model=cls)
+                raise ValidationErrorV1(errors, model=cls)
 
         return value
 
@@ -382,7 +382,7 @@ for index in range(len(expected_list)):
     return f"{test_code}assert actual == expected\n"
 
 
-class AutoGenUseTests(BaseModel):
+class AutoGenUseTests(BaseModelV1):
     """Object used to specify what tests to use"""
 
     name: str
