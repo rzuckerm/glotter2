@@ -1,4 +1,8 @@
 import sys
+from typing import NoReturn
+
+from pydantic import ValidationError
+from pydantic_core import InitErrorDetails, PydanticCustomError
 
 
 def quote(value: str) -> str:
@@ -42,3 +46,18 @@ def indent(value: str, num_spaces: int) -> str:
 def error_and_exit(msg):
     print(msg)
     sys.exit(1)
+
+
+def raise_simple_validation_error(cls, msg, input, loc=None) -> NoReturn:
+    raise ValidationError.from_exception_data(
+        title=cls.__name__,
+        line_errors=[get_error_details(msg, loc or (), input)],
+    )
+
+
+def get_error_details(msg, loc, input):
+    return InitErrorDetails(
+        type=PydanticCustomError("value_error", msg),
+        loc=loc,
+        input=input,
+    )
