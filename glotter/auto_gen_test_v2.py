@@ -1,12 +1,15 @@
-from typing import Any, Callable, List, Optional, Tuple
+from functools import partial
+from typing import Annotated, Any, Callable, ClassVar, Dict, List, Optional, Tuple, Union
 
-from pydantic import (
-    BaseModel,
-    ValidationError,
-    field_validator,
+from pydantic import BaseModel, Field, ValidationInfo, field_validator
+
+from glotter.utils import (
+    get_error_details,
+    indent,
+    quote,
+    raise_simple_validation_error,
+    raise_validation_errors,
 )
-
-from glotter.utils import get_error_details, quote, raise_simple_validation_error
 
 TransformationScalarFuncT = Callable[[str, str], Tuple[str, str]]
 TransformationDictFuncT = Callable[[List[str], str, str], Tuple[str, str]]
@@ -72,10 +75,13 @@ class AutoGenParam(BaseModel):
         return f"pytest.param({input_param}, {expected_output}, id={quote(self.name)}),\n"
 
 
-def _validate_str_list(cls, values, item_name: str = ""):
+def _validate_str_list(cls, values, item_loc: Union[str, tuple] = ""):
     loc = ()
-    if item_name:
-        loc += (item_name,)
+    if item_loc:
+        if isinstance(item_loc, str):
+            loc = (item_loc,)
+        else:
+            loc += item_loc
 
     if not isinstance(values, list):
         errors = [get_error_details("value is not a valid list", loc, values)]
@@ -87,4 +93,278 @@ def _validate_str_list(cls, values, item_name: str = ""):
         ]
 
     if errors:
-        raise ValidationError.from_exception_data(title=cls.__name__, line_errors=errors)
+        raise_validation_errors(cls, errors)
+
+
+def _append_method_to_actual(method: str, actual_var: str, expected_var) -> Tuple[str, str]:
+    return f"{actual_var}.{method}()", expected_var
+
+
+def _append_method_to_expected(method: str, actual_var: str, expected_var: str) -> Tuple[str, str]:
+    return actual_var, f"{expected_var}.{method}()"
+
+
+def _remove_chars(values: List[str], actual_var: str, expected_var: str) -> Tuple[str, str]:
+    for value in values:
+        actual_var += f'.replace({quote(value)}, "")'
+
+    return actual_var, expected_var
+
+
+def _strip_chars(values: List[str], actual_var: str, expected_var: str) -> Tuple[str, str]:
+    for value in values:
+        actual_var += f".strip({quote(value)})"
+
+    return actual_var, expected_var
+
+
+def _unique_sort(actual_var, expected_var):
+    return f"sorted(set({actual_var}))", f"sorted(set({expected_var}))"
+
+
+class AutoGenTest(BaseModel):
+    """Object used to auto-generated a test"""
+
+    name: Annotated[str, Field(strict=True, min_length=1, pattern="^[a-zA-Z][0-9a-zA-Z_]*$")]
+    requires_parameters: bool = False
+    inputs: Annotated[List[str], Field(min_length=1)] = ["Input"]
+    params: Annotated[List[AutoGenParam], Field(min_length=1)]
+    transformations: List[Any] = []
+
+    SCALAR_TRANSFORMATION_FUNCS: ClassVar[Dict[str, TransformationScalarFuncT]] = {
+        "strip": partial(_append_method_to_actual, "strip"),
+        "splitlines": partial(_append_method_to_actual, "splitlines"),
+        "lower": partial(_append_method_to_actual, "lower"),
+        "any_order": _unique_sort,
+        "strip_expected": partial(_append_method_to_expected, "strip"),
+        "splitlines_expected": partial(_append_method_to_expected, "splitlines"),
+    }
+    DICT_TRANSFORMATION_FUNCS: ClassVar[Dict[str, TransformationDictFuncT]] = {
+        "remove": _remove_chars,
+        "strip": _strip_chars,
+    }
+
+    @field_validator("inputs", mode="before")
+    @classmethod
+    def validate_inputs(cls, values):
+        """
+        Validate each input
+
+        :param values: Inputs to validate
+        :return: Original inputs
+        :raises: :exc:`ValueError` if input invalid
+        """
+
+        _validate_str_list(cls, values)
+        return values
+
+    @field_validator("params", mode="before")
+    @classmethod
+    def validate_params(cls, values, info: ValidationInfo):
+        """
+        Validate each parameter
+
+        :param values: Parameters to validate
+        :param info: Test item
+        :return: Original parameters
+        :raises: :exc:`ValueError` if project requires parameters but no input, no name,
+            or empty name
+        """
+
+        if info.data.get("requires_parameters"):
+            errors = []
+            field_is_required = "field is required when parameters required"
+            for index, value in enumerate(values):
+                if "name" not in value:
+                    errors.append(get_error_details(field_is_required, (index, "name"), value))
+                elif isinstance(value["name"], str) and not value["name"]:
+                    errors.append(
+                        get_error_details(
+                            "value must not be empty when parameters required",
+                            (index, "name"),
+                            value,
+                        )
+                    )
+
+                if "input" not in value:
+                    errors.append(get_error_details(field_is_required, (index, "input"), value))
+
+                if "expected" not in value:
+                    errors.append(get_error_details(field_is_required, (index, "expected"), value))
+
+            if errors:
+                raise_validation_errors(cls, errors)
+
+        return values
+
+    # @validator("transformations", each_item=True, pre=True)
+    @field_validator("transformations", mode="before")
+    @classmethod
+    def validate_transformation(cls, values):
+        """
+        Validate each transformation
+
+        :param values: Transformations to validate
+        :return: Original values
+        :raises: :exc:`ValueError` if invalid transformation
+        """
+
+        for index, value in enumerate(values):
+            if isinstance(value, str):
+                if value not in cls.SCALAR_TRANSFORMATION_FUNCS:
+                    raise_simple_validation_error(
+                        cls, f'invalid transformation "{value}"', value, (index,)
+                    )
+            elif isinstance(value, dict):
+                key = str(*value)
+                if key not in cls.DICT_TRANSFORMATION_FUNCS:
+                    raise_simple_validation_error(
+                        cls, f'invalid transformation "{key}"', value, (index,)
+                    )
+
+                _validate_str_list(cls, value[key], (index, key))
+            else:
+                raise_simple_validation_error(cls, "str or dict type expected", value, (index,))
+
+        return values
+
+    def transform_vars(self) -> Tuple[str, str]:
+        """
+        Transform variables using the specified transformations
+
+        :return: Transformed actual and expected variables
+        """
+
+        actual_var = "actual"
+        expected_var = "expected"
+        for transfomation in self.transformations:
+            if isinstance(transfomation, str):
+                actual_var, expected_var = self.SCALAR_TRANSFORMATION_FUNCS[transfomation](
+                    actual_var, expected_var
+                )
+            else:
+                key, item = tuple(*transfomation.items())
+                actual_var, expected_var = self.DICT_TRANSFORMATION_FUNCS[key](
+                    item, actual_var, expected_var
+                )
+
+        return actual_var, expected_var
+
+    def get_pytest_params(self) -> str:
+        """
+        Get pytest parameters
+
+        :return: pytest parameters
+        """
+
+        if not self.requires_parameters:
+            return ""
+
+        pytest_params = "".join(
+            indent(param.get_pytest_param(), 8) for param in self.params
+        ).strip()
+        return f"""\
+@pytest.mark.parametrize(
+    ("in_params", "expected"),
+    [
+        {pytest_params}
+    ]
+)
+"""
+
+    def get_test_function_and_run(self, project_name_underscores: str) -> str:
+        """
+        Get test function and run command
+
+        :param project_name_underscores: Project name with underscores between each word
+        :return: Test function and run command
+        """
+
+        func_params = ""
+        run_param = ""
+        if self.requires_parameters:
+            func_params = "in_params, expected, "
+            run_param = "params=in_params"
+
+        return f"""\
+def test_{self.name}({func_params}{project_name_underscores}):
+    actual = {project_name_underscores}.run({run_param})
+"""
+
+    def get_expected_output(self, project_name_underscores: str) -> str:
+        """
+        Get test code that gets the expected output
+
+        :param project_name_underscores: Project name with underscores between each word
+        :return: Test code that gets the expected output
+
+        """
+
+        if self.requires_parameters:
+            return ""
+
+        expected_output = self.params[0].expected
+        if isinstance(expected_output, str):
+            expected_output = quote(expected_output)
+        elif isinstance(expected_output, dict):
+            return _get_expected_file(project_name_underscores, expected_output)
+
+        return f"expected = {expected_output}\n"
+
+    def generate_test(self, project_name_underscores: str) -> str:
+        """
+        Generate test code
+
+        :param project_name_underscores: Project name with underscores between each word
+        :return: Test code
+        """
+
+        test_code = "@project_test(PROJECT_NAME)\n"
+        test_code += self.get_pytest_params()
+        test_code += self.get_test_function_and_run(project_name_underscores)
+        test_code += indent(self.get_expected_output(project_name_underscores), 4)
+        actual_var, expected_var = self.transform_vars()
+        test_code += indent(_get_assert(actual_var, expected_var, self.params[0].expected), 4)
+        return test_code
+
+
+def _get_expected_file(project_name_underscores: str, expected_output: Dict[str, str]) -> str:
+    if "exec" in expected_output:
+        script = quote(expected_output["exec"])
+        return f"expected = {project_name_underscores}.exec({script})\n"
+
+    test_code = f"""\
+with open({project_name_underscores}.full_path, "r", encoding="utf-8") as file:
+    expected = file.read()
+"""
+
+    if "self" in expected_output:
+        test_code += """\
+diff_len = len(actual) - len(expected)
+if diff_len > 0:
+    expected += "\\n"
+elif diff_len < 0:
+    actual += "\\n"
+"""
+
+    return test_code
+
+
+def _get_assert(actual_var: str, expected_var: str, expected_output) -> str:
+    if isinstance(expected_output, list):
+        return f"""\
+actual_list = {actual_var}
+expected_list = {expected_var}
+assert len(actual_list) == len(expected_list), "Length not equal"
+for index in range(len(expected_list)):
+    assert actual_list[index] == expected_list[index], f"Item {{index + 1}} is not equal"
+"""
+
+    test_code = ""
+    if actual_var != "actual":
+        test_code += f"actual = {actual_var}\n"
+
+    if expected_var != "expected":
+        test_code += f"expected = {expected_var}\n"
+
+    return f"{test_code}assert actual == expected\n"
