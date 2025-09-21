@@ -1,5 +1,5 @@
 from functools import partial
-from typing import Annotated, Any, Callable, ClassVar, Dict, List, Optional, Tuple, Union
+from typing import Annotated, Any, Callable, ClassVar, Dict, List, Optional, Tuple
 
 from pydantic import BaseModel, Field, ValidationInfo, field_validator, model_validator
 
