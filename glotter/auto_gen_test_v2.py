@@ -186,7 +186,6 @@ class AutoGenTest(BaseModel):
 
         return values
 
-    # @validator("transformations", each_item=True, pre=True)
     @field_validator("transformations", mode="before")
     @classmethod
     def validate_transformation(cls, values):
@@ -366,7 +365,6 @@ class AutoGenUseTests(BaseModel):
     search: Annotated[str, Field(strict=True, pattern="^[0-9a-zA-Z_]*$")] = ""
     replace: Annotated[str, Field(strict=True, pattern="^[0-9a-zA-Z_]*$")] = ""
 
-    # @root_validator(pre=True)
     @model_validator(mode="before")
     @classmethod
     def validate_search_with_replace(cls, values):
