@@ -48,7 +48,7 @@ def error_and_exit(msg):
     sys.exit(1)
 
 
-def raise_simple_validation_error(cls, msg, input, loc: Optional[tuple]=None) -> NoReturn:
+def raise_simple_validation_error(cls, msg, input, loc: Optional[tuple] = None) -> NoReturn:
     raise ValidationError.from_exception_data(
         title=cls.__name__,
         line_errors=[get_error_details(msg, loc or (), input)],
