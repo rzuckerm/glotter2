@@ -27,8 +27,8 @@ dependencies = [
     "pyyaml>6.0,<7.0",
     "pytest-xdist>=3.6.1,<4.0",
     "pydantic>=2.11.9,<3.0",
-    "ruff>=0.13.0,<0.14.0",
     "pydantic-core>=2.33.2,<3.0.0",
+    "ruff>=0.13.1,<0.14.0",
 ]
 
 [project.urls]
