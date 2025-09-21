@@ -4,7 +4,7 @@ import string
 import pytest
 from pydantic import ValidationError
 
-from glotter.auto_gen_test_v2 import AutoGenParam, AutoGenTest
+from glotter.auto_gen_test_v2 import AutoGenParam, AutoGenTest, AutoGenUseTests
 
 UNIT_TEST_DATA_PATH = os.path.abspath(os.path.join("test", "unit", "data", "auto_gen_test"))
 
@@ -406,6 +406,21 @@ def test_auto_gen_test_good(value, expected_value):
             "inputs.1\n  str type expected",
             id="inputs-not-all-str",
         ),
+        pytest.param(
+            {
+                "name": "test_name4",
+                "requires_parameters": True,
+                "inputs": ["foo"],
+                "params": [
+                    {
+                        "name": "some-name4",
+                        "input": "some-input4",
+                    }
+                ],
+            },
+            "params.0.expected\n  field is required",
+            id="missing-expected",
+        ),
     ],
 )
 def test_auto_gen_test_bad(value, expected_error):
@@ -731,3 +746,66 @@ def test_auto_gen_test_generate_test(value, project_name_underscores):
         expected_value = f.read()
 
     assert test.generate_test(project_name_underscores) == expected_value
+
+
+@pytest.mark.parametrize(
+    ("value", "expected_value"),
+    [
+        pytest.param(
+            {"name": "project1"},
+            {"name": "project1", "search": "", "replace": ""},
+            id="no-search-replace",
+        )
+    ]
+    + [
+        pytest.param(
+            {"name": "project2", "search": char1 * count, "replace": char2 * count},
+            {"name": "project2", "search": char1 * count, "replace": char2 * count},
+            id=f"search-replace-{char1}-{char2}-{count}",
+        )
+        for char1, char2 in zip(VALID_CHARS[::2], VALID_CHARS[1::2])
+        for count in [1, 2]
+    ],
+)
+def test_auto_gen_use_tests_good(value, expected_value):
+    use_tests = AutoGenUseTests(**value)
+    assert use_tests.model_dump() == expected_value
+
+
+@pytest.mark.parametrize(
+    ("value", "expected_error"),
+    [
+        pytest.param(
+            {"name": "project1", "search": "search"},
+            '"search" item specified without "replace" item',
+            id="no-replace",
+        ),
+        pytest.param(
+            {"name": "project2", "replace": "replace"},
+            '"replace" item specified without "search" item',
+            id="no-search",
+        ),
+    ]
+    + [
+        pytest.param(
+            {"name": "project3", "search": bad_name, "replace": "foo"},
+            "should match pattern",
+            id=f"bad-search-{bad_name}",
+        )
+        for bad_name in BAD_NAMES
+    ]
+    + [
+        pytest.param(
+            {"name": "project4", "search": "foo", "replace": bad_name},
+            "should match pattern",
+            id=f"bad-replace-{bad_name}",
+        )
+        for bad_name in BAD_NAMES
+    ]
+    + [pytest.param({}, "name", id="missing-name")],
+)
+def test_auto_gen_use_tests_bad(value, expected_error):
+    with pytest.raises(ValidationError) as e:
+        AutoGenUseTests(**value)
+
+    assert expected_error in str(e.value)

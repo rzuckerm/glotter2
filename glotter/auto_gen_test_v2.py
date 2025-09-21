@@ -1,7 +1,7 @@
 from functools import partial
 from typing import Annotated, Any, Callable, ClassVar, Dict, List, Optional, Tuple, Union
 
-from pydantic import BaseModel, Field, ValidationInfo, field_validator
+from pydantic import BaseModel, Field, ValidationInfo, field_validator, model_validator
 
 from glotter.utils import (
     get_error_details,
@@ -75,14 +75,8 @@ class AutoGenParam(BaseModel):
         return f"pytest.param({input_param}, {expected_output}, id={quote(self.name)}),\n"
 
 
-def _validate_str_list(cls, values, item_loc: Union[str, tuple] = ""):
-    loc = ()
-    if item_loc:
-        if isinstance(item_loc, str):
-            loc = (item_loc,)
-        else:
-            loc += item_loc
-
+def _validate_str_list(cls, values, item_loc: Optional[tuple] = None):
+    loc = item_loc or ()
     if not isinstance(values, list):
         errors = [get_error_details("value is not a valid list", loc, values)]
     else:
@@ -152,7 +146,7 @@ class AutoGenTest(BaseModel):
 
         :param values: Inputs to validate
         :return: Original inputs
-        :raises: :exc:`ValueError` if input invalid
+        :raises: :exc:`ValidationError` if input invalid
         """
 
         _validate_str_list(cls, values)
@@ -167,7 +161,7 @@ class AutoGenTest(BaseModel):
         :param values: Parameters to validate
         :param info: Test item
         :return: Original parameters
-        :raises: :exc:`ValueError` if project requires parameters but no input, no name,
+        :raises: :exc:`ValidationError` if project requires parameters but no input, no name,
             or empty name
         """
 
@@ -206,7 +200,7 @@ class AutoGenTest(BaseModel):
 
         :param values: Transformations to validate
         :return: Original values
-        :raises: :exc:`ValueError` if invalid transformation
+        :raises: :exc:`ValidationError` if invalid transformation
         """
 
         for index, value in enumerate(values):
@@ -368,3 +362,35 @@ for index in range(len(expected_list)):
         test_code += f"expected = {expected_var}\n"
 
     return f"{test_code}assert actual == expected\n"
+
+
+class AutoGenUseTests(BaseModel):
+    """Object used to specify what tests to use"""
+
+    name: str
+    search: Annotated[str, Field(strict=True, pattern="^[0-9a-zA-Z_]*$")] = ""
+    replace: Annotated[str, Field(strict=True, pattern="^[0-9a-zA-Z_]*$")] = ""
+
+    # @root_validator(pre=True)
+    @model_validator(mode="before")
+    @classmethod
+    def validate_search_with_replace(cls, values):
+        """
+        Validate that if either search or replace is specified, both must be specified
+
+        :param values: Values to validate
+        :return: Original values
+        :raise: `exc`:ValidationError if either search or replace is specified, both are specified
+        """
+
+        if "search" in values and "replace" not in values:
+            raise_simple_validation_error(
+                cls, '"search" item specified without "replace" item', values
+            )
+
+        if "search" not in values and "replace" in values:
+            raise_simple_validation_error(
+                cls, '"replace" item specified without "search" item', values
+            )
+
+        return values
