@@ -3,13 +3,8 @@ from typing import Annotated, Any, Callable, ClassVar, Dict, List, Optional, Tup
 
 from pydantic import BaseModel, Field, ValidationInfo, field_validator, model_validator
 
-from glotter.utils import (
-    get_error_details,
-    indent,
-    quote,
-    raise_simple_validation_error,
-    raise_validation_errors,
-)
+from glotter.errors import get_error_details, raise_simple_validation_error, raise_validation_errors
+from glotter.utils import indent, quote
 
 TransformationScalarFuncT = Callable[[str, str], Tuple[str, str]]
 TransformationDictFuncT = Callable[[List[str], str, str], Tuple[str, str]]
