@@ -21,3 +21,18 @@ def raise_simple_validation_error(cls, msg, input, loc: Optional[tuple] = None) 
 
 def raise_validation_errors(cls, errors: List[InitErrorDetails]) -> NoReturn:
     raise ValidationError.from_exception_data(title=cls.__name__, line_errors=errors)
+
+
+def validate_str_list(cls, values, item_loc: Optional[tuple] = None) -> None:
+    loc = item_loc or ()
+    if not isinstance(values, list):
+        errors = [get_error_details("value is not a valid list", loc, values)]
+    else:
+        errors = [
+            get_error_details("str type expected", loc + (index,), value)
+            for index, value in enumerate(values)
+            if not isinstance(value, str)
+        ]
+
+    if errors:
+        raise_validation_errors(cls, errors)

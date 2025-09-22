@@ -3,7 +3,12 @@ from typing import Annotated, Any, Callable, ClassVar, Dict, List, Optional, Tup
 
 from pydantic import BaseModel, Field, ValidationInfo, field_validator, model_validator
 
-from glotter.errors import get_error_details, raise_simple_validation_error, raise_validation_errors
+from glotter.errors import (
+    get_error_details,
+    raise_simple_validation_error,
+    raise_validation_errors,
+    validate_str_list,
+)
 from glotter.utils import indent, quote
 
 TransformationScalarFuncT = Callable[[str, str], Tuple[str, str]]
@@ -43,7 +48,7 @@ class AutoGenParam(BaseModel):
             elif key != "self":
                 raise_simple_validation_error(cls, 'invalid "expected" type', item)
         elif isinstance(value, list):
-            _validate_str_list(cls, value)
+            validate_str_list(cls, value)
         elif not isinstance(value, str):
             raise raise_simple_validation_error(cls, "str, list, or dict type expected", value)
 
@@ -68,21 +73,6 @@ class AutoGenParam(BaseModel):
             expected_output = quote(expected_output)
 
         return f"pytest.param({input_param}, {expected_output}, id={quote(self.name)}),\n"
-
-
-def _validate_str_list(cls, values, item_loc: Optional[tuple] = None):
-    loc = item_loc or ()
-    if not isinstance(values, list):
-        errors = [get_error_details("value is not a valid list", loc, values)]
-    else:
-        errors = [
-            get_error_details("str type expected", loc + (index,), value)
-            for index, value in enumerate(values)
-            if not isinstance(value, str)
-        ]
-
-    if errors:
-        raise_validation_errors(cls, errors)
 
 
 def _append_method_to_actual(method: str, actual_var: str, expected_var) -> Tuple[str, str]:
@@ -144,7 +134,7 @@ class AutoGenTest(BaseModel):
         :raises: :exc:`ValidationError` if input invalid
         """
 
-        _validate_str_list(cls, values)
+        validate_str_list(cls, values)
         return values
 
     @field_validator("params", mode="before")
@@ -210,7 +200,7 @@ class AutoGenTest(BaseModel):
                         cls, f'invalid transformation "{key}"', value, (index,)
                     )
 
-                _validate_str_list(cls, value[key], (index, key))
+                validate_str_list(cls, value[key], (index, key))
             else:
                 raise_simple_validation_error(cls, "str or dict type expected", value, (index,))
 
