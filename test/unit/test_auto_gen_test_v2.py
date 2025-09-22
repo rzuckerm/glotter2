@@ -409,7 +409,7 @@ def test_auto_gen_test_good(value, expected_value):
         pytest.param(
             {
                 "name": "test_name4",
-                "requires_parameters": True,
+                "requires_parameters": False,
                 "inputs": ["foo"],
                 "params": [
                     {
@@ -420,6 +420,21 @@ def test_auto_gen_test_good(value, expected_value):
             },
             "params.0.expected\n  field is required",
             id="missing-expected",
+        ),
+        pytest.param(
+            {
+                "name": "test_name4",
+                "requires_parameters": True,
+                "inputs": ["foo"],
+                "params": [
+                    {
+                        "name": "some-name4",
+                        "input": "some-input4",
+                    }
+                ],
+            },
+            "params.0.expected\n  field is required",
+            id="missing-expected-params-req",
         ),
     ],
 )

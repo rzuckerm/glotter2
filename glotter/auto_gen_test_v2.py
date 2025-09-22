@@ -157,13 +157,13 @@ class AutoGenTest(BaseModel):
         :param info: Test item
         :return: Original parameters
         :raises: :exc:`ValidationError` if project requires parameters but no input, no name,
-            or empty name
+            or empty name. Also, raised if no expected output
         """
 
-        if info.data.get("requires_parameters"):
-            errors = []
-            field_is_required = "field is required when parameters required"
-            for index, value in enumerate(values):
+        errors = []
+        field_is_required = "field is required when parameters required"
+        for index, value in enumerate(values):
+            if info.data.get("requires_parameters"):
                 if "name" not in value:
                     errors.append(get_error_details(field_is_required, (index, "name"), value))
                 elif isinstance(value["name"], str) and not value["name"]:
@@ -178,11 +178,11 @@ class AutoGenTest(BaseModel):
                 if "input" not in value:
                     errors.append(get_error_details(field_is_required, (index, "input"), value))
 
-                if "expected" not in value:
-                    errors.append(get_error_details(field_is_required, (index, "expected"), value))
+            if "expected" not in value:
+                errors.append(get_error_details(field_is_required, (index, "expected"), value))
 
-            if errors:
-                raise_validation_errors(cls, errors)
+        if errors:
+            raise_validation_errors(cls, errors)
 
         return values
 
