@@ -2,7 +2,7 @@ import os
 import string
 
 import pytest
-from pydantic.v1 import ValidationError
+from pydantic import ValidationError
 
 from glotter.auto_gen_test import AutoGenParam, AutoGenTest, AutoGenUseTests
 
@@ -68,7 +68,7 @@ BAD_NAMES = ["a#xyz", "z_x blah", "yoo-hoo"]
 )
 def test_auto_gen_param_good(value, expected_value):
     param = AutoGenParam(**value)
-    assert param.dict() == expected_value
+    assert param.model_dump() == expected_value
 
 
 @pytest.mark.parametrize(
@@ -76,12 +76,12 @@ def test_auto_gen_param_good(value, expected_value):
     [
         pytest.param(
             {"name": None, "input": None, "expected": "some-str"},
-            "name\n  none is not an allowed",
+            "name\n  Input should be a valid string",
             id="bad-name",
         ),
         pytest.param(
             {"name": "x", "input": {"some-key": "some-value"}, "expected": "some-str"},
-            "input\n  str type expected",
+            "input\n  Input should be a valid string",
             id="bad-input",
         ),
         pytest.param(
@@ -100,13 +100,18 @@ def test_auto_gen_param_good(value, expected_value):
             id="too-many-expected-dict",
         ),
         pytest.param(
+            {"name": "x", "input": "some-str", "expected": {"exec": 42}},
+            "expected.exec\n  str type expected",
+            id="invalid-self-exec",
+        ),
+        pytest.param(
             {"name": "x", "input": "some-str", "expected": {}},
             "expected\n  too few items",
             id="too-few-expected-dict",
         ),
         pytest.param(
             {"name": "x", "input": "some-str", "expected": {"exec": ""}},
-            "expected -> exec\n  value must not be empty",
+            "expected.exec\n  value must not be empty",
             id="empty-expected-exec",
         ),
     ],
@@ -275,7 +280,7 @@ def test_auto_gen_param_get_pytest_param(value, expected_pytest_param):
 )
 def test_auto_gen_test_good(value, expected_value):
     test = AutoGenTest(**value)
-    assert test.dict() == expected_value
+    assert test.model_dump() == expected_value
 
 
 @pytest.mark.parametrize(
@@ -288,12 +293,12 @@ def test_auto_gen_test_good(value, expected_value):
         ),
         pytest.param(
             {"name": "", "params": [{"name": "some-name", "expected": "some-str"}]},
-            "value has at least 1 character",
+            "String should have at least 1 character",
             id="empty-name",
         ),
         pytest.param(
             {"name": "9", "params": [{"name": "some-name", "expected": "some-str"}]},
-            "does not match regex",
+            "String should match pattern",
             id="name-start-with-number",
         ),
     ]
@@ -303,7 +308,7 @@ def test_auto_gen_test_good(value, expected_value):
                 "name": bad_name,
                 "params": [{"name": "some-name", "expected": "some-str"}],
             },
-            "does not match regex",
+            "String should match pattern",
             id=f"name-has-bad-chars-{bad_name}",
         )
         for bad_name in BAD_NAMES
@@ -316,7 +321,7 @@ def test_auto_gen_test_good(value, expected_value):
                 "requires_parameters": True,
                 "params": [{"input": "some-input", "expected": "some-str"}],
             },
-            "params -> 0 -> name\n  field is required",
+            "params.0.name\n  field is required",
             id="missing-param-name",
         ),
         pytest.param(
@@ -325,7 +330,7 @@ def test_auto_gen_test_good(value, expected_value):
                 "requires_parameters": True,
                 "params": [{"name": "", "input": "some-input", "expected": "some-str"}],
             },
-            "params -> 0 -> name\n  value must not be empty",
+            "params.0.name\n  value must not be empty",
             id="empty-param-name",
         ),
         pytest.param(
@@ -334,7 +339,7 @@ def test_auto_gen_test_good(value, expected_value):
                 "requires_parameters": True,
                 "params": [{"name": "some-name", "expected": "some-str"}],
             },
-            "params -> 0 -> input\n  field is required",
+            "params.0.input\n  field is required",
             id="missing-param-input",
         ),
         pytest.param(
@@ -350,7 +355,7 @@ def test_auto_gen_test_good(value, expected_value):
                     }
                 ],
             },
-            "inputs\n  none is not an allowed",
+            "inputs\n  value is not a valid list",
             id="inputs-none",
         ),
         pytest.param(
@@ -366,7 +371,7 @@ def test_auto_gen_test_good(value, expected_value):
                     }
                 ],
             },
-            "inputs\n  ensure this value has at least 1 item",
+            "inputs\n  List should have at least 1 item",
             id="inputs-empty",
         ),
         pytest.param(
@@ -398,8 +403,38 @@ def test_auto_gen_test_good(value, expected_value):
                     }
                 ],
             },
-            "inputs -> 1\n  input is not a str",
+            "inputs.1\n  str type expected",
             id="inputs-not-all-str",
+        ),
+        pytest.param(
+            {
+                "name": "test_name4",
+                "requires_parameters": False,
+                "inputs": ["foo"],
+                "params": [
+                    {
+                        "name": "some-name4",
+                        "input": "some-input4",
+                    }
+                ],
+            },
+            "params.0.expected\n  field is required",
+            id="missing-expected",
+        ),
+        pytest.param(
+            {
+                "name": "test_name4",
+                "requires_parameters": True,
+                "inputs": ["foo"],
+                "params": [
+                    {
+                        "name": "some-name4",
+                        "input": "some-input4",
+                    }
+                ],
+            },
+            "params.0.expected\n  field is required",
+            id="missing-expected-params-req",
         ),
     ],
 )
@@ -459,49 +494,49 @@ def test_auto_gen_transform_vars(transformations, expected_actual_var, expected_
 @pytest.mark.parametrize(
     ("transformation", "expected_errors"),
     [
-        pytest.param("foo", ['transformations -> 0\n  invalid transformation "foo"'], id="scalar"),
+        pytest.param("foo", ['transformations.0\n  invalid transformation "foo"'], id="scalar"),
         pytest.param(
             {"bar": ["x"]},
-            ['transformations -> 0\n  invalid transformation "bar"'],
+            ['transformations.0\n  invalid transformation "bar"'],
             id="dict",
         ),
         pytest.param(
             ["1", "2"],
-            ["transformations -> 0\n  str or dict type expected"],
+            ["transformations.0\n  str or dict type expected"],
             id="bad-type-list",
         ),
-        pytest.param(3, ["transformations -> 0\n  str or dict type expected"], id="bad-type-int"),
+        pytest.param(3, ["transformations.0\n  str or dict type expected"], id="bad-type-int"),
         pytest.param(
             None,
-            ["transformations -> 0\n  str or dict type expected"],
+            ["transformations.0\n  str or dict type expected"],
             id="bad-type-None",
         ),
         pytest.param(
             {"strip": 32},
-            ["transformations -> 0 -> strip\n  value is not a valid list"],
+            ["transformations.0.strip\n  value is not a valid list"],
             id="bad-strip-int",
         ),
         pytest.param(
             {"strip": {"blah": "what"}},
-            ["transformations -> 0 -> strip\n  value is not a valid list"],
+            ["transformations.0.strip\n  value is not a valid list"],
             id="bad-strip-dict",
         ),
         pytest.param(
             {"strip": ["a", 5, ["x"]]},
             [
-                "transformations -> 0 -> strip -> 1\n  str type expected",
-                "transformations -> 0 -> strip -> 2\n  str type expected",
+                "transformations.0.strip.1\n  str type expected",
+                "transformations.0.strip.2\n  str type expected",
             ],
             id="bad-strip-bad-list-item",
         ),
         pytest.param(
             {"remove": None},
-            ["transformations -> 0 -> remove\n  value is not a valid list"],
+            ["transformations.0.remove\n  value is not a valid list"],
             id="bad-remove-None",
         ),
         pytest.param(
             {"remove": [{"foo": "bar"}, "x"]},
-            ["transformations -> 0 -> remove"],
+            ["transformations.0.remove"],
             id="bad-remove-bad-list-item",
         ),
     ],
@@ -749,7 +784,7 @@ def test_auto_gen_test_generate_test(value, project_name_underscores):
 )
 def test_auto_gen_use_tests_good(value, expected_value):
     use_tests = AutoGenUseTests(**value)
-    assert use_tests.dict() == expected_value
+    assert use_tests.model_dump() == expected_value
 
 
 @pytest.mark.parametrize(
@@ -769,7 +804,7 @@ def test_auto_gen_use_tests_good(value, expected_value):
     + [
         pytest.param(
             {"name": "project3", "search": bad_name, "replace": "foo"},
-            "does not match regex",
+            "should match pattern",
             id=f"bad-search-{bad_name}",
         )
         for bad_name in BAD_NAMES
@@ -777,7 +812,7 @@ def test_auto_gen_use_tests_good(value, expected_value):
     + [
         pytest.param(
             {"name": "project4", "search": "foo", "replace": bad_name},
-            "does not match regex",
+            "should match pattern",
             id=f"bad-replace-{bad_name}",
         )
         for bad_name in BAD_NAMES

@@ -1,16 +1,14 @@
 from functools import partial
-from typing import Any, Callable, ClassVar, Dict, List, Optional, Tuple
+from typing import Annotated, Any, Callable, ClassVar, Dict, List, Optional, Tuple
 
-from pydantic.v1 import (
-    BaseModel,
-    ValidationError,
-    conlist,
-    constr,
-    root_validator,
-    validator,
+from pydantic import BaseModel, Field, ValidationInfo, field_validator, model_validator
+
+from glotter.errors import (
+    get_error_details,
+    raise_simple_validation_error,
+    raise_validation_errors,
+    validate_str_list,
 )
-from pydantic.v1.error_wrappers import ErrorWrapper
-
 from glotter.utils import indent, quote
 
 TransformationScalarFuncT = Callable[[str, str], Tuple[str, str]]
@@ -24,43 +22,35 @@ class AutoGenParam(BaseModel):
     input: Optional[str] = None
     expected: Any
 
-    @validator("expected")
+    @field_validator("expected")
     def validate_expected(cls, value):
         """
         Validate expected value
 
         :param value: Expected value
         :return: Original expected value
-        :raises: :exc:`ValueError` if invalid expected value
+        :raises: :exc:`ValidationError` if invalid expected value
         """
 
         if isinstance(value, dict):
             if not value:
-                raise ValueError("too few items")
+                raise_simple_validation_error(cls, "too few items", value)
 
             if len(value) > 1:
-                raise ValueError("too many items")
+                raise_simple_validation_error(cls, "too many items", value)
 
             key, item = tuple(*value.items())
             if key == "exec":
                 if not isinstance(item, str):
-                    raise ValidationError(
-                        [
-                            ErrorWrapper(ValueError("str type expected"), loc="exec"),
-                        ],
-                        model=cls,
-                    )
+                    raise_simple_validation_error(cls, "str type expected", item, (key,))
                 if not item:
-                    raise ValidationError(
-                        [ErrorWrapper(ValueError("value must not be empty"), loc="exec")],
-                        model=cls,
-                    )
+                    raise_simple_validation_error(cls, "value must not be empty", item, (key,))
             elif key != "self":
-                raise ValueError('invalid "expected" type')
+                raise_simple_validation_error(cls, 'invalid "expected" type', item)
         elif isinstance(value, list):
-            _validate_str_list(cls, value)
+            validate_str_list(cls, value)
         elif not isinstance(value, str):
-            raise ValueError("str, list, or dict type expected")
+            raise raise_simple_validation_error(cls, "str, list, or dict type expected", value)
 
         return value
 
@@ -83,24 +73,6 @@ class AutoGenParam(BaseModel):
             expected_output = quote(expected_output)
 
         return f"pytest.param({input_param}, {expected_output}, id={quote(self.name)}),\n"
-
-
-def _validate_str_list(cls, values, item_name: str = ""):
-    loc = ()
-    if item_name:
-        loc += (item_name,)
-
-    if not isinstance(values, list):
-        errors = [ErrorWrapper(ValueError("value is not a valid list"), loc=loc)]
-    else:
-        errors = [
-            ErrorWrapper(ValueError("str type expected"), loc=loc + (index,))
-            for index, value in enumerate(values)
-            if not isinstance(value, str)
-        ]
-
-    if errors:
-        raise ValidationError(errors, model=cls)
 
 
 def _append_method_to_actual(method: str, actual_var: str, expected_var) -> Tuple[str, str]:
@@ -132,10 +104,10 @@ def _unique_sort(actual_var, expected_var):
 class AutoGenTest(BaseModel):
     """Object used to auto-generated a test"""
 
-    name: constr(strict=True, min_length=1, regex="^[a-zA-Z][0-9a-zA-Z_]*$")
+    name: Annotated[str, Field(strict=True, min_length=1, pattern="^[a-zA-Z][0-9a-zA-Z_]*$")]
     requires_parameters: bool = False
-    inputs: conlist(str, min_items=1) = ["Input"]
-    params: conlist(AutoGenParam, min_items=1)
+    inputs: Annotated[List[str], Field(min_length=1)] = ["Input"]
+    params: Annotated[List[AutoGenParam], Field(min_length=1)]
     transformations: List[Any] = []
 
     SCALAR_TRANSFORMATION_FUNCS: ClassVar[Dict[str, TransformationScalarFuncT]] = {
@@ -151,94 +123,88 @@ class AutoGenTest(BaseModel):
         "strip": _strip_chars,
     }
 
-    @validator("inputs", each_item=True, pre=True, always=True)
-    def validate_inputs(cls, value):
+    @field_validator("inputs", mode="before")
+    @classmethod
+    def validate_inputs(cls, values):
         """
         Validate each input
 
-        :param value: Input to validate
-        :return: Original input
-        :raises: :exc:`ValueError` if input invalid
+        :param values: Inputs to validate
+        :return: Original inputs
+        :raises: :exc:`ValidationError` if input invalid
         """
 
-        if not isinstance(value, str):
-            raise ValueError("input is not a str")
+        validate_str_list(cls, values)
+        return values
 
-        return value
-
-    @validator("params", each_item=True, pre=True, always=True)
-    def validate_params(cls, value, values):
+    @field_validator("params", mode="before")
+    @classmethod
+    def validate_params(cls, values, info: ValidationInfo):
         """
         Validate each parameter
 
-        :param value: Parameter to validate
-        :param values: Test item
-        :return: Original parameter
-        :raises: :exc:`ValueError` if project requires parameters but no input, no name,
-            or empty name
+        :param values: Parameters to validate
+        :param info: Test item
+        :return: Original parameters
+        :raises: :exc:`ValidationError` if project requires parameters but no input, no name,
+            or empty name. Also, raised if no expected output
         """
 
-        if values.get("requires_parameters"):
-            errors = []
-            if "name" not in value:
-                errors.append(
-                    ErrorWrapper(
-                        ValueError("field is required when parameters required"),
-                        loc="name",
+        errors = []
+        field_is_required = "field is required when parameters required"
+        for index, value in enumerate(values):
+            if info.data.get("requires_parameters"):
+                if "name" not in value:
+                    errors.append(get_error_details(field_is_required, (index, "name"), value))
+                elif isinstance(value["name"], str) and not value["name"]:
+                    errors.append(
+                        get_error_details(
+                            "value must not be empty when parameters required",
+                            (index, "name"),
+                            value,
+                        )
                     )
-                )
-            elif isinstance(value["name"], str) and not value["name"]:
-                errors.append(
-                    ErrorWrapper(
-                        ValueError("value must not be empty when parameters required"),
-                        loc="name",
-                    )
-                )
 
-            if "input" not in value:
-                errors.append(
-                    ErrorWrapper(
-                        ValueError("field is required when parameters required"),
-                        loc="input",
-                    )
-                )
+                if "input" not in value:
+                    errors.append(get_error_details(field_is_required, (index, "input"), value))
 
             if "expected" not in value:
-                errors.append(
-                    ErrorWrapper(
-                        ValueError("field is required when parameters required"),
-                        loc="expected",
-                    )
-                )
+                errors.append(get_error_details(field_is_required, (index, "expected"), value))
 
-            if errors:
-                raise ValidationError(errors, model=cls)
+        if errors:
+            raise_validation_errors(cls, errors)
 
-        return value
+        return values
 
-    @validator("transformations", each_item=True, pre=True)
-    def validate_transformation(cls, value):
+    @field_validator("transformations", mode="before")
+    @classmethod
+    def validate_transformation(cls, values):
         """
         Validate each transformation
 
-        :param value: Transformation to validate
-        :return: Original value
-        :raises: :exc:`ValueError` if invalid transformation
+        :param values: Transformations to validate
+        :return: Original values
+        :raises: :exc:`ValidationError` if invalid transformation
         """
 
-        if isinstance(value, str):
-            if value not in cls.SCALAR_TRANSFORMATION_FUNCS:
-                raise ValueError(f'invalid transformation "{value}"')
-        elif isinstance(value, dict):
-            key = str(*value)
-            if key not in cls.DICT_TRANSFORMATION_FUNCS:
-                raise ValueError(f'invalid transformation "{key}"')
+        for index, value in enumerate(values):
+            if isinstance(value, str):
+                if value not in cls.SCALAR_TRANSFORMATION_FUNCS:
+                    raise_simple_validation_error(
+                        cls, f'invalid transformation "{value}"', value, (index,)
+                    )
+            elif isinstance(value, dict):
+                key = str(*value)
+                if key not in cls.DICT_TRANSFORMATION_FUNCS:
+                    raise_simple_validation_error(
+                        cls, f'invalid transformation "{key}"', value, (index,)
+                    )
 
-            _validate_str_list(cls, value[key], key)
-        else:
-            raise ValueError("str or dict type expected")
+                validate_str_list(cls, value[key], (index, key))
+            else:
+                raise_simple_validation_error(cls, "str or dict type expected", value, (index,))
 
-        return value
+        return values
 
     def transform_vars(self) -> Tuple[str, str]:
         """
@@ -386,23 +352,28 @@ class AutoGenUseTests(BaseModel):
     """Object used to specify what tests to use"""
 
     name: str
-    search: constr(strict=True, regex="^[0-9a-zA-Z_]*$") = ""
-    replace: constr(strict=True, regex="^[0-9a-zA-Z_]*$") = ""
+    search: Annotated[str, Field(strict=True, pattern="^[0-9a-zA-Z_]*$")] = ""
+    replace: Annotated[str, Field(strict=True, pattern="^[0-9a-zA-Z_]*$")] = ""
 
-    @root_validator(pre=True)
+    @model_validator(mode="before")
+    @classmethod
     def validate_search_with_replace(cls, values):
         """
         Validate that if either search or replace is specified, both must be specified
 
         :param values: Values to validate
         :return: Original values
-        :raise: `exc`:ValueError if either search or replace is specified, both are specified
+        :raise: `exc`:ValidationError if either search or replace is specified, both are specified
         """
 
         if "search" in values and "replace" not in values:
-            raise ValueError('"search" item specified without "replace" item')
+            raise_simple_validation_error(
+                cls, '"search" item specified without "replace" item', values
+            )
 
         if "search" not in values and "replace" in values:
-            raise ValueError('"replace" item specified without "search" item')
+            raise_simple_validation_error(
+                cls, '"replace" item specified without "search" item', values
+            )
 
         return values

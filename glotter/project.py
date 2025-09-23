@@ -1,9 +1,10 @@
 from enum import Enum, auto
-from typing import ClassVar, Dict, Optional
+from typing import Annotated, ClassVar, Dict, List, Optional
 
-from pydantic.v1 import BaseModel, conlist, constr, validator
+from pydantic import BaseModel, Field, ValidationInfo, field_validator
 
 from glotter.auto_gen_test import AutoGenTest, AutoGenUseTests
+from glotter.errors import raise_simple_validation_error, validate_str_list
 
 
 class NamingScheme(Enum):
@@ -23,34 +24,39 @@ class AcronymScheme(Enum):
 class Project(BaseModel):
     VALID_REGEX: ClassVar[str] = "^[0-9a-zA-Z]+$"
 
-    words: conlist(constr(min_length=1, regex=VALID_REGEX, strict=True), min_items=1)
+    words: Annotated[
+        List[Annotated[str, Field(min_length=1, pattern=VALID_REGEX, strict=True)]],
+        Field(min_length=1, strict=True),
+    ]
     requires_parameters: bool = False
-    acronyms: conlist(constr(min_length=1, regex=VALID_REGEX, strict=True)) = []
+    acronyms: List[Annotated[str, Field(min_length=1, pattern=VALID_REGEX, strict=True)]] = []
     acronym_scheme: AcronymScheme = AcronymScheme.two_letter_limit
     use_tests: Optional[AutoGenUseTests] = None
     tests: Dict[str, AutoGenTest] = {}
 
-    @validator("acronyms", pre=True, each_item=True)
-    def get_acronym(cls, value):
-        if not isinstance(value, str):
-            return value
+    @field_validator("acronyms", mode="before")
+    @classmethod
+    def get_acronym(cls, values):
+        validate_str_list(cls, values)
+        return [value.upper() for value in values]
 
-        return value.upper()
-
-    @validator("tests", pre=True)
-    def get_tests(cls, value, values):
+    @field_validator("tests", mode="before")
+    @classmethod
+    def get_tests(cls, value, info: ValidationInfo):
         if not isinstance(value, dict) or not all(
             isinstance(test, dict) for test in value.values()
         ):
             return value
 
-        if values.get("use_tests"):
-            raise ValueError('"tests" and "use_tests" items are mutually exclusive')
+        if info.data.get("use_tests"):
+            raise_simple_validation_error(
+                cls, '"tests" and "use_tests" items are mutually exclusive', {"use_tests": "..."}
+            )
 
         return {
             test_name: {
                 **test,
-                "requires_parameters": values.get("requires_parameters") or False,
+                "requires_parameters": info.data.get("requires_parameters") or False,
                 "name": test_name,
             }
             for test_name, test in value.items()
@@ -68,7 +74,9 @@ class Project(BaseModel):
             self.tests = {}
             for test_name_, test in project.tests.items():
                 test_name = test_name_.replace(self.use_tests.search, self.use_tests.replace)
-                self.tests[test_name] = AutoGenTest(**test.dict(exclude={"name"}), name=test_name)
+                self.tests[test_name] = AutoGenTest(
+                    **test.model_dump(exclude={"name"}), name=test_name
+                )
 
             self.requires_parameters = project.requires_parameters
             self.use_tests = None
