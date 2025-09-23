@@ -23,13 +23,13 @@ class AcronymScheme(Enum):
 
 class Project(BaseModel):
     VALID_REGEX: ClassVar[str] = "^[0-9a-zA-Z]+$"
-    STRICT_REGEX: ClassVar[Annotated] = Annotated[
-        str, Field(min_length=1, pattern=VALID_REGEX, strict=True)
-    ]
 
-    words: Annotated[List[STRICT_REGEX], Field(strict=True, min_length=1)]
+    words: Annotated[
+        List[Annotated[str, Field(min_length=1, pattern=VALID_REGEX, strict=True)]],
+        Field(min_length=1, strict=True),
+    ]
     requires_parameters: bool = False
-    acronyms: List[STRICT_REGEX] = []
+    acronyms: List[Annotated[str, Field(min_length=1, pattern=VALID_REGEX, strict=True)]] = []
     acronym_scheme: AcronymScheme = AcronymScheme.two_letter_limit
     use_tests: Optional[AutoGenUseTests] = None
     tests: Dict[str, AutoGenTest] = {}
