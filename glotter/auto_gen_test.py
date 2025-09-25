@@ -106,8 +106,12 @@ class AutoGenTest(BaseModel):
 
     name: Annotated[str, Field(strict=True, min_length=1, pattern="^[a-zA-Z][0-9a-zA-Z_]*$")]
     requires_parameters: bool = False
-    inputs: Annotated[List[str], Field(min_length=1)] = ["Input"]
-    params: Annotated[List[AutoGenParam], Field(min_length=1)]
+    inputs: Annotated[List[str], Field(strict=True, min_length=1)] = Field(
+        ["Input"], validate_default=True
+    )
+    params: Annotated[List[AutoGenParam], Field(strict=True, min_length=1)] = Field(
+        None, validate_default=True
+    )
     transformations: List[Any] = []
 
     SCALAR_TRANSFORMATION_FUNCS: ClassVar[Dict[str, TransformationScalarFuncT]] = {
@@ -154,6 +158,10 @@ class AutoGenTest(BaseModel):
         field_is_required = "field is required when parameters required"
         for index, value in enumerate(values):
             if info.data.get("requires_parameters"):
+                if not isinstance(value, dict):
+                    errors.append(get_error_details("dict type expected", (index,), value))
+                    continue
+
                 if "name" not in value:
                     errors.append(get_error_details(field_is_required, (index, "name"), value))
                 elif isinstance(value["name"], str) and not value["name"]:
@@ -186,6 +194,9 @@ class AutoGenTest(BaseModel):
         :return: Original values
         :raises: :exc:`ValidationError` if invalid transformation
         """
+
+        if not isinstance(values, list):
+            raise_simple_validation_error(cls, "value is not a valid list", values)
 
         for index, value in enumerate(values):
             if isinstance(value, str):
