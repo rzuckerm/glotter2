@@ -1,7 +1,14 @@
 from functools import partial
 from typing import Annotated, Any, Callable, ClassVar, Dict, List, Optional, Tuple
 
-from pydantic import BaseModel, Field, ValidationInfo, field_validator, model_validator
+from pydantic import (
+    BaseModel,
+    Field,
+    ValidationError,
+    ValidationInfo,
+    field_validator,
+    model_validator,
+)
 
 from glotter.errors import (
     get_error_details,
@@ -143,7 +150,7 @@ class AutoGenTest(BaseModel):
 
     @field_validator("params", mode="before")
     @classmethod
-    def validate_params(cls, values, info: ValidationInfo):
+    def validate_params(cls, values, info: ValidationInfo):  # noqa: PLR0912
         """
         Validate each parameter
 
@@ -156,6 +163,8 @@ class AutoGenTest(BaseModel):
 
         errors = []
         field_is_required = "field is required when parameters required"
+
+        # Validate raw items so we can produce index-prefixed locations
         for index, value in enumerate(values):
             if info.data.get("requires_parameters"):
                 if not isinstance(value, dict):
@@ -176,10 +185,36 @@ class AutoGenTest(BaseModel):
                 if "input" not in value:
                     errors.append(get_error_details(field_is_required, (index, "input"), value))
 
+            if not isinstance(value, dict):
+                # if it's not a dict, we've already appended a dict-type error above
+                continue
+
             if "expected" not in value:
                 errors.append(get_error_details(field_is_required, (index, "expected"), value))
 
+        # If we have raw-item errors, try to validate inner AutoGenParam models and
+        # merge their errors while re-anchoring inner locs with the list index so
+        # pydantic's final error formatting shows the index prefix the tests expect.
         if errors:
+            # attempt to run model_validate on each dict item to collect inner errors
+            for index, value in enumerate(values):
+                if not isinstance(value, dict):
+                    continue
+
+                try:
+                    AutoGenParam.model_validate(value)
+                except ValidationError as exc:  # type: ignore[name-defined]
+                    # pydantic v2 ValidationError exposes structured errors via
+                    # .errors() — convert those into our InitErrorDetails and
+                    # prefix the loc with the list index so final formatting
+                    # shows the index.
+                    for err in exc.errors():
+                        err_loc = tuple(err.get("loc", ()))
+                        loc = (index,) + err_loc
+                        msg = err.get("msg") or str(err.get("type", "value_error"))
+                        input_val = err.get("input", value)
+                        errors.append(get_error_details(msg, loc, input_val))
+
             raise_validation_errors(cls, errors)
 
         return values
@@ -198,22 +233,31 @@ class AutoGenTest(BaseModel):
         if not isinstance(values, list):
             raise_simple_validation_error(cls, "value is not a valid list", values)
 
+        errors = []
         for index, value in enumerate(values):
             if isinstance(value, str):
                 if value not in cls.SCALAR_TRANSFORMATION_FUNCS:
-                    raise_simple_validation_error(
-                        cls, f'invalid transformation "{value}"', value, (index,)
+                    errors.append(
+                        get_error_details(f'invalid transformation "{value}"', (index,), value)
                     )
             elif isinstance(value, dict):
                 key = str(*value)
                 if key not in cls.DICT_TRANSFORMATION_FUNCS:
-                    raise_simple_validation_error(
-                        cls, f'invalid transformation "{key}"', value, (index,)
+                    errors.append(
+                        get_error_details(f'invalid transformation "{key}"', (index,), value)
                     )
-
-                validate_str_list(cls, value[key], (index, key))
+                else:
+                    # Use non-raising mode so we can append InitErrorDetails with
+                    # (index, key) prefixes instead of catching exceptions.
+                    inner_errors = validate_str_list(cls, value[key], (index, key), raise_exc=False)
+                    if inner_errors:
+                        # inner_errors already contains InitErrorDetails with prefixed locs
+                        errors.extend(inner_errors)
             else:
-                raise_simple_validation_error(cls, "str or dict type expected", value, (index,))
+                errors.append(get_error_details("str or dict type expected", (index,), value))
+
+        if errors:
+            raise_validation_errors(cls, errors)
 
         return values
 
