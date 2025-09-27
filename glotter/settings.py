@@ -179,7 +179,7 @@ class SettingsConfig(BaseModel):
                         input=use_tests_name,
                     )
                 )
-            # Make sure "use_tests" item Refers to a project with tests
+            # Make sure "use_tests" item refers to a project with tests
             elif not projects[use_tests_name].tests:
                 errors.append(
                     get_error_details(

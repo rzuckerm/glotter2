@@ -203,8 +203,7 @@ class AutoGenTest(BaseModel):
                     AutoGenParam.model_validate(value)
                 except ValidationError as exc:
                     for err in exc.errors():
-                        err_loc = tuple(err.get("loc", ()))
-                        loc = (index,) + err_loc
+                        loc = (index,) + tuple(err.get("loc", ()))
                         msg = err.get("msg") or str(err.get("type", "value_error"))
                         input_val = err.get("input", value)
                         errors.append(get_error_details(msg, loc, input_val))
@@ -241,12 +240,7 @@ class AutoGenTest(BaseModel):
                         get_error_details(f'Invalid transformation "{key}"', (index,), value)
                     )
                 else:
-                    # Use non-raising mode so we can append InitErrorDetails with
-                    # (index, key) prefixes instead of catching exceptions.
-                    inner_errors = validate_str_list(cls, value[key], (index, key), raise_exc=False)
-                    if inner_errors:
-                        # inner_errors already contains InitErrorDetails with prefixed locs
-                        errors.extend(inner_errors)
+                    errors += validate_str_list(cls, value[key], (index, key), raise_exc=False)
             else:
                 errors.append(
                     get_error_details(
