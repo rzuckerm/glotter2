@@ -57,7 +57,7 @@ class AutoGenParam(BaseModel):
         elif isinstance(value, list):
             validate_str_list(cls, value)
         elif not isinstance(value, str):
-            raise raise_simple_validation_error(cls, "str, list, or dict type expected", value)
+            raise_simple_validation_error(cls, "str, list, or dict type expected", value)
 
         return value
 
@@ -164,7 +164,6 @@ class AutoGenTest(BaseModel):
         errors = []
         field_is_required = "field is required when parameters required"
 
-        # Validate raw items so we can produce index-prefixed locations
         for index, value in enumerate(values):
             if info.data.get("requires_parameters"):
                 if not isinstance(value, dict):
@@ -185,29 +184,18 @@ class AutoGenTest(BaseModel):
                 if "input" not in value:
                     errors.append(get_error_details(field_is_required, (index, "input"), value))
 
-            if not isinstance(value, dict):
-                # if it's not a dict, we've already appended a dict-type error above
-                continue
-
             if "expected" not in value:
                 errors.append(get_error_details(field_is_required, (index, "expected"), value))
 
-        # If we have raw-item errors, try to validate inner AutoGenParam models and
-        # merge their errors while re-anchoring inner locs with the list index so
-        # pydantic's final error formatting shows the index prefix the tests expect.
         if errors:
-            # attempt to run model_validate on each dict item to collect inner errors
+            # Collect inner errors
             for index, value in enumerate(values):
                 if not isinstance(value, dict):
                     continue
 
                 try:
                     AutoGenParam.model_validate(value)
-                except ValidationError as exc:  # type: ignore[name-defined]
-                    # pydantic v2 ValidationError exposes structured errors via
-                    # .errors() — convert those into our InitErrorDetails and
-                    # prefix the loc with the list index so final formatting
-                    # shows the index.
+                except ValidationError as exc:
                     for err in exc.errors():
                         err_loc = tuple(err.get("loc", ()))
                         loc = (index,) + err_loc

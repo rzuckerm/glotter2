@@ -25,28 +25,19 @@ def raise_validation_errors(cls, errors: List[InitErrorDetails]) -> NoReturn:
 
 def validate_str_list(
     cls, values, item_loc: Optional[tuple] = None, raise_exc: bool = True
-) -> Optional[List[InitErrorDetails]]:
-    """Validate that `values` is a list of strings.
-
-    If `raise_exc` is True (default) this will raise a ValidationError when
-    problems are found (preserving previous behaviour). When `raise_exc` is
-    False it will return a list of InitErrorDetails (possibly empty) so callers
-    can aggregate and re-anchor errors without using try/except.
-    """
-
+) -> List[InitErrorDetails]:
     loc = item_loc or ()
+    errors = []
     if not isinstance(values, list):
-        errors = [get_error_details("value is not a valid list", loc, values)]
+        errors += [get_error_details("value is not a valid list", loc, values)]
     else:
-        errors = [
+        errors += [
             get_error_details("str type expected", loc + (index,), value)
             for index, value in enumerate(values)
             if not isinstance(value, str)
         ]
 
-    if errors:
-        if raise_exc:
-            raise_validation_errors(cls, errors)
-        return errors
+    if errors and raise_exc:
+        raise_validation_errors(cls, errors)
 
-    return []
+    return errors
