@@ -150,7 +150,7 @@ class AutoGenTest(BaseModel):
 
     @field_validator("params", mode="before")
     @classmethod
-    def validate_params(cls, values, info: ValidationInfo):  # noqa: PLR0912
+    def validate_params(cls, values, info: ValidationInfo):
         """
         Validate each parameter
 
