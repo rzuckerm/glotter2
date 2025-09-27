@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Coverage for glotter/batch.py: 100%</title>
     <link rel="icon" sizes="32x32" href="favicon_32_cb_58284776.png">
-    <link rel="stylesheet" href="style_cb_8e611ae1.css" type="text/css">
+    <link rel="stylesheet" href="style_cb_6b508a39.css" type="text/css">
     <script src="coverage_html_cb_6fb7b396.js" defer></script>
 </head>
 <body class="pyfile">
@@ -66,8 +66,8 @@
             <a id="indexLink" class="nav" href="index.html">&Hat; index</a> &nbsp; &nbsp;
             <a id="nextFileLink" class="nav" href="z_a12795855d0a1bc5_check_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
-            <a class="nav" href="https://coverage.readthedocs.io/en/7.6.12">coverage.py v7.6.12</a>,
-            created at 2025-09-27 12:33 +0000
+            <a class="nav" href="https://coverage.readthedocs.io/en/7.10.7">coverage.py v7.10.7</a>,
+            created at 2025-09-27 12:43 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -103,8 +103,8 @@
     <p class="pln"><span class="n"><a id="t19" href="#t19">19</a></span><span class="t">    <span class="com"># Get all of the languages</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t20" href="#t20">20</a></span><span class="t">    <span class="nam">all_sources</span> <span class="op">=</span> <span class="nam">get_sources</span><span class="op">(</span><span class="nam">Settings</span><span class="op">(</span><span class="op">)</span><span class="op">.</span><span class="nam">source_root</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t21" href="#t21">21</a></span><span class="t">    <span class="nam">languages</span> <span class="op">=</span> <span class="nam">sorted</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t22" href="#t22">22</a></span><span class="t">        <span class="op">{</span><span class="nam">source</span><span class="op">.</span><span class="nam">language</span><span class="op">.</span><span class="nam">lower</span><span class="op">(</span><span class="op">)</span> <span class="key">for</span> <span class="nam">sources</span> <span class="key">in</span> <span class="nam">all_sources</span><span class="op">.</span><span class="nam">values</span><span class="op">(</span><span class="op">)</span> <span class="key">for</span> <span class="nam">source</span> <span class="key">in</span> <span class="nam">sources</span><span class="op">}</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t23" href="#t23">23</a></span><span class="t">    <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t22" href="#t22">22</a></span><span class="t">        <span class="op">{</span><span class="nam">source</span><span class="op">.</span><span class="nam">language</span><span class="op">.</span><span class="nam">lower</span><span class="op">(</span><span class="op">)</span> <span class="key">for</span> <span class="nam">sources</span> <span class="key">in</span> <span class="nam">all_sources</span><span class="op">.</span><span class="nam">values</span><span class="op">(</span><span class="op">)</span> <span class="key">for</span> <span class="nam">source</span> <span class="key">in</span> <span class="nam">sources</span><span class="op">}</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t23" href="#t23">23</a></span><span class="t">    <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t24" href="#t24">24</a></span><span class="t">    <span class="nam">num_languages</span> <span class="op">=</span> <span class="nam">len</span><span class="op">(</span><span class="nam">languages</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t25" href="#t25">25</a></span><span class="t">    <span class="nam">num_batches</span> <span class="op">=</span> <span class="nam">min</span><span class="op">(</span><span class="nam">num_languages</span><span class="op">,</span> <span class="nam">args</span><span class="op">.</span><span class="nam">num_batches</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t26" href="#t26">26</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
@@ -123,15 +123,15 @@
     <p class="run"><span class="n"><a id="t39" href="#t39">39</a></span><span class="t">    <span class="key">for</span> <span class="nam">n</span> <span class="key">in</span> <span class="nam">range</span><span class="op">(</span><span class="nam">first_batch</span><span class="op">,</span> <span class="nam">last_batch</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t40" href="#t40">40</a></span><span class="t">        <span class="com"># Get languages for this batch</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t41" href="#t41">41</a></span><span class="t">        <span class="nam">batch_args</span> <span class="op">=</span> <span class="nam">argparse</span><span class="op">.</span><span class="nam">Namespace</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t42" href="#t42">42</a></span><span class="t">            <span class="nam">source</span><span class="op">=</span><span class="key">None</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t43" href="#t43">43</a></span><span class="t">            <span class="nam">project</span><span class="op">=</span><span class="key">None</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t44" href="#t44">44</a></span><span class="t">            <span class="nam">language</span><span class="op">=</span><span class="nam">set</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t45" href="#t45">45</a></span><span class="t">                <span class="nam">languages</span><span class="op">[</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t46" href="#t46">46</a></span><span class="t">                    <span class="op">(</span><span class="nam">n</span> <span class="op">*</span> <span class="nam">num_languages</span> <span class="op">//</span> <span class="nam">num_batches</span><span class="op">)</span> <span class="op">:</span> <span class="op">(</span><span class="op">(</span><span class="nam">n</span> <span class="op">+</span> <span class="num">1</span><span class="op">)</span> <span class="op">*</span> <span class="nam">num_languages</span> <span class="op">//</span> <span class="nam">num_batches</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t47" href="#t47">47</a></span><span class="t">                <span class="op">]</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t48" href="#t48">48</a></span><span class="t">            <span class="op">)</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t49" href="#t49">49</a></span><span class="t">            <span class="nam">parallel</span><span class="op">=</span><span class="nam">args</span><span class="op">.</span><span class="nam">parallel</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t50" href="#t50">50</a></span><span class="t">        <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t42" href="#t42">42</a></span><span class="t">            <span class="nam">source</span><span class="op">=</span><span class="key">None</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t43" href="#t43">43</a></span><span class="t">            <span class="nam">project</span><span class="op">=</span><span class="key">None</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t44" href="#t44">44</a></span><span class="t">            <span class="nam">language</span><span class="op">=</span><span class="nam">set</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t45" href="#t45">45</a></span><span class="t">                <span class="nam">languages</span><span class="op">[</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t46" href="#t46">46</a></span><span class="t">                    <span class="op">(</span><span class="nam">n</span> <span class="op">*</span> <span class="nam">num_languages</span> <span class="op">//</span> <span class="nam">num_batches</span><span class="op">)</span> <span class="op">:</span> <span class="op">(</span><span class="op">(</span><span class="nam">n</span> <span class="op">+</span> <span class="num">1</span><span class="op">)</span> <span class="op">*</span> <span class="nam">num_languages</span> <span class="op">//</span> <span class="nam">num_batches</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t47" href="#t47">47</a></span><span class="t">                <span class="op">]</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t48" href="#t48">48</a></span><span class="t">            <span class="op">)</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t49" href="#t49">49</a></span><span class="t">            <span class="nam">parallel</span><span class="op">=</span><span class="nam">args</span><span class="op">.</span><span class="nam">parallel</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t50" href="#t50">50</a></span><span class="t">        <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t51" href="#t51">51</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t52" href="#t52">52</a></span><span class="t">        <span class="com"># Download images for this batch</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t53" href="#t53">53</a></span><span class="t">        <span class="nam">_display_batch</span><span class="op">(</span><span class="str">"Downloading images"</span><span class="op">,</span> <span class="nam">n</span><span class="op">,</span> <span class="nam">num_batches</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
@@ -162,8 +162,8 @@
             <a class="nav" href="index.html">&Hat; index</a> &nbsp; &nbsp;
             <a class="nav" href="z_a12795855d0a1bc5_check_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
-            <a class="nav" href="https://coverage.readthedocs.io/en/7.6.12">coverage.py v7.6.12</a>,
-            created at 2025-09-27 12:33 +0000
+            <a class="nav" href="https://coverage.readthedocs.io/en/7.10.7">coverage.py v7.10.7</a>,
+            created at 2025-09-27 12:43 +0000
         </p>
     </div>
 </footer>
