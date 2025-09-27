@@ -25,6 +25,8 @@ If you'd like to contribute to Glotter2, read our [contributing guidelines](./CO
 
 ### Glotter2 releases
 
+* 0.12.1:
+  * Fix crash in serial `download` command
 * 0.12.0:
   * Convert to use `uv` instead of `poetry`
   * Convert to use `ruff` instead of `pylint` and `black`

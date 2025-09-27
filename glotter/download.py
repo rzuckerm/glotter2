@@ -6,9 +6,12 @@ from glotter.source import filter_sources, get_sources
 
 
 def download(args):
+    def get_key(source):
+        return f"{source.test_info.container_info.image}:{source.test_info.container_info.tag}"
+
     sources_by_type = filter_sources(args, get_sources(Settings().source_root))
     containers = {
-        f"{source.test_info.container_info.image}:{source.test_info.container_info.tag!s}": source.test_info.container_info
+        get_key(source): source.test_info.container_info
         for sources in sources_by_type.values()
         for source in sources
     }
@@ -19,7 +22,7 @@ def download(args):
                 containers.values(),
             )
     else:
-        for container_info in containers:
+        for container_info in containers.values():
             _download_image_from_source(container_info)
 
     return containers
@@ -34,5 +37,5 @@ def remove_images(containers, parallel):
         with ThreadPoolExecutor(max_workers=4) as executor:
             executor.map(ContainerFactory().remove_image, containers.values())
     else:
-        for container_info in containers:
+        for container_info in containers.values():
             ContainerFactory().remove_image(container_info)
