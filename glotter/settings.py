@@ -135,7 +135,7 @@ class SettingsConfig(BaseModel):
     @classmethod
     def get_projects(cls, value, info: ValidationInfo):
         if not isinstance(value, dict):
-            raise_simple_validation_error(cls, "value is not a valid dict", value)
+            raise_simple_validation_error(cls, "Input should be a valid dictionary", value)
 
         acronym_scheme = info.data["settings"].acronym_scheme
         for project_name, item in value.items():
@@ -165,7 +165,7 @@ class SettingsConfig(BaseModel):
             if use_tests_name not in projects:
                 errors.append(
                     get_error_details(
-                        f"refers to a non-existent project {use_tests_name}",
+                        f"Refers to a non-existent project {use_tests_name}",
                         loc=loc,
                         input=use_tests_name,
                     )
@@ -174,16 +174,16 @@ class SettingsConfig(BaseModel):
             elif use_tests_name in projects_with_use_tests:
                 errors.append(
                     get_error_details(
-                        f'refers to another "use_tests" project {use_tests_name}',
+                        f'Refers to another "use_tests" project {use_tests_name}',
                         loc=loc,
                         input=use_tests_name,
                     )
                 )
-            # Make sure "use_tests" item refers to a project with tests
+            # Make sure "use_tests" item Refers to a project with tests
             elif not projects[use_tests_name].tests:
                 errors.append(
                     get_error_details(
-                        f'refers to project {use_tests_name}, which has no "tests" item',
+                        f'Refers to project {use_tests_name}, which has no "tests" item',
                         loc=loc,
                         input=use_tests_name,
                     )

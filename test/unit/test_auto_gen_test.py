@@ -86,32 +86,32 @@ def test_auto_gen_param_good(value, expected_value):
         ),
         pytest.param(
             {"name": "x", "input": "some-str", "expected": None},
-            "expected\n  str, list, or dict type expected",
+            "expected\n  Input should be a valid string, list, or dictionary",
             id="bad-expected",
         ),
         pytest.param(
             {"name": "x", "input": "some-str", "expected": {"blah": "y"}},
-            'expected\n  invalid "expected" type',
+            'expected\n  Invalid "expected" type',
             id="bad-expected-dict",
         ),
         pytest.param(
             {"name": "x", "input": "some-str", "expected": {"self": "", "exec": "foo"}},
-            "expected\n  too many items",
+            "expected\n  Too many items",
             id="too-many-expected-dict",
         ),
         pytest.param(
             {"name": "x", "input": "some-str", "expected": {"exec": 42}},
-            "expected.exec\n  str type expected",
+            "expected.exec\n  Input should be a valid string",
             id="invalid-self-exec",
         ),
         pytest.param(
             {"name": "x", "input": "some-str", "expected": {}},
-            "expected\n  too few items",
+            "expected\n  Too few items",
             id="too-few-expected-dict",
         ),
         pytest.param(
             {"name": "x", "input": "some-str", "expected": {"exec": ""}},
-            "expected.exec\n  value must not be empty",
+            "expected.exec\n  Value must not be empty",
             id="empty-expected-exec",
         ),
     ],
@@ -321,7 +321,7 @@ def test_auto_gen_test_good(value, expected_value):
                 "requires_parameters": True,
                 "params": [{"input": "some-input", "expected": "some-str"}],
             },
-            "params.0.name\n  field is required",
+            "params.0.name\n  Field is required",
             id="missing-param-name",
         ),
         pytest.param(
@@ -330,7 +330,7 @@ def test_auto_gen_test_good(value, expected_value):
                 "requires_parameters": True,
                 "params": [{"name": "", "input": "some-input", "expected": "some-str"}],
             },
-            "params.0.name\n  value must not be empty",
+            "params.0.name\n  Value must not be empty",
             id="empty-param-name",
         ),
         pytest.param(
@@ -339,7 +339,7 @@ def test_auto_gen_test_good(value, expected_value):
                 "requires_parameters": True,
                 "params": [{"name": "some-name", "expected": "some-str"}],
             },
-            "params.0.input\n  field is required",
+            "params.0.input\n  Field is required",
             id="missing-param-input",
         ),
         pytest.param(
@@ -355,7 +355,7 @@ def test_auto_gen_test_good(value, expected_value):
                     }
                 ],
             },
-            "inputs\n  value is not a valid list",
+            "inputs\n  Input should be a valid list",
             id="inputs-none",
         ),
         pytest.param(
@@ -387,7 +387,7 @@ def test_auto_gen_test_good(value, expected_value):
                     }
                 ],
             },
-            "inputs\n  value is not a valid list",
+            "inputs\n  Input should be a valid list",
             id="inputs-int",
         ),
         pytest.param(
@@ -403,7 +403,7 @@ def test_auto_gen_test_good(value, expected_value):
                     }
                 ],
             },
-            "inputs.1\n  str type expected",
+            "inputs.1\n  Input should be a valid string",
             id="inputs-not-all-str",
         ),
         pytest.param(
@@ -418,7 +418,7 @@ def test_auto_gen_test_good(value, expected_value):
                     }
                 ],
             },
-            "params.0.expected\n  field is required",
+            "params.0.expected\n  Field is required",
             id="missing-expected",
         ),
         pytest.param(
@@ -433,7 +433,7 @@ def test_auto_gen_test_good(value, expected_value):
                     }
                 ],
             },
-            "params.0.expected\n  field is required",
+            "params.0.expected\n  Field is required",
             id="missing-expected-params-req",
         ),
     ],
@@ -494,44 +494,48 @@ def test_auto_gen_transform_vars(transformations, expected_actual_var, expected_
 @pytest.mark.parametrize(
     ("transformation", "expected_errors"),
     [
-        pytest.param("foo", ['transformations.0\n  invalid transformation "foo"'], id="scalar"),
+        pytest.param("foo", ['transformations.0\n  Invalid transformation "foo"'], id="scalar"),
         pytest.param(
             {"bar": ["x"]},
-            ['transformations.0\n  invalid transformation "bar"'],
+            ['transformations.0\n  Invalid transformation "bar"'],
             id="dict",
         ),
         pytest.param(
             ["1", "2"],
-            ["transformations.0\n  str or dict type expected"],
+            ["transformations.0\n  Input should be a valid string or dictionary"],
             id="bad-type-list",
         ),
-        pytest.param(3, ["transformations.0\n  str or dict type expected"], id="bad-type-int"),
+        pytest.param(
+            3,
+            ["transformations.0\n  Input should be a valid string or dictionary"],
+            id="bad-type-int",
+        ),
         pytest.param(
             None,
-            ["transformations.0\n  str or dict type expected"],
+            ["transformations.0\n  Input should be a valid string or dictionary"],
             id="bad-type-None",
         ),
         pytest.param(
             {"strip": 32},
-            ["transformations.0.strip\n  value is not a valid list"],
+            ["transformations.0.strip\n  Input should be a valid list"],
             id="bad-strip-int",
         ),
         pytest.param(
             {"strip": {"blah": "what"}},
-            ["transformations.0.strip\n  value is not a valid list"],
+            ["transformations.0.strip\n  Input should be a valid list"],
             id="bad-strip-dict",
         ),
         pytest.param(
             {"strip": ["a", 5, ["x"]]},
             [
-                "transformations.0.strip.1\n  str type expected",
-                "transformations.0.strip.2\n  str type expected",
+                "transformations.0.strip.1\n  Input should be a valid string",
+                "transformations.0.strip.2\n  Input should be a valid string",
             ],
             id="bad-strip-bad-list-item",
         ),
         pytest.param(
             {"remove": None},
-            ["transformations.0.remove\n  value is not a valid list"],
+            ["transformations.0.remove\n  Input should be a valid list"],
             id="bad-remove-None",
         ),
         pytest.param(

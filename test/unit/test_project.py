@@ -354,17 +354,17 @@ def test_good_project(value, expected_value):
     + [
         pytest.param(
             {"words": ["foo"], "acronyms": None},
-            ["acronyms\n  value is not a valid list"],
+            ["acronyms\n  Input should be a valid list"],
             id="acronyms-none",
         ),
         pytest.param(
             {"words": ["foo"], "acronyms": {"what": "ever"}},
-            ["acronyms\n  value is not a valid list"],
+            ["acronyms\n  Input should be a valid list"],
             id="acronyms-dict",
         ),
         pytest.param(
             {"words": ["foo"], "acronyms": ["blah", None]},
-            ["acronyms.1\n  str type expected"],
+            ["acronyms.1\n  Input should be a valid string"],
             id="acronyms-item-none",
         ),
         pytest.param(
@@ -423,8 +423,8 @@ def test_good_project(value, expected_value):
                 },
             },
             [
-                "tests.blah.inputs.1\n  str type expected",
-                "tests.blah.inputs.2\n  str type expected",
+                "tests.blah.inputs.1\n  Input should be a valid string",
+                "tests.blah.inputs.2\n  Input should be a valid string",
             ],
         ),
     ],

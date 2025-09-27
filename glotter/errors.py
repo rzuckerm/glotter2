@@ -29,10 +29,10 @@ def validate_str_list(
     loc = item_loc or ()
     errors = []
     if not isinstance(values, list):
-        errors += [get_error_details("value is not a valid list", loc, values)]
+        errors += [get_error_details("Input should be a valid list", loc, values)]
     else:
         errors += [
-            get_error_details("str type expected", loc + (index,), value)
+            get_error_details("Input should be a valid string", loc + (index,), value)
             for index, value in enumerate(values)
             if not isinstance(value, str)
         ]

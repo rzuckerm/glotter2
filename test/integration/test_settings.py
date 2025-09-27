@@ -154,7 +154,7 @@ def test_settings_bad_yml_type(tmp_dir):
         ),
         pytest.param(
             "projects: []",
-            ["projects\n  value is not a valid dict"],
+            ["projects\n  Input should be a valid dictionary"],
             id="bad-project-type",
         ),
         pytest.param(
@@ -308,9 +308,9 @@ projects:
         setup_settings_parser(tmp_dir, path, yml)
 
     expected_errors = [
-        "projects.foobar.use_tests\n  refers to a non-existent project junk",
-        'projects.barbaz.use_tests\n  refers to another "use_tests" project foobar',
-        'projects.bazquux.use_tests\n  refers to project pingpong, which has no "tests" item',
+        "projects.foobar.use_tests\n  Refers to a non-existent project junk",
+        'projects.barbaz.use_tests\n  Refers to another "use_tests" project foobar',
+        'projects.bazquux.use_tests\n  Refers to project pingpong, which has no "tests" item',
     ]
     for expected_error in expected_errors:
         assert expected_error in str(e.value)
@@ -336,15 +336,15 @@ projects:
                 "- projects.helloworld.words.item 2:\n    Input should be a valid string",
                 "- projects.fibonacci.words:\n    Input should be a valid list",
                 "- projects.fibonacci.requires_parameters:\n    Input should be a valid boolean",
-                "- projects.fibonacci.acronyms.item 1:\n    str type expected",
+                "- projects.fibonacci.acronyms.item 1:\n    Input should be a valid string",
                 "- projects.primenumbers.tests:\n    Input should be a valid dictionary",
                 (
                     "- projects.insertionsort.tests.some_test.params.item 1."
-                    'expected:\n    invalid "expected" type'
+                    'expected:\n    Invalid "expected" type'
                 ),
                 (
                     "- projects.insertionsort.tests.some_test.transformations:\n"
-                    "    value is not a valid list"
+                    "    Input should be a valid list"
                 ),
                 "- projects.insertionsort.use_tests:\n    Input should be a valid dictionary",
                 "- projects.foo:\n    Input should be a valid dictionary",
@@ -354,23 +354,23 @@ projects:
                 ),
                 (
                     "- projects.binary_search.tests.test_valid.params.item 1.name:\n"
-                    "    field is required"
+                    "    Field is required"
                 ),
                 (
                     "- projects.binary_search.tests.test_valid.params.item 1.input:\n"
-                    "    field is required"
+                    "    Field is required"
                 ),
                 (
                     "- projects.binary_search.tests.test_valid.params.item 2:\n"
-                    "    dict type expected"
+                    "    Input should be a valid dictionary"
                 ),
                 (
                     "- projects.binary_search.tests.test_valid.params.item 3.name:\n"
-                    "    value must not be empty"
+                    "    Value must not be empty"
                 ),
                 (
                     "- projects.binary_search.tests.test_valid.params.item 3.expected:\n"
-                    "    field is required"
+                    "    Field is required"
                 ),
                 (
                     "- projects.binary_search.tests.test_valid.params.item 4.name:\n"
@@ -382,47 +382,47 @@ projects:
                 ),
                 (
                     "- projects.binary_search.tests.test_valid.params.item 4.expected:\n"
-                    "    str, list, or dict type expected"
+                    "    Input should be a valid string, list, or dictionary"
                 ),
                 (
                     "- projects.binary_search.tests.test_valid.params.item 5.expected.item 2:\n"
-                    "    str type expected"
+                    "    Input should be a valid string"
                 ),
                 (
                     "- projects.binary_search.tests.test_valid.params.item 5.expected.item 3:\n"
-                    "    str type expected"
+                    "    Input should be a valid string"
                 ),
                 (
                     "- projects.binary_search.tests.test_valid.params.item 6.expected:\n"
-                    "    too few items"
+                    "    Too few items"
                 ),
                 (
                     "- projects.binary_search.tests.test_valid.params.item 7.expected:\n"
-                    "    too many items"
+                    "    Too many items"
                 ),
                 (
                     "- projects.binary_search.tests.test_valid.params.item 8.expected:\n"
-                    '    invalid "expected" type'
+                    '    Invalid "expected" type'
                 ),
                 (
                     "- projects.binary_search.tests.test_valid.transformations.item 1:\n"
-                    '    invalid transformation "blah"'
+                    '    Invalid transformation "blah"'
                 ),
                 (
                     "- projects.binary_search.tests.test_valid.transformations.item 2.remove.item 2:\n"
-                    "    str type expected"
+                    "    Input should be a valid string"
                 ),
                 (
                     "- projects.binary_search.tests.test_valid.transformations.item 3:\n"
-                    "    str or dict type expected"
+                    "    Input should be a valid string or dictionary"
                 ),
                 (
                     "- projects.file_io.tests.file_io.params.item 1.expected.exec:\n"
-                    "    str type expected"
+                    "    Input should be a valid string"
                 ),
                 (
                     "- projects.file_io2.tests.file_io.params.item 1.expected.exec:\n"
-                    "    value must not be empty"
+                    "    Value must not be empty"
                 ),
                 (
                     "- projects.mergesort.use_tests:\n"

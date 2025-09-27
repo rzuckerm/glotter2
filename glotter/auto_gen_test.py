@@ -41,23 +41,27 @@ class AutoGenParam(BaseModel):
 
         if isinstance(value, dict):
             if not value:
-                raise_simple_validation_error(cls, "too few items", value)
+                raise_simple_validation_error(cls, "Too few items", value)
 
             if len(value) > 1:
-                raise_simple_validation_error(cls, "too many items", value)
+                raise_simple_validation_error(cls, "Too many items", value)
 
             key, item = tuple(*value.items())
             if key == "exec":
                 if not isinstance(item, str):
-                    raise_simple_validation_error(cls, "str type expected", item, (key,))
+                    raise_simple_validation_error(
+                        cls, "Input should be a valid string", item, (key,)
+                    )
                 if not item:
-                    raise_simple_validation_error(cls, "value must not be empty", item, (key,))
+                    raise_simple_validation_error(cls, "Value must not be empty", item, (key,))
             elif key != "self":
-                raise_simple_validation_error(cls, 'invalid "expected" type', item)
+                raise_simple_validation_error(cls, 'Invalid "expected" type', item)
         elif isinstance(value, list):
             validate_str_list(cls, value)
         elif not isinstance(value, str):
-            raise_simple_validation_error(cls, "str, list, or dict type expected", value)
+            raise_simple_validation_error(
+                cls, "Input should be a valid string, list, or dictionary", value
+            )
 
         return value
 
@@ -162,12 +166,14 @@ class AutoGenTest(BaseModel):
         """
 
         errors = []
-        field_is_required = "field is required when parameters required"
+        field_is_required = "Field is required when parameters required"
 
         for index, value in enumerate(values):
             if info.data.get("requires_parameters"):
                 if not isinstance(value, dict):
-                    errors.append(get_error_details("dict type expected", (index,), value))
+                    errors.append(
+                        get_error_details("Input should be a valid dictionary", (index,), value)
+                    )
                     continue
 
                 if "name" not in value:
@@ -175,7 +181,7 @@ class AutoGenTest(BaseModel):
                 elif isinstance(value["name"], str) and not value["name"]:
                     errors.append(
                         get_error_details(
-                            "value must not be empty when parameters required",
+                            "Value must not be empty when parameters required",
                             (index, "name"),
                             value,
                         )
@@ -215,24 +221,24 @@ class AutoGenTest(BaseModel):
 
         :param values: Transformations to validate
         :return: Original values
-        :raises: :exc:`ValidationError` if invalid transformation
+        :raises: :exc:`ValidationError` if Invalid transformation
         """
 
         if not isinstance(values, list):
-            raise_simple_validation_error(cls, "value is not a valid list", values)
+            raise_simple_validation_error(cls, "Input should be a valid list", values)
 
         errors = []
         for index, value in enumerate(values):
             if isinstance(value, str):
                 if value not in cls.SCALAR_TRANSFORMATION_FUNCS:
                     errors.append(
-                        get_error_details(f'invalid transformation "{value}"', (index,), value)
+                        get_error_details(f'Invalid transformation "{value}"', (index,), value)
                     )
             elif isinstance(value, dict):
                 key = str(*value)
                 if key not in cls.DICT_TRANSFORMATION_FUNCS:
                     errors.append(
-                        get_error_details(f'invalid transformation "{key}"', (index,), value)
+                        get_error_details(f'Invalid transformation "{key}"', (index,), value)
                     )
                 else:
                     # Use non-raising mode so we can append InitErrorDetails with
@@ -242,7 +248,11 @@ class AutoGenTest(BaseModel):
                         # inner_errors already contains InitErrorDetails with prefixed locs
                         errors.extend(inner_errors)
             else:
-                errors.append(get_error_details("str or dict type expected", (index,), value))
+                errors.append(
+                    get_error_details(
+                        "Input should be a valid string or dictionary", (index,), value
+                    )
+                )
 
         if errors:
             raise_validation_errors(cls, errors)
