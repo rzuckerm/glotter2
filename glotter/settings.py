@@ -3,9 +3,16 @@ from typing import Dict, Optional
 from warnings import warn
 
 import yaml
-from pydantic import BaseModel, ValidationError, root_validator, validator
-from pydantic.error_wrappers import ErrorWrapper
+from pydantic import (
+    BaseModel,
+    Field,
+    ValidationError,
+    ValidationInfo,
+    field_validator,
+    model_validator,
+)
 
+from glotter.errors import get_error_details, raise_simple_validation_error, raise_validation_errors
 from glotter.project import AcronymScheme, Project
 from glotter.singleton import Singleton
 from glotter.utils import error_and_exit, indent
@@ -66,7 +73,7 @@ def _format_validate_error(validation_error: ValidationError) -> str:
     for error in validation_error.errors():
         error_msgs.append(
             "- "
-            + " -> ".join(
+            + ".".join(
                 _format_location_item(location)
                 for location in error["loc"]
                 if location != "__root__"
@@ -86,47 +93,51 @@ def _format_location_item(location) -> str:
 
 
 class SettingsConfigSettings(BaseModel):
-    acronym_scheme: AcronymScheme = AcronymScheme.two_letter_limit
+    acronym_scheme: AcronymScheme = Field(AcronymScheme.two_letter_limit, validate_default=True)
     yml_path: str
     source_root: Optional[str] = None
 
-    @validator("acronym_scheme", pre=True)
+    @field_validator("acronym_scheme", mode="before")
+    @classmethod
     def get_acronym_scheme(cls, value):
         if isinstance(value, str):
             return value.lower()
 
         return value
 
-    @validator("source_root")
-    def get_source_root(cls, value, values):
+    @field_validator("source_root", mode="after")
+    @classmethod
+    def get_source_root(cls, value, info: ValidationInfo):
         if os.path.isabs(value):
             return value
 
-        yml_dir = os.path.dirname(values["yml_path"])
+        yml_dir = os.path.dirname(info.data["yml_path"])
         return os.path.abspath(os.path.join(yml_dir, value))
 
 
 class SettingsConfig(BaseModel):
     yml_path: str
-    settings: Optional[SettingsConfigSettings] = None
+    settings: Optional[SettingsConfigSettings] = Field(None, validate_default=True)
     projects: Dict[str, Project] = {}
 
-    @validator("settings", pre=True, always=True)
-    def get_settings(cls, value, values):
+    @field_validator("settings", mode="before")
+    @classmethod
+    def get_settings(cls, value, info: ValidationInfo):
         if value is None:
-            return {"yml_path": values["yml_path"]}
+            return {"yml_path": info.data["yml_path"]}
 
         if isinstance(value, dict):
-            return {**value, "yml_path": values["yml_path"]}
+            return {**value, "yml_path": info.data["yml_path"]}
 
         return value
 
-    @validator("projects", pre=True)
-    def get_projects(cls, value, values):
+    @field_validator("projects", mode="before")
+    @classmethod
+    def get_projects(cls, value, info: ValidationInfo):
         if not isinstance(value, dict):
-            raise ValueError("value is not a valid dict")
+            raise_simple_validation_error(cls, "Input should be a valid dictionary", value)
 
-        acronym_scheme = values["settings"].acronym_scheme
+        acronym_scheme = info.data["settings"].acronym_scheme
         for project_name, item in value.items():
             if not isinstance(item, dict):
                 break
@@ -135,11 +146,11 @@ class SettingsConfig(BaseModel):
 
         return value
 
-    @root_validator()
-    def validate_projects(cls, values):
-        projects = values.get("projects")
+    @model_validator(mode="after")
+    def validate_projects(self):
+        projects = self.projects
         if not isinstance(projects, dict):
-            return values
+            return self
 
         projects_with_use_tests = {
             project_name: project for project_name, project in projects.items() if project.use_tests
@@ -153,27 +164,28 @@ class SettingsConfig(BaseModel):
             # Make sure "use_tests" item refers to an actual project
             if use_tests_name not in projects:
                 errors.append(
-                    ErrorWrapper(
-                        ValueError(f"refers to a non-existent project {project.use_tests.name}"),
+                    get_error_details(
+                        f"Refers to a non-existent project {use_tests_name}",
                         loc=loc,
+                        input=use_tests_name,
                     )
                 )
             # Make sure one "use_tests" item does not refer to another "use_tests" item
             elif use_tests_name in projects_with_use_tests:
                 errors.append(
-                    ErrorWrapper(
-                        ValueError(f'refers to another "use_tests" project {use_tests_name}'),
+                    get_error_details(
+                        f'Refers to another "use_tests" project {use_tests_name}',
                         loc=loc,
+                        input=use_tests_name,
                     )
                 )
             # Make sure "use_tests" item refers to a project with tests
             elif not projects[use_tests_name].tests:
                 errors.append(
-                    ErrorWrapper(
-                        ValueError(
-                            f'refers to project {use_tests_name}, which has no "tests" item'
-                        ),
+                    get_error_details(
+                        f'Refers to project {use_tests_name}, which has no "tests" item',
                         loc=loc,
+                        input=use_tests_name,
                     )
                 )
             # Otherwise, set the tests that the "use_tests" item refers to with the tests renamed
@@ -181,9 +193,9 @@ class SettingsConfig(BaseModel):
                 project.set_tests(projects[use_tests_name])
 
         if errors:
-            raise ValidationError(errors, model=cls)
+            raise_validation_errors(self.__class__, errors)
 
-        return values
+        return self
 
 
 class SettingsParser:
