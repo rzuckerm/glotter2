@@ -47,7 +47,7 @@ class AutoGenParam(BaseModel):
                 raise_simple_validation_error(cls, "Too many items", value)
 
             key, item = tuple(*value.items())
-            if key == "exec":
+            if key in ("exec", "string"):
                 if not isinstance(item, str):
                     raise_simple_validation_error(
                         cls, "Input should be a valid string", item, (key,)
@@ -123,6 +123,7 @@ class AutoGenTest(BaseModel):
     params: Annotated[List[AutoGenParam], Field(strict=True, min_length=1)] = Field(
         None, validate_default=True
     )
+    strings: Dict[str, str] = {}
     transformations: List[Any] = []
 
     SCALAR_TRANSFORMATION_FUNCS: ClassVar[Dict[str, TransformationScalarFuncT]] = {

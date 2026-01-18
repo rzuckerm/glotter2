@@ -64,6 +64,19 @@ BAD_NAMES = ["a#xyz", "z_x blah", "yoo-hoo"]
             },
             id="input_str-expected_self",
         ),
+        pytest.param(
+            {
+                "name": "input5",
+                "input": "some-input-str",
+                "expected": {"string": "some-strings-key"},
+            },
+            {
+                "name": "input5",
+                "input": "some-input-str",
+                "expected": {"string": "some-strings-key"},
+            },
+            id="input_str-expected_string",
+        ),
     ],
 )
 def test_auto_gen_param_good(value, expected_value):
@@ -113,6 +126,11 @@ def test_auto_gen_param_good(value, expected_value):
             {"name": "x", "input": "some-str", "expected": {"exec": ""}},
             "expected.exec\n  Value must not be empty",
             id="empty-expected-exec",
+        ),
+        pytest.param(
+            {"name": "x", "input": "some-str", "expected": {"string": ""}},
+            "expected.string\n  Value must not be empty",
+            id="empty-expected-string",
         ),
     ],
 )
@@ -171,6 +189,7 @@ def test_auto_gen_param_get_pytest_param(value, expected_pytest_param):
                 "name": char,
                 "requires_parameters": False,
                 "inputs": ["Input"],
+                "strings": {},
                 "params": [{"name": "some-name", "input": None, "expected": "some-str"}],
                 "transformations": ["strip"],
             },
@@ -185,6 +204,7 @@ def test_auto_gen_param_get_pytest_param(value, expected_pytest_param):
                 "name": "some_name",
                 "requires_parameters": False,
                 "inputs": ["Input"],
+                "strings": {},
                 "params": [{"name": "", "input": None, "expected": "foo"}],
                 "transformations": [],
             },
@@ -202,6 +222,7 @@ def test_auto_gen_param_get_pytest_param(value, expected_pytest_param):
                 "name": f"foo_{char}_bar",
                 "requires_parameters": False,
                 "inputs": ["Input"],
+                "strings": {},
                 "params": [{"name": "some-name", "input": None, "expected": "some-str"}],
                 "transformations": ["strip"],
             },
@@ -232,6 +253,7 @@ def test_auto_gen_param_get_pytest_param(value, expected_pytest_param):
                 "name": "test_name2",
                 "requires_parameters": True,
                 "inputs": ["Input"],
+                "strings": {},
                 "params": [
                     {
                         "name": "some-name1",
@@ -253,6 +275,7 @@ def test_auto_gen_param_get_pytest_param(value, expected_pytest_param):
                 "name": "test_name3",
                 "requires_parameters": True,
                 "inputs": ["Input1", "Input2"],
+                "strings": {},
                 "params": [
                     {
                         "name": "some-name3",
@@ -265,6 +288,7 @@ def test_auto_gen_param_get_pytest_param(value, expected_pytest_param):
                 "name": "test_name3",
                 "requires_parameters": True,
                 "inputs": ["Input1", "Input2"],
+                "strings": {},
                 "params": [
                     {
                         "name": "some-name3",

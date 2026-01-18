@@ -271,6 +271,7 @@ def test_get_project_name_by_scheme_bad():
                         "name": "prime_number_valid",
                         "requires_parameters": True,
                         "inputs": ["Input"],
+                        "strings": {},
                         "params": [
                             {"name": "one", "input": "1", "expected": "composite"},
                             {"name": "two", "input": "2", "expected": "prime"},
@@ -281,6 +282,7 @@ def test_get_project_name_by_scheme_bad():
                         "name": "prime_number_invalid",
                         "requires_parameters": True,
                         "inputs": ["Input"],
+                        "strings": {},
                         "params": [
                             {
                                 "name": "no input",
@@ -529,11 +531,13 @@ def test_set_tests():
                 **valid_tests,
                 "name": "selection_sort_valid",
                 "requires_parameters": True,
+                "strings": {},
             },
             "selection_sort_invalid": {
                 **invalid_tests,
                 "name": "selection_sort_invalid",
                 "requires_parameters": True,
+                "strings": {},
             },
         },
         "use_tests": None,
