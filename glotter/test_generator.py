@@ -60,8 +60,15 @@ class TestGenerator:
     def _get_constant_variables(self):
         test_code = ""
         if self.project.requires_parameters:
+            constant_variables = set()
             for test_obj in self.project.tests.values():
-                test_code += test_obj.get_constant_variables()
+                constant_variable = test_obj.get_constant_variables()
+                if constant_variable:
+                    constant_variables.add(constant_variable)
+
+            test_code += "".join(
+                constant_variable for constant_variable in sorted(constant_variables)
+            )
 
         return test_code
 

@@ -101,19 +101,26 @@ class TestDocSectionGenerator:
         if len(self.test_obj.params) < 2:
             return True
 
-        first_expected = self.test_obj.params[0].expected
-        return any(test_param.expected != first_expected for test_param in self.test_obj.params[1:])
+        first_expected = self._get_expected_value(0)
+        return any(
+            self._get_expected_value(index) != first_expected
+            for index in range(1, len(self.test_obj.params))
+        )
+
+    def _get_expected_value(self, index):
+        expected_value = self.test_obj.params[index].expected
+        if isinstance(expected_value, dict) and "string" in expected_value:
+            expected_value = self.test_obj.strings[expected_value["string"]]
+
+        return expected_value
 
     def _get_test_table(self):
         doc = []
         has_output_column = self._any_test_output_is_different()
         num_input_params = len(self.test_obj.inputs)
         first_output = None
-        for test_param in self.test_obj.params:
-            output = test_param.expected
-            if isinstance(output, dict) and "string" in output:
-                output = self.test_obj.strings[output["string"]]
-
+        for index, test_param in enumerate(self.test_obj.params):
+            output = self._get_expected_value(index)
             if first_output is None:
                 first_output = output
 

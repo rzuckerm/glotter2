@@ -2,9 +2,9 @@
 @pytest.mark.parametrize(
     ("in_params", "expected"),
     [
-        pytest.param(None, PRIME_INVALID_ERROR, id="no input"),
-        pytest.param('""', PRIME_INVALID_ERROR, id="empty input"),
-        pytest.param('"a"', PRIME_INVALID_ERROR, id="bad input"),
+        pytest.param(None, ERROR, id="no input"),
+        pytest.param('""', ERROR, id="empty input"),
+        pytest.param('"a"', ERROR, id="bad input"),
     ]
 )
 def test_prime_invalid(in_params, expected, requires_params_with_string):

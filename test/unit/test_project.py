@@ -158,6 +158,7 @@ def test_get_project_name_by_scheme_bad():
             {
                 "words": [f"{char1}{char2}", f"{char2}{char1}"],
                 "requires_parameters": False,
+                "strings": {},
                 "acronyms": [],
                 "acronym_scheme": AcronymScheme.two_letter_limit,
                 "use_tests": None,
@@ -173,6 +174,7 @@ def test_get_project_name_by_scheme_bad():
             {
                 "words": ["longest", "word"],
                 "requires_parameters": True,
+                "strings": {},
                 "acronyms": [],
                 "acronym_scheme": AcronymScheme.two_letter_limit,
                 "use_tests": None,
@@ -202,6 +204,7 @@ def test_get_project_name_by_scheme_bad():
                     f"{char2}{char1}",
                 ],
                 "requires_parameters": False,
+                "strings": {},
                 "acronyms": [
                     "FILE",
                     "IO",
@@ -222,6 +225,7 @@ def test_get_project_name_by_scheme_bad():
             {
                 "words": ["binary", "search"],
                 "requires_parameters": False,
+                "strings": {},
                 "acronyms": [],
                 "acronym_scheme": acronym_scheme,
                 "use_tests": None,
@@ -264,6 +268,7 @@ def test_get_project_name_by_scheme_bad():
             {
                 "words": ["prime", "number"],
                 "requires_parameters": True,
+                "strings": {},
                 "acronyms": [],
                 "acronym_scheme": AcronymScheme.two_letter_limit,
                 "tests": {
@@ -306,6 +311,7 @@ def test_get_project_name_by_scheme_bad():
             {
                 "words": ["prime", "number"],
                 "requires_parameters": True,
+                "strings": {"usage": "some-usage"},
                 "tests": {
                     "prime_number_valid": {
                         "params": [
@@ -315,7 +321,6 @@ def test_get_project_name_by_scheme_bad():
                         "transformations": ["strip", "lower"],
                     },
                     "prime_number_invalid": {
-                        "strings": {"usage": "some-usage"},
                         "params": [
                             {
                                 "name": "no input",
@@ -335,6 +340,7 @@ def test_get_project_name_by_scheme_bad():
             {
                 "words": ["prime", "number"],
                 "requires_parameters": True,
+                "strings": {"usage": "some-usage"},
                 "acronyms": [],
                 "acronym_scheme": AcronymScheme.two_letter_limit,
                 "tests": {
@@ -342,7 +348,7 @@ def test_get_project_name_by_scheme_bad():
                         "name": "prime_number_valid",
                         "requires_parameters": True,
                         "inputs": ["Input"],
-                        "strings": {},
+                        "strings": {"usage": "some-usage"},
                         "params": [
                             {"name": "one", "input": "1", "expected": "composite"},
                             {"name": "two", "input": "2", "expected": "prime"},
@@ -505,16 +511,16 @@ def test_good_project(value, expected_value):
             {
                 "words": ["foo"],
                 "requires_parameters": True,
+                "strings": 42,
                 "tests": {
                     "blah": {
-                        "strings": 42,
                         "inputs": ["Input1"],
                         "params": [{"name": "whatever", "input": "bar", "expected": "stuff"}],
                     }
                 },
             },
             [
-                "tests.blah.strings\n  Input should be a valid dictionary",
+                "strings\n  Input should be a valid dictionary",
             ],
             id="tests-invalid-strings-type",
         ),
@@ -522,23 +528,19 @@ def test_good_project(value, expected_value):
             {
                 "words": ["foo"],
                 "requires_parameters": True,
+                "strings": {123: 345, "Hello": 567, 234: "Whatever"},
                 "tests": {
                     "blah": {
-                        "strings": {
-                            123: 345,
-                            "Hello": 567,
-                            234: "Whatever",
-                        },
                         "inputs": ["Input1"],
                         "params": [{"name": "whatever", "input": "bar", "expected": "stuff"}],
                     }
                 },
             },
             [
-                "tests.blah.strings.123\n  Key should be a valid string",
-                "tests.blah.strings.123\n  Value should be a valid string",
-                "tests.blah.strings.Hello\n  Value should be a valid string",
-                "tests.blah.strings.234\n  Key should be a valid string",
+                "strings.123\n  Key should be a valid string",
+                "strings.123\n  Value should be a valid string",
+                "strings.Hello\n  Value should be a valid string",
+                "strings.234\n  Key should be a valid string",
             ],
             id="tests-invalid-strings-items",
         ),
@@ -546,12 +548,9 @@ def test_good_project(value, expected_value):
             {
                 "words": ["foo"],
                 "requires_parameters": True,
+                "strings": {"baz": "baz-string", "quux": "quux-string"},
                 "tests": {
                     "blah": {
-                        "strings": {
-                            "baz": "baz-string",
-                            "quux": "quux-string",
-                        },
                         "inputs": ["Input1"],
                         "params": [
                             {"name": "whatever 0", "input": "bar", "expected": "stuff"},
@@ -672,6 +671,7 @@ def test_set_tests():
     expected_project = {
         "words": ["selection", "sort"],
         "requires_parameters": True,
+        "strings": {},
         "acronyms": [],
         "acronym_scheme": AcronymScheme.two_letter_limit,
         "tests": {

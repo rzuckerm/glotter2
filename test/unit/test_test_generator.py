@@ -55,6 +55,7 @@ PRIME_NUMBER_PROJECT = {
 ROT13_PROJECT = {
     "words": ["rot13"],
     "requires_parameters": True,
+    "strings": {"usage": "Usage: please provide a string to encrypt"},
     "tests": {
         "rot13_valid": {
             "params": [
@@ -72,7 +73,6 @@ ROT13_PROJECT = {
             "transformations": ["strip"],
         },
         "rot13_invalid": {
-            "strings": {"usage": "Usage: please provide a string to encrypt"},
             "params": [
                 {
                     "name": "no input",
@@ -131,7 +131,7 @@ def test_test_generator_with_tests(value):
 def test_generate_tests(mock_settings, temp_dir_chdir):
     generate_tests()
 
-    filenames = ["test_hello_world.py", "test_prime_number.py"]
+    filenames = ["test_hello_world.py", "test_prime_number.py", "test_rot13.py"]
     assert sorted(os.listdir(AUTO_GEN_TEST_PATH)) == sorted(filenames)
 
     for filename in filenames:
@@ -152,6 +152,11 @@ def mock_settings():
     with patch("glotter.test_generator.Settings") as mock:
         mock.return_value.projects = {
             "".join(value["words"]): Project(**value)
-            for value in [NO_TESTS_PROJECT, HELLO_WORLD_PROJECT, PRIME_NUMBER_PROJECT]
+            for value in [
+                NO_TESTS_PROJECT,
+                HELLO_WORLD_PROJECT,
+                PRIME_NUMBER_PROJECT,
+                ROT13_PROJECT,
+            ]
         }
         yield mock

@@ -153,6 +153,7 @@ EXTRA_INPUTS_PROJECT = {
 ROT13_PROJECT = {
     "words": ["rot13"],
     "requires_parameters": True,
+    "strings": {"usage": "Usage: please provide a string to encrypt"},
     "tests": {
         "rot13_valid": {
             "params": [
@@ -170,7 +171,6 @@ ROT13_PROJECT = {
             "transformations": ["strip"],
         },
         "rot13_invalid": {
-            "strings": {"usage": "Usage: please provide a string to encrypt"},
             "params": [
                 {
                     "name": "no input",

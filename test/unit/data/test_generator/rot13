@@ -1,7 +1,7 @@
 import pytest
 from glotter import project_test, project_fixture
 
-ROT13_INVALID_USAGE = "Usage: please provide a string to encrypt"
+USAGE = "Usage: please provide a string to encrypt"
 PROJECT_NAME = "rot13"
 
 
@@ -40,8 +40,8 @@ def test_rot13_valid(in_params, expected, rot13):
 @pytest.mark.parametrize(
     ("in_params", "expected"),
     [
-        pytest.param(None, ROT13_INVALID_USAGE, id="no input"),
-        pytest.param('""', ROT13_INVALID_USAGE, id="empty input"),
+        pytest.param(None, USAGE, id="no input"),
+        pytest.param('""', USAGE, id="empty input"),
     ],
 )
 def test_rot13_invalid(in_params, expected, rot13):

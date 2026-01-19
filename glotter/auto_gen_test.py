@@ -66,11 +66,10 @@ class AutoGenParam(BaseModel):
 
         return value
 
-    def get_pytest_param(self, prefix: str = "") -> str:
+    def get_pytest_param(self) -> str:
         """
         Get pytest parameter string
 
-        :param prefix: Prefix for variable name
         :return: pytest parameter string if name is not empty, empty string otherwise
         """
 
@@ -85,22 +84,20 @@ class AutoGenParam(BaseModel):
         if isinstance(expected_output, str):
             expected_output = quote(expected_output)
         elif isinstance(expected_output, dict) and "string" in expected_output:
-            expected_output = self.get_constant_variable_name(prefix)
+            expected_output = self.get_constant_variable_name()
 
         return f"pytest.param({input_param}, {expected_output}, id={quote(self.name)}),\n"
 
-    def get_constant_variable_name(self, prefix: str) -> str:
+    def get_constant_variable_name(self) -> str:
         """
         Get constant variable name
 
-        :param prefix: prefix to prepend to constant variable name if expected value
-            references a string
         :return: constant variable name
         """
 
         variable_name = ""
         if isinstance(self.expected, dict) and "string" in self.expected:
-            variable_name = f"{prefix}_{self.expected['string']}".upper()
+            variable_name = self.expected["string"].upper()
 
         return variable_name
 
@@ -349,7 +346,7 @@ class AutoGenTest(BaseModel):
         constant_variables = {}
         if self.requires_parameters:
             for param in self.params:
-                variable_name = param.get_constant_variable_name(self.name)
+                variable_name = param.get_constant_variable_name()
                 if variable_name and variable_name not in constant_variables:
                     constant_variables[variable_name] = self.strings[param.expected["string"]]
 
@@ -366,7 +363,7 @@ class AutoGenTest(BaseModel):
             return ""
 
         pytest_params = "".join(
-            indent(param.get_pytest_param(self.name), 8) for param in self.params
+            indent(param.get_pytest_param(), 8) for param in self.params
         ).strip()
         return f"""\
 @pytest.mark.parametrize(

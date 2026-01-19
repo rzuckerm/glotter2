@@ -142,24 +142,21 @@ def test_auto_gen_param_bad(value, expected_error):
 
 
 @pytest.mark.parametrize(
-    ("value", "prefix", "expected_pytest_param"),
+    ("value", "expected_pytest_param"),
     [
-        pytest.param({"expected": "blah"}, "", "", id="only_expected"),
+        pytest.param({"expected": "blah"}, "", id="only_expected"),
         pytest.param(
             {"name": "some name", "expected": "blah"},
-            "",
             'pytest.param(None, "blah", id="some name"),\n',
             id="no_input-expected_str",
         ),
         pytest.param(
             {"name": "other name", "input": '"55, 56"', "expected": "blah"},
-            "",
             """pytest.param('"55, 56"', "blah", id="other name"),\n""",
             id="input_str-expected_str",
         ),
         pytest.param(
             {"name": "this name", "input": "blah", "expected": ["1", "2", "3"]},
-            "",
             """pytest.param("blah", ['1', '2', '3'], id="this name"),\n""",
             id="input_str-expected_list",
         ),
@@ -169,43 +166,39 @@ def test_auto_gen_param_bad(value, expected_error):
                 "input": "blah",
                 "expected": {"exec": "cat output.txt"},
             },
-            "",
             """pytest.param("blah", {'exec': 'cat output.txt'}, id="this name"),\n""",
             id="input_str-expected_dict",
         ),
         pytest.param(
             {"name": "string name", "input": "blah", "expected": {"string": "some_string"}},
-            "some_prefix",
-            """pytest.param("blah", SOME_PREFIX_SOME_STRING, id="string name"),\n""",
+            """pytest.param("blah", SOME_STRING, id="string name"),\n""",
             id="input_str-expected_constant_variable",
         ),
     ],
 )
-def test_auto_gen_param_get_pytest_param(value, prefix, expected_pytest_param):
+def test_auto_gen_param_get_pytest_param(value, expected_pytest_param):
     param = AutoGenParam(**value)
-    assert param.get_pytest_param(prefix) == expected_pytest_param
+    assert param.get_pytest_param() == expected_pytest_param
 
 
 @pytest.mark.parametrize(
-    ("value", "prefix", "expected_constant_variable_name"),
+    ("value", "expected_constant_variable_name"),
     [
         pytest.param(
             {"name": "some name", "input": "whatever", "expected": "something"},
-            "some_prefix",
             "",
             id="no-constant",
         ),
         pytest.param(
             {"name": "some name", "input": "whatever", "expected": {"string": "foo"}},
-            "some_prefix",
-            "SOME_PREFIX_FOO",
+            "FOO",
             id="has-constant",
         ),
     ],
 )
-def test_auto_gen_params_get_constant_variable_name(value, prefix, expected_constant_variable_name):
+def test_auto_gen_params_get_constant_variable_name(value, expected_constant_variable_name):
     param = AutoGenParam(**value)
-    assert param.get_constant_variable_name(prefix) == expected_constant_variable_name
+    assert param.get_constant_variable_name() == expected_constant_variable_name
 
 
 @pytest.mark.parametrize(
@@ -748,8 +741,8 @@ def test_auto_gen_bad_transformations(transformation, expected_errors):
                 ],
             },
             """\
-NAME3_FOO = "some foo"
-NAME3_BAR = "some bar"
+FOO = "some foo"
+BAR = "some bar"
 """,
             id="has-constants",
         ),
@@ -809,8 +802,8 @@ def test_auto_gen_test_get_constant_variables(value, expected_constant_variables
 @pytest.mark.parametrize(
     ("in_params", "expected"),
     [
-        pytest.param("hello", NAME3_HELLO, id="some name 1"),
-        pytest.param("Goodbye", NAME3_GOODBYE, id="some name 2"),
+        pytest.param("hello", HELLO, id="some name 1"),
+        pytest.param("Goodbye", GOODBYE, id="some name 2"),
     ]
 )
 """,
