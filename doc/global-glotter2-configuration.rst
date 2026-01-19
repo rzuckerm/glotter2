@@ -110,6 +110,27 @@ Values
 - ``true`` - A project requires command line arguments
 - ``false`` - A project does not require command line arguments
 
+.. _strings
+
+Strings
+-------
+
+- **Optional**
+- **Format**:
+
+  .. code-block:: yaml
+
+    strings:
+      key1: "value1"
+      key2: "value2"
+      ...
+
+Description
+^^^^^^^^^^^
+
+``strings`` is a dictionary whose key is the name of the string and whose value
+is the value of the string
+
 .. _tests:
 
 Tests
@@ -212,8 +233,8 @@ Params
     - If the generated code is shorter than tbe actual code, the generated code plus a
       newline is compared to the actual code.
     - If the generated code and the actual code, the two are compared.
-  - ``string: "strings-key"`` - Specify the key for the common string in ``strings`` for
-    the project:
+  - ``string: "strings-key"`` - Specify the key for the common string in :ref:`strings`
+    for the project:
 
     .. code-block:: yaml
 
