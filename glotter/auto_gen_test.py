@@ -15,6 +15,7 @@ from glotter.errors import (
     raise_simple_validation_error,
     raise_validation_errors,
     validate_str_list,
+    validate_str_dict,
 )
 from glotter.utils import indent, quote
 
@@ -211,6 +212,20 @@ class AutoGenTest(BaseModel):
 
             raise_validation_errors(cls, errors)
 
+        return values
+
+    @field_validator("strings", mode="before")
+    @classmethod
+    def validate_strings(cls, values):
+        """
+        Validate each string
+
+        :param values: Strings to validate
+        :return: Original strings
+        :raises: :exc:`ValidationError` if strings invalid
+        """
+
+        validate_str_dict(cls, values)
         return values
 
     @field_validator("transformations", mode="before")

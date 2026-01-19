@@ -300,6 +300,36 @@ def test_auto_gen_param_get_pytest_param(value, expected_pytest_param):
             },
             id="has_inputs",
         ),
+        pytest.param(
+            {
+                "name": "test_name4",
+                "requires_parameters": True,
+                "inputs": ["Input1", "Input2"],
+                "strings": {"foo": "foo value"},
+                "params": [
+                    {
+                        "name": "some-name4",
+                        "input": "some-input4",
+                        "expected": {"string": "foo"},
+                    }
+                ],
+            },
+            {
+                "name": "test_name4",
+                "requires_parameters": True,
+                "inputs": ["Input1", "Input2"],
+                "strings": {"foo": "foo value"},
+                "params": [
+                    {
+                        "name": "some-name4",
+                        "input": "some-input4",
+                        "expected": {"string": "foo"},
+                    }
+                ],
+                "transformations": [],
+            },
+            id="has_strings",
+        ),
     ],
 )
 def test_auto_gen_test_good(value, expected_value):
@@ -459,6 +489,49 @@ def test_auto_gen_test_good(value, expected_value):
             },
             "params.0.expected\n  Field is required",
             id="missing-expected-params-req",
+        ),
+        pytest.param(
+            {
+                "name": "test_name5",
+                "requires_parameters": True,
+                "inputs": ["foo"],
+                "strings": 13,
+                "params": [
+                    {"name": "some-name5", "input": "some-input5", "expected": {"string": "bar"}}
+                ],
+            },
+            "strings\n  Input should be a valid dictionary",
+            id="invalid-strings-type",
+        ),
+        pytest.param(
+            {
+                "name": "test_name5",
+                "requires_parameters": True,
+                "inputs": ["foo"],
+                "strings": {
+                    13: "xyz",
+                },
+                "params": [
+                    {"name": "some-name5", "input": "some-input5", "expected": {"string": "bar"}}
+                ],
+            },
+            "strings.13\n  Key should be a valid string",
+            id="invalid-strings-key",
+        ),
+        pytest.param(
+            {
+                "name": "test_name5",
+                "requires_parameters": True,
+                "inputs": ["foo"],
+                "strings": {
+                    "bar": ["hello"],
+                },
+                "params": [
+                    {"name": "some-name5", "input": "some-input5", "expected": {"string": "bar"}}
+                ],
+            },
+            "strings.bar\n  Value should be a valid string",
+            id="invalid-strings-value",
         ),
     ],
 )

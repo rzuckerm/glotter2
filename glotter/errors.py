@@ -41,3 +41,37 @@ def validate_str_list(
         raise_validation_errors(cls, errors)
 
     return errors
+
+
+def validate_str_dict(
+    cls, values, item_loc: Optional[tuple] = None, raise_exc: bool = True
+) -> List[InitErrorDetails]:
+    loc = item_loc or ()
+    errors = []
+    if not isinstance(values, dict):
+        errors += [get_error_details("Input should be a valid dictionary", loc, values)]
+    else:
+        errors += sum(
+            (
+                _get_str_dict_error_details(loc + (key,), key, value)
+                for key, value in values.items()
+                if not isinstance(key, str) or not isinstance(value, str)
+            ),
+            [],
+        )
+
+    if errors and raise_exc:
+        raise_validation_errors(cls, errors)
+
+    return errors
+
+
+def _get_str_dict_error_details(loc, key, value) -> List[InitErrorDetails]:
+    errors = []
+    if not isinstance(key, str):
+        errors += [get_error_details("Key should be a valid string", loc, key)]
+
+    if not isinstance(value, str):
+        errors += [get_error_details("Value should be a valid string", loc, value)]
+
+    return errors
