@@ -4,7 +4,7 @@ from typing import Annotated, ClassVar, Dict, List, Optional
 from pydantic import BaseModel, Field, ValidationInfo, field_validator
 
 from glotter.auto_gen_test import AutoGenTest, AutoGenUseTests
-from glotter.errors import raise_simple_validation_error, validate_str_list, validate_str_dict
+from glotter.errors import raise_simple_validation_error, validate_str_dict, validate_str_list
 
 
 class NamingScheme(Enum):

@@ -14,8 +14,8 @@ from glotter.errors import (
     get_error_details,
     raise_simple_validation_error,
     raise_validation_errors,
-    validate_str_list,
     validate_str_dict,
+    validate_str_list,
 )
 from glotter.utils import indent, quote
 
