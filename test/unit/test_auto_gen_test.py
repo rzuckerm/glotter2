@@ -174,15 +174,11 @@ def test_auto_gen_param_bad(value, expected_error):
             id="input_str-expected_dict",
         ),
         pytest.param(
-            {
-                "name": "string name",
-                "input": "blah",
-                "expected": {"string": "some_string"}
-            },
+            {"name": "string name", "input": "blah", "expected": {"string": "some_string"}},
             "some_prefix",
             """pytest.param("blah", SOME_PREFIX_SOME_STRING, id="string name"),\n""",
             id="input_str-expected_constant_variable",
-        )
+        ),
     ],
 )
 def test_auto_gen_param_get_pytest_param(value, prefix, expected_pytest_param):
@@ -204,7 +200,7 @@ def test_auto_gen_param_get_pytest_param(value, prefix, expected_pytest_param):
             "some_prefix",
             "SOME_PREFIX_FOO",
             id="has-constant",
-        )
+        ),
     ],
 )
 def test_auto_gen_params_get_constant_variable_name(value, prefix, expected_constant_variable_name):

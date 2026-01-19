@@ -66,7 +66,7 @@ class AutoGenParam(BaseModel):
 
         return value
 
-    def get_pytest_param(self, prefix: str="") -> str:
+    def get_pytest_param(self, prefix: str = "") -> str:
         """
         Get pytest parameter string
 

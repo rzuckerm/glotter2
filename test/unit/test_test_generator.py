@@ -52,6 +52,43 @@ PRIME_NUMBER_PROJECT = {
         },
     },
 }
+ROT13_PROJECT = {
+    "words": ["rot13"],
+    "requires_parameters": True,
+    "tests": {
+        "rot13_valid": {
+            "params": [
+                {
+                    "name": "sample input lower case",
+                    "input": '"the quick brown fox jumped over the lazy dog"',
+                    "expected": "gur dhvpx oebja sbk whzcrq bire gur ynml qbt",
+                },
+                {
+                    "name": "sample input upper case",
+                    "input": '"THE QUICK BROWN FOX JUMPED OVER THE LAZY DOG"',
+                    "expected": "GUR DHVPX OEBJA SBK WHZCRQ BIRE GUR YNML QBT",
+                },
+            ],
+            "transformations": ["strip"],
+        },
+        "rot13_invalid": {
+            "strings": {"usage": "Usage: please provide a string to encrypt"},
+            "params": [
+                {
+                    "name": "no input",
+                    "input": None,
+                    "expected": {"string": "usage"},
+                },
+                {
+                    "name": "empty input",
+                    "input": '""',
+                    "expected": {"string": "usage"},
+                },
+            ],
+            "transformations": ["strip"],
+        },
+    },
+}
 
 UNIT_TEST_DATA_PATH = os.path.abspath(os.path.join("test", "unit", "data", "test_generator"))
 
@@ -71,6 +108,7 @@ def test_test_generator_with_no_tests():
     [
         pytest.param(HELLO_WORLD_PROJECT, id="no-requires-params"),
         pytest.param(PRIME_NUMBER_PROJECT, id="requires-params"),
+        pytest.param(ROT13_PROJECT, id="requires-params-with-strings"),
     ],
 )
 def test_test_generator_with_tests(value):

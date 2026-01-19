@@ -41,7 +41,9 @@ class TestGenerator:
         if not self.project.tests:
             return ""
 
-        test_code = self._get_imports() + self._get_project_fixture()
+        test_code = (
+            self._get_imports() + self._get_constant_variables() + self._get_project_fixture()
+        )
         for test_obj in self.project.tests.values():
             test_code += test_obj.generate_test(self.long_project_name)
 
@@ -53,6 +55,14 @@ class TestGenerator:
             test_code += "import pytest\n"
 
         test_code += "from glotter import project_test, project_fixture\n"
+        return test_code
+
+    def _get_constant_variables(self):
+        test_code = ""
+        if self.project.requires_parameters:
+            for test_obj in self.project.tests.values():
+                test_code += test_obj.get_constant_variables()
+
         return test_code
 
     def _get_project_fixture(self):
