@@ -516,7 +516,31 @@ def test_good_project(value, expected_value):
             [
                 "tests.blah.strings\n  Input should be a valid dictionary",
             ],
-            id="tests-invalid-strings",
+            id="tests-invalid-strings-type",
+        ),
+        pytest.param(
+            {
+                "words": ["foo"],
+                "requires_params": True,
+                "tests": {
+                    "blah": {
+                        "strings": {
+                            123: 345,
+                            "Hello": 567,
+                            234: "Whatever",
+                        },
+                        "inputs": ["Input1"],
+                        "params": [{"name": "whatever", "input": "bar", "expected": "stuff"}],
+                    }
+                },
+            },
+            [
+                "tests.blah.strings.123\n  Key should be a valid string",
+                "tests.blah.strings.123\n  Value should be a valid string",
+                "tests.blah.strings.Hello\n  Value should be a valid string",
+                "tests.blah.strings.234\n  Key should be a valid string",
+            ],
+            id="tests-invalid-strings-items",
         ),
     ],
 )
