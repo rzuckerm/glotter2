@@ -302,6 +302,77 @@ def test_get_project_name_by_scheme_bad():
             },
             id="tests",
         ),
+        pytest.param(
+            {
+                "words": ["prime", "number"],
+                "requires_parameters": True,
+                "tests": {
+                    "prime_number_valid": {
+                        "params": [
+                            {"name": "one", "input": "1", "expected": "composite"},
+                            {"name": "two", "input": "2", "expected": "prime"},
+                        ],
+                        "transformations": ["strip", "lower"],
+                    },
+                    "prime_number_invalid": {
+                        "strings": {"usage": "some-usage"},
+                        "params": [
+                            {
+                                "name": "no input",
+                                "input": None,
+                                "expected": {"string": "usage"},
+                            },
+                            {
+                                "name": "empty input",
+                                "input": '""',
+                                "expected": {"string": "usage"},
+                            },
+                        ],
+                        "transformations": ["strip"],
+                    },
+                },
+            },
+            {
+                "words": ["prime", "number"],
+                "requires_parameters": True,
+                "acronyms": [],
+                "acronym_scheme": AcronymScheme.two_letter_limit,
+                "tests": {
+                    "prime_number_valid": {
+                        "name": "prime_number_valid",
+                        "requires_parameters": True,
+                        "inputs": ["Input"],
+                        "strings": {},
+                        "params": [
+                            {"name": "one", "input": "1", "expected": "composite"},
+                            {"name": "two", "input": "2", "expected": "prime"},
+                        ],
+                        "transformations": ["strip", "lower"],
+                    },
+                    "prime_number_invalid": {
+                        "name": "prime_number_invalid",
+                        "requires_parameters": True,
+                        "inputs": ["Input"],
+                        "strings": {"usage": "some-usage"},
+                        "params": [
+                            {
+                                "name": "no input",
+                                "input": None,
+                                "expected": {"string": "usage"},
+                            },
+                            {
+                                "name": "empty input",
+                                "input": '""',
+                                "expected": {"string": "usage"},
+                            },
+                        ],
+                        "transformations": ["strip"],
+                    },
+                },
+                "use_tests": None,
+            },
+            id="tests-with-strings",
+        ),
     ],
 )
 def test_good_project(value, expected_value):
@@ -428,6 +499,24 @@ def test_good_project(value, expected_value):
                 "tests.blah.inputs.1\n  Input should be a valid string",
                 "tests.blah.inputs.2\n  Input should be a valid string",
             ],
+            id="tests-invalid-inputs",
+        ),
+        pytest.param(
+            {
+                "words": ["foo"],
+                "requires_params": True,
+                "tests": {
+                    "blah": {
+                        "strings": 42,
+                        "inputs": ["Input1"],
+                        "params": [{"name": "whatever", "input": "bar", "expected": "stuff"}],
+                    }
+                },
+            },
+            [
+                "tests.blah.strings\n  Input should be a valid dictionary",
+            ],
+            id="tests-invalid-strings",
         ),
     ],
 )
