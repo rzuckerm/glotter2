@@ -150,6 +150,43 @@ EXTRA_INPUTS_PROJECT = {
         }
     },
 }
+ROT13_PROJECT = {
+    "words": ["rot13"],
+    "requires_parameters": True,
+    "tests": {
+        "rot13_valid": {
+            "params": [
+                {
+                    "name": "sample input lower case",
+                    "input": '"the quick brown fox jumped over the lazy dog"',
+                    "expected": "gur dhvpx oebja sbk whzcrq bire gur ynml qbt",
+                },
+                {
+                    "name": "sample input upper case",
+                    "input": '"THE QUICK BROWN FOX JUMPED OVER THE LAZY DOG"',
+                    "expected": "GUR DHVPX OEBJA SBK WHZCRQ BIRE GUR YNML QBT",
+                },
+            ],
+            "transformations": ["strip"],
+        },
+        "rot13_invalid": {
+            "strings": {"usage": "Usage: please provide a string to encrypt"},
+            "params": [
+                {
+                    "name": "no input",
+                    "input": None,
+                    "expected": {"string": "usage"},
+                },
+                {
+                    "name": "empty input",
+                    "input": '""',
+                    "expected": {"string": "usage"},
+                },
+            ],
+            "transformations": ["strip"],
+        },
+    },
+}
 
 UNIT_TEST_DATA_PATH = os.path.abspath(os.path.join("test", "unit", "data", "test_doc_generator"))
 
@@ -175,6 +212,7 @@ def test_test_doc_generator_with_no_tests():
             id="mult-tests-mult-inputs-mult-outputs",
         ),
         pytest.param(EXTRA_INPUTS_PROJECT, id="extra-input"),
+        pytest.param(ROT13_PROJECT, id="strings"),
     ],
 )
 def test_test_generator_with_tests(value):
@@ -223,6 +261,7 @@ def mock_settings():
                 DIJKSTRA_PROJECT,
                 DUPLICATE_CHARACTER_COUNTER_PROJECT,
                 EXTRA_INPUTS_PROJECT,
+                ROT13_PROJECT,
             ]
         }
         yield mock

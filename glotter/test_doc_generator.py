@@ -108,8 +108,15 @@ class TestDocSectionGenerator:
         doc = []
         has_output_column = self._any_test_output_is_different()
         num_input_params = len(self.test_obj.inputs)
+        first_output = None
         for test_param in self.test_obj.params:
             output = test_param.expected
+            if isinstance(output, dict) and "string" in output:
+                output = self.test_obj.strings[output["string"]]
+
+            if first_output is None:
+                first_output = output
+
             cells = [test_param.name.title()]
             if test_param.input is None:
                 inputs = []
@@ -139,7 +146,7 @@ class TestDocSectionGenerator:
                 "All of these tests should output the following:",
                 "",
                 "```",
-                self.test_obj.params[0].expected,
+                first_output,
                 "```",
             ]
 
