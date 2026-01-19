@@ -73,14 +73,18 @@
 <li class="toctree-l4"><a class="reference internal" href="#id6">Values</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#strings">Strings</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id7">Description</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#tests">Tests</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#id8">Description</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id9">Values</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id9">Description</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id10">Values</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#use-tests">Use Tests</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#id11">Description</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id12">Values</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id12">Description</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id13">Values</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#format">Format</a></li>
@@ -221,8 +225,27 @@ Each project has a project key and a set of value.</p>
 </ul>
 </section>
 </section>
+<section id="strings">
+<h3>Strings<a class="headerlink" href="#strings" title="Permalink to this heading"></a></h3>
+<ul>
+<li><p><strong>Optional</strong></p></li>
+<li><p><strong>Format</strong>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">strings</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">key1</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;value1&quot;</span>
+<span class="w">  </span><span class="nt">key2</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;value2&quot;</span>
+<span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<section id="id7">
+<h4>Description<a class="headerlink" href="#id7" title="Permalink to this heading"></a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">strings</span></code> is a dictionary whose key is the name of the string and whose value
+is the value of the string</p>
+</section>
+</section>
 <section id="tests">
-<span id="id7"></span><h3>Tests<a class="headerlink" href="#tests" title="Permalink to this heading"></a></h3>
+<span id="id8"></span><h3>Tests<a class="headerlink" href="#tests" title="Permalink to this heading"></a></h3>
 <ul>
 <li><p><strong>Optional</strong></p></li>
 <li><p><strong>Format</strong></p>
@@ -235,7 +258,7 @@ Each project has a project key and a set of value.</p>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">param_name1</span>
 <span class="w">        </span><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">input_value1</span>
 <span class="w">        </span><span class="nt">expected</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">expected_value1</span>
-<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+<span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">...</span>
 <span class="w">    </span><span class="nt">transformations</span><span class="p">:</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">transformation1</span>
 <span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">...</span>
@@ -244,8 +267,8 @@ Each project has a project key and a set of value.</p>
 </div>
 </li>
 </ul>
-<section id="id8">
-<h4>Description<a class="headerlink" href="#id8" title="Permalink to this heading"></a></h4>
+<section id="id9">
+<h4>Description<a class="headerlink" href="#id9" title="Permalink to this heading"></a></h4>
 <p><code class="docutils literal notranslate"><span class="pre">tests</span></code> is a dictionary that describes auto-generated tests. Each
 auto-generated test has a name that is a key.</p>
 <p>Each of these tests may have a list of input names, <code class="docutils literal notranslate"><span class="pre">inputs</span></code>. This is optional,
@@ -264,8 +287,8 @@ is required. Each list has the following item:</p>
 <p>Each of these tests can have a list of <code class="docutils literal notranslate"><span class="pre">transformations</span></code> that can be applied to the
 actual value and/or the expected value before comparing the actual and expected values.</p>
 </section>
-<section id="id9">
-<h4>Values<a class="headerlink" href="#id9" title="Permalink to this heading"></a></h4>
+<section id="id10">
+<h4>Values<a class="headerlink" href="#id10" title="Permalink to this heading"></a></h4>
 <ul class="simple">
 <li><p>The test key must be at least one character that starts with an alphabetic character
 or an underscore. All subsequent characters must be alphanumeric or an underscore.</p></li>
@@ -300,18 +323,24 @@ contain a key and a string value:</p>
 </pre></div>
 </div>
 <p>As a dictionary may be one of the following:</p>
-<ul class="simple">
+<ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">exec:</span> <span class="pre">&quot;command&quot;</span></code> - Execute a command in the language-specific docker container.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">self:</span> <span class="pre">&quot;&quot;</span></code> - The expected value is the project code (i.e., a
 <a class="reference external" href="https://en.wikipedia.org/wiki/Quine_(computing)">quine</a>). The generated code and
 the actual code are allowed to differ by a single newline character:</p>
-<ul>
+<ul class="simple">
 <li><p>If the generated code is longer than the actual code, the actual code plus a
 newline is compared to the generated code.</p></li>
 <li><p>If the generated code is shorter than tbe actual code, the generated code plus a
 newline is compared to the actual code.</p></li>
 <li><p>If the generated code and the actual code, the two are compared.</p></li>
 </ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">string:</span> <span class="pre">&quot;strings-key&quot;</span></code> - Specify the key for the common string in <span class="xref std std-ref">strings</span>
+for the project:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">string</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;usage&quot;</span>
+</pre></div>
+</div>
 </li>
 </ul>
 </li>
@@ -357,7 +386,7 @@ values – e.g., a list of <code class="docutils literal notranslate"><span clas
 </section>
 </section>
 <section id="use-tests">
-<span id="id10"></span><h3>Use Tests<a class="headerlink" href="#use-tests" title="Permalink to this heading"></a></h3>
+<span id="id11"></span><h3>Use Tests<a class="headerlink" href="#use-tests" title="Permalink to this heading"></a></h3>
 <ul>
 <li><p><strong>Optional</strong></p></li>
 <li><p><strong>Format</strong>:</p>
@@ -369,13 +398,13 @@ values – e.g., a list of <code class="docutils literal notranslate"><span clas
 </div>
 </li>
 </ul>
-<section id="id11">
-<h4>Description<a class="headerlink" href="#id11" title="Permalink to this heading"></a></h4>
+<section id="id12">
+<h4>Description<a class="headerlink" href="#id12" title="Permalink to this heading"></a></h4>
 <p><code class="docutils literal notranslate"><span class="pre">use_tests</span></code> allows tests to be reused from another project. It is mutually exclusive with
 <code class="docutils literal notranslate"><span class="pre">tests</span></code>.</p>
 </section>
-<section id="id12">
-<h4>Values<a class="headerlink" href="#id12" title="Permalink to this heading"></a></h4>
+<section id="id13">
+<h4>Values<a class="headerlink" href="#id13" title="Permalink to this heading"></a></h4>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> is a string that indicates the project for which to reuse tests. It is required.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">search</span></code> is a string to use a string to search for in the test name.</p></li>
@@ -452,6 +481,8 @@ MergeSort uses tests from BubbleSort.</p>
 <span class="w">    </span><span class="nt">words</span><span class="p">:</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;factorial&quot;</span>
 <span class="w">    </span><span class="nt">requires_parameters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">strings</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">usage</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Some</span><span class="nv"> </span><span class="s">error</span><span class="nv"> </span><span class="s">message&quot;</span>
 <span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
 <span class="w">      </span><span class="nt">factorial_valid</span><span class="p">:</span>
 <span class="w">        </span><span class="nt">params</span><span class="p">:</span>
@@ -467,10 +498,12 @@ MergeSort uses tests from BubbleSort.</p>
 <span class="w">        </span><span class="nt">params</span><span class="p">:</span>
 <span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;no</span><span class="nv"> </span><span class="s">input&quot;</span>
 <span class="w">            </span><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
-<span class="w">            </span><span class="nt">expected</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Some</span><span class="nv"> </span><span class="s">error</span><span class="nv"> </span><span class="s">message&quot;</span>
+<span class="w">            </span><span class="nt">expected</span><span class="p">:</span>
+<span class="w">              </span><span class="nt">string</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;usage&quot;</span>
 <span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;empty</span><span class="nv"> </span><span class="s">input&quot;</span>
 <span class="w">            </span><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;&quot;&quot;&#39;</span>
-<span class="w">            </span><span class="nt">expected</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Some</span><span class="nv"> </span><span class="s">error</span><span class="nv"> </span><span class="s">message&quot;</span>
+<span class="w">            </span><span class="nt">expected</span><span class="p">:</span>
+<span class="w">              </span><span class="nt">string</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;usage&quot;</span>
 <span class="w">        </span><span class="nt">transformations</span><span class="p">:</span>
 <span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;strip&quot;</span>
 <span class="w">  </span><span class="nt">helloworld</span><span class="p">:</span>
@@ -496,6 +529,8 @@ MergeSort uses tests from BubbleSort.</p>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;bubble&quot;</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;sort&quot;</span>
 <span class="w">    </span><span class="nt">requires_parameters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">strings</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">usage</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Some</span><span class="nv"> </span><span class="s">error&quot;</span>
 <span class="w">    </span><span class="nt">bubble_sort_valid</span><span class="p">:</span>
 <span class="w">      </span><span class="nt">params</span><span class="p">:</span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;not</span><span class="nv"> </span><span class="s">sorted&quot;</span>
@@ -513,10 +548,12 @@ MergeSort uses tests from BubbleSort.</p>
 <span class="w">      </span><span class="nt">params</span><span class="p">:</span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;no</span><span class="nv"> </span><span class="s">input&quot;</span>
 <span class="w">          </span><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
-<span class="w">          </span><span class="nt">expected</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Some</span><span class="nv"> </span><span class="s">error&quot;</span>
+<span class="w">          </span><span class="nt">expected</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">string</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;usage&quot;</span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;empty</span><span class="nv"> </span><span class="s">input&quot;</span>
 <span class="w">          </span><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;&quot;&quot;&#39;</span>
-<span class="w">          </span><span class="nt">expected</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Some</span><span class="nv"> </span><span class="s">error&quot;</span>
+<span class="w">          </span><span class="nt">expected</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">string</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;usage&quot;</span>
 <span class="w">      </span><span class="nt">transformations</span><span class="p">:</span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;strip&quot;</span>
 <span class="w">  </span><span class="nt">mergesort</span><span class="p">:</span>
@@ -553,6 +590,8 @@ MergeSort uses tests from BubbleSort.</p>
 <span class="w">    </span><span class="nt">words</span><span class="p">:</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;factorial&quot;</span>
 <span class="w">    </span><span class="nt">requires_parameters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">strings</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">usage</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Some</span><span class="nv"> </span><span class="s">error</span><span class="nv"> </span><span class="s">message&quot;</span>
 <span class="w">    </span><span class="nt">tests</span><span class="p">:</span>
 <span class="w">      </span><span class="nt">factorial_valid</span><span class="p">:</span>
 <span class="w">        </span><span class="nt">params</span><span class="p">:</span>
@@ -568,10 +607,12 @@ MergeSort uses tests from BubbleSort.</p>
 <span class="w">        </span><span class="nt">params</span><span class="p">:</span>
 <span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;no</span><span class="nv"> </span><span class="s">input&quot;</span>
 <span class="w">            </span><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
-<span class="w">            </span><span class="nt">expected</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Some</span><span class="nv"> </span><span class="s">error</span><span class="nv"> </span><span class="s">message&quot;</span>
+<span class="w">            </span><span class="nt">expected</span><span class="p">:</span>
+<span class="w">              </span><span class="nt">string</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;usage&quot;</span>
 <span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;empty</span><span class="nv"> </span><span class="s">input&quot;</span>
 <span class="w">            </span><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;&quot;&quot;&#39;</span>
-<span class="w">            </span><span class="nt">expected</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Some</span><span class="nv"> </span><span class="s">error</span><span class="nv"> </span><span class="s">message&quot;</span>
+<span class="w">            </span><span class="nt">expected</span><span class="p">:</span>
+<span class="w">              </span><span class="nt">string</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;usage&quot;</span>
 <span class="w">        </span><span class="nt">transformations</span><span class="p">:</span>
 <span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;strip&quot;</span>
 <span class="w">  </span><span class="nt">helloworld</span><span class="p">:</span>
@@ -597,6 +638,8 @@ MergeSort uses tests from BubbleSort.</p>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;bubble&quot;</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;sort&quot;</span>
 <span class="w">    </span><span class="nt">requires_parameters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">strings</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">usage</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Some</span><span class="nv"> </span><span class="s">error&quot;</span>
 <span class="w">    </span><span class="nt">bubble_sort_valid</span><span class="p">:</span>
 <span class="w">      </span><span class="nt">inputs</span><span class="p">:</span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;List</span><span class="nv"> </span><span class="s">Input&quot;</span>
@@ -618,10 +661,12 @@ MergeSort uses tests from BubbleSort.</p>
 <span class="w">      </span><span class="nt">params</span><span class="p">:</span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;no</span><span class="nv"> </span><span class="s">input&quot;</span>
 <span class="w">          </span><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
-<span class="w">          </span><span class="nt">expected</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Some</span><span class="nv"> </span><span class="s">error&quot;</span>
+<span class="w">          </span><span class="nt">expected</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">string</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;usage&quot;</span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;empty</span><span class="nv"> </span><span class="s">input&quot;</span>
 <span class="w">          </span><span class="nt">input</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;&quot;&quot;&#39;</span>
-<span class="w">          </span><span class="nt">expected</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Some</span><span class="nv"> </span><span class="s">error&quot;</span>
+<span class="w">          </span><span class="nt">expected</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">string</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;usage&quot;</span>
 <span class="w">      </span><span class="nt">transformations</span><span class="p">:</span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;strip&quot;</span>
 <span class="w">  </span><span class="nt">mergesort</span><span class="p">:</span>
