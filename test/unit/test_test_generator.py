@@ -52,6 +52,43 @@ PRIME_NUMBER_PROJECT = {
         },
     },
 }
+ROT13_PROJECT = {
+    "words": ["rot13"],
+    "requires_parameters": True,
+    "strings": {"usage": "Usage: please provide a string to encrypt"},
+    "tests": {
+        "rot13_valid": {
+            "params": [
+                {
+                    "name": "sample input lower case",
+                    "input": '"the quick brown fox jumped over the lazy dog"',
+                    "expected": "gur dhvpx oebja sbk whzcrq bire gur ynml qbt",
+                },
+                {
+                    "name": "sample input upper case",
+                    "input": '"THE QUICK BROWN FOX JUMPED OVER THE LAZY DOG"',
+                    "expected": "GUR DHVPX OEBJA SBK WHZCRQ BIRE GUR YNML QBT",
+                },
+            ],
+            "transformations": ["strip"],
+        },
+        "rot13_invalid": {
+            "params": [
+                {
+                    "name": "no input",
+                    "input": None,
+                    "expected": {"string": "usage"},
+                },
+                {
+                    "name": "empty input",
+                    "input": '""',
+                    "expected": {"string": "usage"},
+                },
+            ],
+            "transformations": ["strip"],
+        },
+    },
+}
 
 UNIT_TEST_DATA_PATH = os.path.abspath(os.path.join("test", "unit", "data", "test_generator"))
 
@@ -71,6 +108,7 @@ def test_test_generator_with_no_tests():
     [
         pytest.param(HELLO_WORLD_PROJECT, id="no-requires-params"),
         pytest.param(PRIME_NUMBER_PROJECT, id="requires-params"),
+        pytest.param(ROT13_PROJECT, id="requires-params-with-strings"),
     ],
 )
 def test_test_generator_with_tests(value):
@@ -93,7 +131,7 @@ def test_test_generator_with_tests(value):
 def test_generate_tests(mock_settings, temp_dir_chdir):
     generate_tests()
 
-    filenames = ["test_hello_world.py", "test_prime_number.py"]
+    filenames = ["test_hello_world.py", "test_prime_number.py", "test_rot13.py"]
     assert sorted(os.listdir(AUTO_GEN_TEST_PATH)) == sorted(filenames)
 
     for filename in filenames:
@@ -114,6 +152,11 @@ def mock_settings():
     with patch("glotter.test_generator.Settings") as mock:
         mock.return_value.projects = {
             "".join(value["words"]): Project(**value)
-            for value in [NO_TESTS_PROJECT, HELLO_WORLD_PROJECT, PRIME_NUMBER_PROJECT]
+            for value in [
+                NO_TESTS_PROJECT,
+                HELLO_WORLD_PROJECT,
+                PRIME_NUMBER_PROJECT,
+                ROT13_PROJECT,
+            ]
         }
         yield mock

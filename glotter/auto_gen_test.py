@@ -14,6 +14,7 @@ from glotter.errors import (
     get_error_details,
     raise_simple_validation_error,
     raise_validation_errors,
+    validate_str_dict,
     validate_str_list,
 )
 from glotter.utils import indent, quote
@@ -47,7 +48,7 @@ class AutoGenParam(BaseModel):
                 raise_simple_validation_error(cls, "Too many items", value)
 
             key, item = tuple(*value.items())
-            if key == "exec":
+            if key in ("exec", "string"):
                 if not isinstance(item, str):
                     raise_simple_validation_error(
                         cls, "Input should be a valid string", item, (key,)
@@ -82,8 +83,23 @@ class AutoGenParam(BaseModel):
         expected_output = self.expected
         if isinstance(expected_output, str):
             expected_output = quote(expected_output)
+        elif isinstance(expected_output, dict) and "string" in expected_output:
+            expected_output = self.get_constant_variable_name()
 
         return f"pytest.param({input_param}, {expected_output}, id={quote(self.name)}),\n"
+
+    def get_constant_variable_name(self) -> str:
+        """
+        Get constant variable name
+
+        :return: constant variable name
+        """
+
+        variable_name = ""
+        if isinstance(self.expected, dict) and "string" in self.expected:
+            variable_name = self.expected["string"].upper()
+
+        return variable_name
 
 
 def _append_method_to_actual(method: str, actual_var: str, expected_var) -> Tuple[str, str]:
@@ -123,6 +139,7 @@ class AutoGenTest(BaseModel):
     params: Annotated[List[AutoGenParam], Field(strict=True, min_length=1)] = Field(
         None, validate_default=True
     )
+    strings: Dict[str, str] = {}
     transformations: List[Any] = []
 
     SCALAR_TRANSFORMATION_FUNCS: ClassVar[Dict[str, TransformationScalarFuncT]] = {
@@ -212,6 +229,20 @@ class AutoGenTest(BaseModel):
 
         return values
 
+    @field_validator("strings", mode="before")
+    @classmethod
+    def validate_strings(cls, values):
+        """
+        Validate each string
+
+        :param values: Strings to validate
+        :return: Original strings
+        :raises: :exc:`ValidationError` if strings invalid
+        """
+
+        validate_str_dict(cls, values)
+        return values
+
     @field_validator("transformations", mode="before")
     @classmethod
     def validate_transformation(cls, values):
@@ -253,6 +284,36 @@ class AutoGenTest(BaseModel):
 
         return values
 
+    @model_validator(mode="after")
+    def validate_test_strings(self):
+        """
+        Validate each test string
+        """
+
+        errors = []
+        if self.requires_parameters:
+            for index, param in enumerate(self.params):
+                loc = ("params", index, "expected", "string")
+                expected = param.expected
+                if (
+                    isinstance(param.expected, dict)
+                    and "string" in expected
+                    and expected["string"] not in self.strings
+                ):
+                    expected_string = expected["string"]
+                    errors.append(
+                        get_error_details(
+                            f"Refers to a non-existent string {expected_string}",
+                            loc=loc,
+                            input=expected_string,
+                        )
+                    )
+
+        if errors:
+            raise_validation_errors(self.__class__, errors)
+
+        return self
+
     def transform_vars(self) -> Tuple[str, str]:
         """
         Transform variables using the specified transformations
@@ -274,6 +335,22 @@ class AutoGenTest(BaseModel):
                 )
 
         return actual_var, expected_var
+
+    def get_constant_variables(self) -> str:
+        """
+        Get contant variables
+
+        :return: constant variables
+        """
+
+        constant_variables = {}
+        if self.requires_parameters:
+            for param in self.params:
+                variable_name = param.get_constant_variable_name()
+                if variable_name and variable_name not in constant_variables:
+                    constant_variables[variable_name] = self.strings[param.expected["string"]]
+
+        return "".join(f"{name} = {quote(value)}\n" for name, value in constant_variables.items())
 
     def get_pytest_params(self) -> str:
         """

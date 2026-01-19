@@ -1,6 +1,6 @@
 [project]
 name = "glotter2"
-version = "0.13.0"
+version = "0.14.0"
 description = "An execution library for scripts written in any language. This is a fork of https://github.com/auroq/glotter"
 authors = [
     { name = "auroq" },
@@ -64,7 +64,7 @@ line-length = 100
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "PL", "RUF", "T10", "W"]
-ignore = ["E501", "PLR2004", "PLW1641", "RUF005", "RUF012"]
+ignore = ["E501", "PLR2004", "PLW1641", "RUF005", "RUF012", "RUF017"]
 
 [tool.ruff.lint.per-file-ignores]
 "test/*" = ["PLR0913"]

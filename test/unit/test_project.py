@@ -158,6 +158,7 @@ def test_get_project_name_by_scheme_bad():
             {
                 "words": [f"{char1}{char2}", f"{char2}{char1}"],
                 "requires_parameters": False,
+                "strings": {},
                 "acronyms": [],
                 "acronym_scheme": AcronymScheme.two_letter_limit,
                 "use_tests": None,
@@ -173,6 +174,7 @@ def test_get_project_name_by_scheme_bad():
             {
                 "words": ["longest", "word"],
                 "requires_parameters": True,
+                "strings": {},
                 "acronyms": [],
                 "acronym_scheme": AcronymScheme.two_letter_limit,
                 "use_tests": None,
@@ -202,6 +204,7 @@ def test_get_project_name_by_scheme_bad():
                     f"{char2}{char1}",
                 ],
                 "requires_parameters": False,
+                "strings": {},
                 "acronyms": [
                     "FILE",
                     "IO",
@@ -222,6 +225,7 @@ def test_get_project_name_by_scheme_bad():
             {
                 "words": ["binary", "search"],
                 "requires_parameters": False,
+                "strings": {},
                 "acronyms": [],
                 "acronym_scheme": acronym_scheme,
                 "use_tests": None,
@@ -264,6 +268,7 @@ def test_get_project_name_by_scheme_bad():
             {
                 "words": ["prime", "number"],
                 "requires_parameters": True,
+                "strings": {},
                 "acronyms": [],
                 "acronym_scheme": AcronymScheme.two_letter_limit,
                 "tests": {
@@ -271,6 +276,7 @@ def test_get_project_name_by_scheme_bad():
                         "name": "prime_number_valid",
                         "requires_parameters": True,
                         "inputs": ["Input"],
+                        "strings": {},
                         "params": [
                             {"name": "one", "input": "1", "expected": "composite"},
                             {"name": "two", "input": "2", "expected": "prime"},
@@ -281,6 +287,7 @@ def test_get_project_name_by_scheme_bad():
                         "name": "prime_number_invalid",
                         "requires_parameters": True,
                         "inputs": ["Input"],
+                        "strings": {},
                         "params": [
                             {
                                 "name": "no input",
@@ -299,6 +306,78 @@ def test_get_project_name_by_scheme_bad():
                 "use_tests": None,
             },
             id="tests",
+        ),
+        pytest.param(
+            {
+                "words": ["prime", "number"],
+                "requires_parameters": True,
+                "strings": {"usage": "some-usage"},
+                "tests": {
+                    "prime_number_valid": {
+                        "params": [
+                            {"name": "one", "input": "1", "expected": "composite"},
+                            {"name": "two", "input": "2", "expected": "prime"},
+                        ],
+                        "transformations": ["strip", "lower"],
+                    },
+                    "prime_number_invalid": {
+                        "params": [
+                            {
+                                "name": "no input",
+                                "input": None,
+                                "expected": {"string": "usage"},
+                            },
+                            {
+                                "name": "empty input",
+                                "input": '""',
+                                "expected": {"string": "usage"},
+                            },
+                        ],
+                        "transformations": ["strip"],
+                    },
+                },
+            },
+            {
+                "words": ["prime", "number"],
+                "requires_parameters": True,
+                "strings": {"usage": "some-usage"},
+                "acronyms": [],
+                "acronym_scheme": AcronymScheme.two_letter_limit,
+                "tests": {
+                    "prime_number_valid": {
+                        "name": "prime_number_valid",
+                        "requires_parameters": True,
+                        "inputs": ["Input"],
+                        "strings": {"usage": "some-usage"},
+                        "params": [
+                            {"name": "one", "input": "1", "expected": "composite"},
+                            {"name": "two", "input": "2", "expected": "prime"},
+                        ],
+                        "transformations": ["strip", "lower"],
+                    },
+                    "prime_number_invalid": {
+                        "name": "prime_number_invalid",
+                        "requires_parameters": True,
+                        "inputs": ["Input"],
+                        "strings": {"usage": "some-usage"},
+                        "params": [
+                            {
+                                "name": "no input",
+                                "input": None,
+                                "expected": {"string": "usage"},
+                            },
+                            {
+                                "name": "empty input",
+                                "input": '""',
+                                "expected": {"string": "usage"},
+                            },
+                        ],
+                        "transformations": ["strip"],
+                    },
+                },
+                "use_tests": None,
+            },
+            id="tests-with-strings",
         ),
     ],
 )
@@ -414,7 +493,7 @@ def test_good_project(value, expected_value):
         pytest.param(
             {
                 "words": ["foo"],
-                "requires_params": True,
+                "requires_parameters": True,
                 "tests": {
                     "blah": {
                         "inputs": ["Input1", 2, 3],
@@ -426,6 +505,76 @@ def test_good_project(value, expected_value):
                 "tests.blah.inputs.1\n  Input should be a valid string",
                 "tests.blah.inputs.2\n  Input should be a valid string",
             ],
+            id="tests-invalid-inputs",
+        ),
+        pytest.param(
+            {
+                "words": ["foo"],
+                "requires_parameters": True,
+                "strings": 42,
+                "tests": {
+                    "blah": {
+                        "inputs": ["Input1"],
+                        "params": [{"name": "whatever", "input": "bar", "expected": "stuff"}],
+                    }
+                },
+            },
+            [
+                "strings\n  Input should be a valid dictionary",
+            ],
+            id="tests-invalid-strings-type",
+        ),
+        pytest.param(
+            {
+                "words": ["foo"],
+                "requires_parameters": True,
+                "strings": {123: 345, "Hello": 567, 234: "Whatever"},
+                "tests": {
+                    "blah": {
+                        "inputs": ["Input1"],
+                        "params": [{"name": "whatever", "input": "bar", "expected": "stuff"}],
+                    }
+                },
+            },
+            [
+                "strings.123\n  Key should be a valid string",
+                "strings.123\n  Value should be a valid string",
+                "strings.Hello\n  Value should be a valid string",
+                "strings.234\n  Key should be a valid string",
+            ],
+            id="tests-invalid-strings-items",
+        ),
+        pytest.param(
+            {
+                "words": ["foo"],
+                "requires_parameters": True,
+                "strings": {"baz": "baz-string", "quux": "quux-string"},
+                "tests": {
+                    "blah": {
+                        "inputs": ["Input1"],
+                        "params": [
+                            {"name": "whatever 0", "input": "bar", "expected": "stuff"},
+                            {"name": "whatever 1", "input": "baz", "expected": {"string": "baz"}},
+                            {"name": "whatever 2", "input": "quux", "expected": {"string": "quux"}},
+                            {
+                                "name": "whatever 3",
+                                "input": "stuff",
+                                "expected": {"string": "stuff"},
+                            },
+                            {
+                                "name": "whatever 4",
+                                "input": "nonsense",
+                                "expected": {"string": "nonsense"},
+                            },
+                        ],
+                    }
+                },
+            },
+            [
+                "tests.blah.params.3.expected.string\n  Refers to a non-existent string stuff",
+                "tests.blah.params.4.expected.string\n  Refers to a non-existent string nonsense",
+            ],
+            id="non-existent-string-items",
         ),
     ],
 )
@@ -522,6 +671,7 @@ def test_set_tests():
     expected_project = {
         "words": ["selection", "sort"],
         "requires_parameters": True,
+        "strings": {},
         "acronyms": [],
         "acronym_scheme": AcronymScheme.two_letter_limit,
         "tests": {
@@ -529,11 +679,13 @@ def test_set_tests():
                 **valid_tests,
                 "name": "selection_sort_valid",
                 "requires_parameters": True,
+                "strings": {},
             },
             "selection_sort_invalid": {
                 **invalid_tests,
                 "name": "selection_sort_invalid",
                 "requires_parameters": True,
+                "strings": {},
             },
         },
         "use_tests": None,

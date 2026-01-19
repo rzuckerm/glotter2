@@ -1,0 +1,13 @@
+@project_test(PROJECT_NAME)
+@pytest.mark.parametrize(
+    ("in_params", "expected"),
+    [
+        pytest.param(None, ERROR, id="no input"),
+        pytest.param('""', ERROR, id="empty input"),
+        pytest.param('"a"', ERROR, id="bad input"),
+    ]
+)
+def test_prime_invalid(in_params, expected, requires_params_with_string):
+    actual = requires_params_with_string.run(params=in_params)
+    actual = actual.strip()
+    assert actual == expected

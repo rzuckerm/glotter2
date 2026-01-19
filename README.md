@@ -25,6 +25,8 @@ If you'd like to contribute to Glotter2, read our [contributing guidelines](./CO
 
 ### Glotter2 releases
 
+* 0.14.0:
+  * Add support for common test strings to reduce duplication in tests
 * 0.13.0:
   * Add support for python 3.14
 * 0.12.1:

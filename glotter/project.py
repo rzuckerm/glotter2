@@ -4,7 +4,7 @@ from typing import Annotated, ClassVar, Dict, List, Optional
 from pydantic import BaseModel, Field, ValidationInfo, field_validator
 
 from glotter.auto_gen_test import AutoGenTest, AutoGenUseTests
-from glotter.errors import raise_simple_validation_error, validate_str_list
+from glotter.errors import raise_simple_validation_error, validate_str_dict, validate_str_list
 
 
 class NamingScheme(Enum):
@@ -29,6 +29,7 @@ class Project(BaseModel):
         Field(min_length=1, strict=True),
     ]
     requires_parameters: bool = False
+    strings: Dict[str, str] = {}
     acronyms: List[Annotated[str, Field(min_length=1, pattern=VALID_REGEX, strict=True)]] = []
     acronym_scheme: AcronymScheme = AcronymScheme.two_letter_limit
     use_tests: Optional[AutoGenUseTests] = None
@@ -39,6 +40,12 @@ class Project(BaseModel):
     def get_acronym(cls, values):
         validate_str_list(cls, values)
         return [value.upper() for value in values]
+
+    @field_validator("strings", mode="before")
+    @classmethod
+    def validate_strings(cls, values):
+        validate_str_dict(cls, values)
+        return values
 
     @field_validator("tests", mode="before")
     @classmethod
@@ -57,6 +64,7 @@ class Project(BaseModel):
             test_name: {
                 **test,
                 "requires_parameters": info.data.get("requires_parameters") or False,
+                "strings": info.data.get("strings") or {},
                 "name": test_name,
             }
             for test_name, test in value.items()
