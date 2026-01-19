@@ -129,7 +129,7 @@ Tests
           - name: param_name1
             input: input_value1
             expected: expected_value1
-        ...
+          ...
         transformations:
           - transformation1
           ...
@@ -212,6 +212,12 @@ Params
     - If the generated code is shorter than tbe actual code, the generated code plus a
       newline is compared to the actual code.
     - If the generated code and the actual code, the two are compared.
+  - ``string: "strings-key"`` - Specify the key for the common string in ``strings`` for
+    the project:
+
+    .. code-block:: yaml
+
+      string: "usage"
 
 Transformations
 ~~~~~~~~~~~~~~~
@@ -356,6 +362,8 @@ The ``projects`` section would look like this:
         words:
           - "factorial"
         requires_parameters: true
+        strings:
+          usage: "Some error message"
         tests:
           factorial_valid:
             params:
@@ -371,10 +379,12 @@ The ``projects`` section would look like this:
             params:
               - name: "no input"
                 input: null
-                expected: "Some error message"
+                expected:
+                  string: "usage"
               - name: "empty input"
                 input: '""'
-                expected: "Some error message"
+                expected:
+                  string: "usage"
             transformations:
               - "strip"
       helloworld:
@@ -400,6 +410,8 @@ The ``projects`` section would look like this:
           - "bubble"
           - "sort"
         requires_parameters: true
+        strings:
+          usage: "Some error"
         bubble_sort_valid:
           params:
             - name: "not sorted"
@@ -417,10 +429,12 @@ The ``projects`` section would look like this:
           params:
             - name: "no input"
               input: null
-              expected: "Some error"
+              expected:
+                string: "usage"
             - name: "empty input"
               input: '""'
-              expected: "Some error"
+              expected:
+                string: "usage"
           transformations:
             - "strip"
       mergesort:
@@ -458,6 +472,8 @@ The following is an example of a full ``.glotter.yml``
         words:
           - "factorial"
         requires_parameters: true
+        strings:
+          usage: "Some error message"
         tests:
           factorial_valid:
             params:
@@ -473,10 +489,12 @@ The following is an example of a full ``.glotter.yml``
             params:
               - name: "no input"
                 input: null
-                expected: "Some error message"
+                expected:
+                  string: "usage"
               - name: "empty input"
                 input: '""'
-                expected: "Some error message"
+                expected:
+                  string: "usage"
             transformations:
               - "strip"
       helloworld:
@@ -502,6 +520,8 @@ The following is an example of a full ``.glotter.yml``
           - "bubble"
           - "sort"
         requires_parameters: true
+        strings:
+          usage: "Some error"
         bubble_sort_valid:
           inputs:
             - "List Input"
@@ -523,10 +543,12 @@ The following is an example of a full ``.glotter.yml``
           params:
             - name: "no input"
               input: null
-              expected: "Some error"
+              expected:
+                string: "usage"
             - name: "empty input"
               input: '""'
-              expected: "Some error"
+              expected:
+                string: "usage"
           transformations:
             - "strip"
       mergesort:
