@@ -533,6 +533,30 @@ def test_auto_gen_test_good(value, expected_value):
             "strings.bar\n  Value should be a valid string",
             id="invalid-strings-value",
         ),
+        pytest.param(
+            {
+                "name": "test_name5",
+                "requires_parameters": True,
+                "inputs": ["foo"],
+                "strings": {
+                    "bar": "bar-string",
+                },
+                "params": [
+                    {
+                        "name": "some-name5.0",
+                        "input": "some-input5.0",
+                        "expected": {"string": "bar"},
+                    },
+                    {
+                        "name": "some-name5.1",
+                        "input": "some-input5.1",
+                        "expected": {"string": "baz"},
+                    },
+                ],
+            },
+            "params.1.expected.string\n  Refers to a non-existent string baz",
+            id="invalid-string-reference",
+        ),
     ],
 )
 def test_auto_gen_test_bad(value, expected_error):

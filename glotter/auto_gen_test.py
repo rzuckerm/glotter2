@@ -269,6 +269,35 @@ class AutoGenTest(BaseModel):
 
         return values
 
+    @model_validator(mode="after")
+    def validate_test_strings(self):
+        """
+        Validate each test string
+        """
+
+        errors = []
+        for index, param in enumerate(self.params):
+            loc = ("params", index, "expected", "string")
+            expected = param.expected
+            if (
+                isinstance(param.expected, dict)
+                and "string" in expected
+                and expected["string"] not in self.strings
+            ):
+                expected_string = expected["string"]
+                errors.append(
+                    get_error_details(
+                        f"Refers to a non-existent string {expected_string}",
+                        loc=loc,
+                        input=expected_string,
+                    )
+                )
+
+        if errors:
+            raise_validation_errors(self.__class__, errors)
+
+        return self
+
     def transform_vars(self) -> Tuple[str, str]:
         """
         Transform variables using the specified transformations

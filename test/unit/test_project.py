@@ -542,6 +542,41 @@ def test_good_project(value, expected_value):
             ],
             id="tests-invalid-strings-items",
         ),
+        pytest.param(
+            {
+                "words": ["foo"],
+                "requires_params": True,
+                "tests": {
+                    "blah": {
+                        "strings": {
+                            "baz": "baz-string",
+                            "quux": "quux-string",
+                        },
+                        "inputs": ["Input1"],
+                        "params": [
+                            {"name": "whatever 0", "input": "bar", "expected": "stuff"},
+                            {"name": "whatever 1", "input": "baz", "expected": {"string": "baz"}},
+                            {"name": "whatever 2", "input": "quux", "expected": {"string": "quux"}},
+                            {
+                                "name": "whatever 3",
+                                "input": "stuff",
+                                "expected": {"string": "stuff"},
+                            },
+                            {
+                                "name": "whatever 4",
+                                "input": "nonsense",
+                                "expected": {"string": "nonsense"},
+                            },
+                        ],
+                    }
+                },
+            },
+            [
+                "tests.blah.params.3.expected.string\n  Refers to a non-existent string stuff",
+                "tests.blah.params.4.expected.string\n  Refers to a non-existent string nonsense",
+            ],
+            id="non-existent-string-items",
+        ),
     ],
 )
 def test_bad_project(value, expected_errors):
