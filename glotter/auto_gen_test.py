@@ -66,10 +66,11 @@ class AutoGenParam(BaseModel):
 
         return value
 
-    def get_pytest_param(self) -> str:
+    def get_pytest_param(self, prefix: str="") -> str:
         """
         Get pytest parameter string
 
+        :param prefix: Prefix for variable name
         :return: pytest parameter string if name is not empty, empty string otherwise
         """
 
@@ -83,8 +84,25 @@ class AutoGenParam(BaseModel):
         expected_output = self.expected
         if isinstance(expected_output, str):
             expected_output = quote(expected_output)
+        elif isinstance(expected_output, dict) and "string" in expected_output:
+            expected_output = self.get_constant_variable_name(prefix)
 
         return f"pytest.param({input_param}, {expected_output}, id={quote(self.name)}),\n"
+
+    def get_constant_variable_name(self, prefix: str) -> str:
+        """
+        Get constant variable name
+
+        :param prefix: prefix to prepend to constant variable name if expected value
+            references a string
+        :return: constant variable name
+        """
+
+        variable_name = ""
+        if isinstance(self.expected, dict) and "string" in self.expected:
+            variable_name = f"{prefix}_{self.expected['string']}".upper()
+
+        return variable_name
 
 
 def _append_method_to_actual(method: str, actual_var: str, expected_var) -> Tuple[str, str]:
@@ -276,22 +294,23 @@ class AutoGenTest(BaseModel):
         """
 
         errors = []
-        for index, param in enumerate(self.params):
-            loc = ("params", index, "expected", "string")
-            expected = param.expected
-            if (
-                isinstance(param.expected, dict)
-                and "string" in expected
-                and expected["string"] not in self.strings
-            ):
-                expected_string = expected["string"]
-                errors.append(
-                    get_error_details(
-                        f"Refers to a non-existent string {expected_string}",
-                        loc=loc,
-                        input=expected_string,
+        if self.requires_parameters:
+            for index, param in enumerate(self.params):
+                loc = ("params", index, "expected", "string")
+                expected = param.expected
+                if (
+                    isinstance(param.expected, dict)
+                    and "string" in expected
+                    and expected["string"] not in self.strings
+                ):
+                    expected_string = expected["string"]
+                    errors.append(
+                        get_error_details(
+                            f"Refers to a non-existent string {expected_string}",
+                            loc=loc,
+                            input=expected_string,
+                        )
                     )
-                )
 
         if errors:
             raise_validation_errors(self.__class__, errors)
@@ -320,6 +339,22 @@ class AutoGenTest(BaseModel):
 
         return actual_var, expected_var
 
+    def get_constant_variables(self) -> str:
+        """
+        Get contant variables
+
+        :return: constant variables
+        """
+
+        constant_variables = {}
+        if self.requires_parameters:
+            for param in self.params:
+                variable_name = param.get_constant_variable_name(self.name)
+                if variable_name and variable_name not in constant_variables:
+                    constant_variables[variable_name] = self.strings[param.expected["string"]]
+
+        return "".join(f"{name} = {quote(value)}\n" for name, value in constant_variables.items())
+
     def get_pytest_params(self) -> str:
         """
         Get pytest parameters
@@ -331,7 +366,7 @@ class AutoGenTest(BaseModel):
             return ""
 
         pytest_params = "".join(
-            indent(param.get_pytest_param(), 8) for param in self.params
+            indent(param.get_pytest_param(self.name), 8) for param in self.params
         ).strip()
         return f"""\
 @pytest.mark.parametrize(

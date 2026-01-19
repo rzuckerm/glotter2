@@ -142,21 +142,24 @@ def test_auto_gen_param_bad(value, expected_error):
 
 
 @pytest.mark.parametrize(
-    ("value", "expected_pytest_param"),
+    ("value", "prefix", "expected_pytest_param"),
     [
-        pytest.param({"expected": "blah"}, "", id="only_expected"),
+        pytest.param({"expected": "blah"}, "", "", id="only_expected"),
         pytest.param(
             {"name": "some name", "expected": "blah"},
+            "",
             'pytest.param(None, "blah", id="some name"),\n',
             id="no_input-expected_str",
         ),
         pytest.param(
             {"name": "other name", "input": '"55, 56"', "expected": "blah"},
+            "",
             """pytest.param('"55, 56"', "blah", id="other name"),\n""",
             id="input_str-expected_str",
         ),
         pytest.param(
             {"name": "this name", "input": "blah", "expected": ["1", "2", "3"]},
+            "",
             """pytest.param("blah", ['1', '2', '3'], id="this name"),\n""",
             id="input_str-expected_list",
         ),
@@ -166,14 +169,47 @@ def test_auto_gen_param_bad(value, expected_error):
                 "input": "blah",
                 "expected": {"exec": "cat output.txt"},
             },
+            "",
             """pytest.param("blah", {'exec': 'cat output.txt'}, id="this name"),\n""",
             id="input_str-expected_dict",
         ),
+        pytest.param(
+            {
+                "name": "string name",
+                "input": "blah",
+                "expected": {"string": "some_string"}
+            },
+            "some_prefix",
+            """pytest.param("blah", SOME_PREFIX_SOME_STRING, id="string name"),\n""",
+            id="input_str-expected_constant_variable",
+        )
     ],
 )
-def test_auto_gen_param_get_pytest_param(value, expected_pytest_param):
+def test_auto_gen_param_get_pytest_param(value, prefix, expected_pytest_param):
     param = AutoGenParam(**value)
-    assert param.get_pytest_param() == expected_pytest_param
+    assert param.get_pytest_param(prefix) == expected_pytest_param
+
+
+@pytest.mark.parametrize(
+    ("value", "prefix", "expected_constant_variable_name"),
+    [
+        pytest.param(
+            {"name": "some name", "input": "whatever", "expected": "something"},
+            "some_prefix",
+            "",
+            id="no-constant",
+        ),
+        pytest.param(
+            {"name": "some name", "input": "whatever", "expected": {"string": "foo"}},
+            "some_prefix",
+            "SOME_PREFIX_FOO",
+            id="has-constant",
+        )
+    ],
+)
+def test_auto_gen_params_get_constant_variable_name(value, prefix, expected_constant_variable_name):
+    param = AutoGenParam(**value)
+    assert param.get_constant_variable_name(prefix) == expected_constant_variable_name
 
 
 @pytest.mark.parametrize(
@@ -680,6 +716,55 @@ def test_auto_gen_bad_transformations(transformation, expected_errors):
 
 
 @pytest.mark.parametrize(
+    ("value", "expected_constant_variables"),
+    [
+        pytest.param(
+            {
+                "name": "name1",
+                "requires_parameters": False,
+                "params": [{"expected": {"string": "something"}}],
+            },
+            "",
+            id="no-requires-parameters",
+        ),
+        pytest.param(
+            {
+                "name": "name2",
+                "requires_parameters": True,
+                "params": [{"name": "blah", "input": "whatever", "expected": "hello"}],
+            },
+            "",
+            id="no-constants",
+        ),
+        pytest.param(
+            {
+                "name": "name3",
+                "requires_parameters": True,
+                "strings": {
+                    "foo": "some foo",
+                    "bar": "some bar",
+                },
+                "params": [
+                    {"name": "blah 1", "input": "whatever 1", "expected": "hello"},
+                    {"name": "blah 2", "input": "whatever 2", "expected": {"string": "foo"}},
+                    {"name": "blah 3", "input": "whatever 3", "expected": {"string": "bar"}},
+                    {"name": "blah 4", "input": "whatever 4", "expected": "goodbye"},
+                ],
+            },
+            """\
+NAME3_FOO = "some foo"
+NAME3_BAR = "some bar"
+""",
+            id="has-constants",
+        ),
+    ],
+)
+def test_auto_gen_test_get_constant_variables(value, expected_constant_variables):
+    test = AutoGenTest(**value)
+    assert test.get_constant_variables() == expected_constant_variables
+
+
+@pytest.mark.parametrize(
     ("value", "expected_pytest_params"),
     [
         pytest.param(
@@ -710,6 +795,30 @@ def test_auto_gen_bad_transformations(transformation, expected_errors):
 )
 """,
             id="pytest-params",
+        ),
+        pytest.param(
+            {
+                "name": "name3",
+                "requires_parameters": True,
+                "strings": {
+                    "hello": "Hello",
+                    "goodbye": "Goodbye",
+                },
+                "params": [
+                    {"name": "some name 1", "input": "hello", "expected": {"string": "hello"}},
+                    {"name": "some name 2", "input": "Goodbye", "expected": {"string": "goodbye"}},
+                ],
+            },
+            """\
+@pytest.mark.parametrize(
+    ("in_params", "expected"),
+    [
+        pytest.param("hello", NAME3_HELLO, id="some name 1"),
+        pytest.param("Goodbye", NAME3_GOODBYE, id="some name 2"),
+    ]
+)
+""",
+            id="pytest-params-with-strings",
         ),
     ],
 )
@@ -873,6 +982,21 @@ def test_auto_gen_test_get_expected_output(value, project_name_underscores, expe
             },
             "requires_params",
             id="project-params",
+        ),
+        pytest.param(
+            {
+                "name": "prime_invalid",
+                "requires_parameters": True,
+                "strings": {"error": "some error"},
+                "params": [
+                    {"name": "no input", "input": None, "expected": {"string": "error"}},
+                    {"name": "empty input", "input": '""', "expected": {"string": "error"}},
+                    {"name": "bad input", "input": '"a"', "expected": {"string": "error"}},
+                ],
+                "transformations": ["strip"],
+            },
+            "requires_params_with_string",
+            id="project-params-with-string",
         ),
     ],
 )

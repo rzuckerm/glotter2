@@ -487,7 +487,7 @@ def test_good_project(value, expected_value):
         pytest.param(
             {
                 "words": ["foo"],
-                "requires_params": True,
+                "requires_parameters": True,
                 "tests": {
                     "blah": {
                         "inputs": ["Input1", 2, 3],
@@ -504,7 +504,7 @@ def test_good_project(value, expected_value):
         pytest.param(
             {
                 "words": ["foo"],
-                "requires_params": True,
+                "requires_parameters": True,
                 "tests": {
                     "blah": {
                         "strings": 42,
@@ -521,7 +521,7 @@ def test_good_project(value, expected_value):
         pytest.param(
             {
                 "words": ["foo"],
-                "requires_params": True,
+                "requires_parameters": True,
                 "tests": {
                     "blah": {
                         "strings": {
@@ -545,7 +545,7 @@ def test_good_project(value, expected_value):
         pytest.param(
             {
                 "words": ["foo"],
-                "requires_params": True,
+                "requires_parameters": True,
                 "tests": {
                     "blah": {
                         "strings": {
