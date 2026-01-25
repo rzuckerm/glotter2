@@ -62,8 +62,8 @@ coverage-badge:
 	echo "*** Creating code coverage badge ***"
 	rm -f $(META)/html_cov/.gitignore $(META)/html_cov/badge.svg
 	[ -f .coverage ]
-	$(RUN) coverage-badge -o $(META)/html_cov/badge.svg
-	echo ""
+	$(RUN) genbadge coverage -i $(META)/coverage.xml -o $(META)/html_cov/badge.svg
+	@echo ""
 
 .PHONY: doc
 doc: $(META_INSTALL)
