@@ -4,7 +4,7 @@ from functools import lru_cache
 import yaml
 
 from glotter import testinfo
-from glotter.containerfactory import ContainerFactory
+from glotter.containerfactory import get_container_factory
 from glotter.settings import get_settings
 from glotter.utils import error_and_exit
 
@@ -100,7 +100,7 @@ class Source:
         :param command: command to run
         :return:  the exit code and output of the command
         """
-        container = ContainerFactory().get_container(self)
+        container = get_container_factory().get_container(self)
         return container.exec_run(
             cmd=command,
             detach=False,
@@ -108,7 +108,7 @@ class Source:
         )
 
     def cleanup(self):
-        ContainerFactory().cleanup(self)
+        get_container_factory().cleanup(self)
 
 
 @lru_cache

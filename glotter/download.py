@@ -1,6 +1,6 @@
 from concurrent.futures import ThreadPoolExecutor
 
-from glotter.containerfactory import ContainerFactory
+from glotter.containerfactory import get_container_factory
 from glotter.settings import get_settings
 from glotter.source import filter_sources, get_sources
 
@@ -29,13 +29,13 @@ def download(args):
 
 
 def _download_image_from_source(container_info, parallel=False):
-    ContainerFactory().get_image(container_info, parallel=parallel)
+    get_container_factory().get_image(container_info, parallel=parallel)
 
 
 def remove_images(containers, parallel):
     if parallel:
         with ThreadPoolExecutor(max_workers=4) as executor:
-            executor.map(ContainerFactory().remove_image, containers.values())
+            executor.map(get_container_factory().remove_image, containers.values())
     else:
         for container_info in containers.values():
-            ContainerFactory().remove_image(container_info)
+            get_container_factory().remove_image(container_info)

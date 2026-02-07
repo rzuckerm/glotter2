@@ -1,5 +1,6 @@
 import os
 import tempfile
+from unittest.mock import patch
 from uuid import uuid4 as uuid
 
 import pytest
@@ -7,7 +8,6 @@ import pytest
 from glotter import containerfactory
 from glotter.project import Project
 from glotter.settings import get_settings
-from glotter.singleton import Singleton
 from glotter.source import Source
 from glotter.testinfo import ContainerInfo
 
@@ -24,7 +24,9 @@ def docker():
 
 @pytest.fixture
 def factory(docker):
-    return containerfactory.ContainerFactory(docker_client=docker)
+    with patch("glotter.containerfactory.docker.from_env") as mock_from_env:
+        mock_from_env.return_value = docker
+        return containerfactory.get_container_factory()
 
 
 @pytest.fixture
@@ -173,14 +175,14 @@ def temp_dir_chdir():
 
 
 @pytest.fixture(autouse=True)
-def clear_singleton():
-    clear_caches()
+def clear_caches():
+    _clear_caches()
     try:
         yield
     finally:
-        clear_caches()
+        _clear_caches()
 
 
-def clear_caches():
-    Singleton.clear()
+def _clear_caches():
+    containerfactory.get_container_factory.cache_clear()
     get_settings.cache_clear()

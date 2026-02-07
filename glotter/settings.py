@@ -20,6 +20,9 @@ from glotter.utils import error_and_exit, indent
 
 @cache
 def get_settings():
+    """
+    Get Settings as a singleton
+    """
     return Settings()
 
 
