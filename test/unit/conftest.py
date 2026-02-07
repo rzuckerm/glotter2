@@ -6,6 +6,7 @@ import pytest
 
 from glotter import containerfactory
 from glotter.project import Project
+from glotter.settings import get_settings
 from glotter.singleton import Singleton
 from glotter.source import Source
 from glotter.testinfo import ContainerInfo
@@ -173,8 +174,13 @@ def temp_dir_chdir():
 
 @pytest.fixture(autouse=True)
 def clear_singleton():
-    Singleton.clear()
+    clear_caches()
     try:
         yield
     finally:
-        Singleton.clear()
+        clear_caches()
+
+
+def clear_caches():
+    Singleton.clear()
+    get_settings.cache_clear()

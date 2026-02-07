@@ -149,7 +149,7 @@ def test_generate_tests(mock_settings, temp_dir_chdir):
 
 @pytest.fixture()
 def mock_settings():
-    with patch("glotter.test_generator.Settings") as mock:
+    with patch("glotter.test_generator.get_settings") as mock:
         mock.return_value.projects = {
             "".join(value["words"]): Project(**value)
             for value in [

@@ -5,7 +5,7 @@ import yaml
 
 from glotter import testinfo
 from glotter.containerfactory import ContainerFactory
-from glotter.settings import Settings
+from glotter.settings import get_settings
 from glotter.utils import error_and_exit
 
 BAD_SOURCES = "__bad_sources__"
@@ -123,7 +123,7 @@ def get_sources(path, check_bad_sources=False):
         the BAD_SOURCES key contains a list of invalid paths relative to the current
         working directory
     """
-    sources = {k: [] for k in Settings().projects}
+    sources = {k: [] for k in get_settings().projects}
     orig_path = path
     if check_bad_sources:
         sources[BAD_SOURCES] = []

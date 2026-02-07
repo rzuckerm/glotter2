@@ -1,7 +1,7 @@
 import os
 import shlex
 
-from glotter.settings import Settings
+from glotter.settings import get_settings
 from glotter.utils import quote
 
 
@@ -14,7 +14,7 @@ def generate_test_docs(doc_dir, repo_name, repo_url):
     :param repo_url: Repository URL
     """
 
-    settings = Settings()
+    settings = get_settings()
     for project in settings.projects.values():
         test_doc_generator = TestDocGenerator(project)
         doc = test_doc_generator.generate_test_doc(repo_name, repo_url)

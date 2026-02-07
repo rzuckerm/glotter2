@@ -1,4 +1,5 @@
 import os
+from functools import cache
 from typing import Dict, Optional
 from warnings import warn
 
@@ -14,11 +15,15 @@ from pydantic import (
 
 from glotter.errors import get_error_details, raise_simple_validation_error, raise_validation_errors
 from glotter.project import AcronymScheme, Project
-from glotter.singleton import Singleton
 from glotter.utils import error_and_exit, indent
 
 
-class Settings(metaclass=Singleton):
+@cache
+def get_settings():
+    return Settings()
+
+
+class Settings:
     def __init__(self):
         self._project_root = os.getcwd()
         try:

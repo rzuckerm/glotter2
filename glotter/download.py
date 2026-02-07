@@ -1,7 +1,7 @@
 from concurrent.futures import ThreadPoolExecutor
 
 from glotter.containerfactory import ContainerFactory
-from glotter.settings import Settings
+from glotter.settings import get_settings
 from glotter.source import filter_sources, get_sources
 
 
@@ -9,7 +9,7 @@ def download(args):
     def get_key(source):
         return f"{source.test_info.container_info.image}:{source.test_info.container_info.tag}"
 
-    sources_by_type = filter_sources(args, get_sources(Settings().source_root))
+    sources_by_type = filter_sources(args, get_sources(get_settings().source_root))
     containers = {
         get_key(source): source.test_info.container_info
         for sources in sources_by_type.values()
