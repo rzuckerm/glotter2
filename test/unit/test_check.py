@@ -57,5 +57,5 @@ def mock_get_sources():
 
 @pytest.fixture()
 def mock_settings():
-    with patch("glotter.test_doc_generator.Settings") as mock:
+    with patch("glotter.test_doc_generator.get_settings") as mock:
         yield mock

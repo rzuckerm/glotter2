@@ -2,7 +2,7 @@ import yaml
 from jinja2 import BaseLoader, Environment
 
 from glotter.project import NamingScheme
-from glotter.settings import Settings
+from glotter.settings import get_settings
 
 
 class ContainerInfo:
@@ -102,7 +102,7 @@ class FolderInfo:
         extension = self.extension if include_extension else ""
         return {
             project_type: f"{project.get_project_name_by_scheme(self.naming)}{extension}"
-            for project_type, project in Settings().projects.items()
+            for project_type, project in get_settings().projects.items()
         }
 
     def __eq__(self, other):

@@ -1,12 +1,12 @@
 import sys
 
-from glotter.settings import Settings
+from glotter.settings import get_settings
 from glotter.source import BAD_SOURCES, get_sources
 
 
 def check(_args):
     # Get all sources
-    all_sources = get_sources(Settings().source_root, check_bad_sources=True)
+    all_sources = get_sources(get_settings().source_root, check_bad_sources=True)
 
     # If no bad sources, exit with zero status
     bad_sources = all_sources[BAD_SOURCES]

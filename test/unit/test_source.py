@@ -72,7 +72,7 @@ def test_build_does_nothing_when_build_is_empty(test_info_string_no_build, monke
     src.build()
 
 
-def test_build_runs_build_command(factory, source_with_build, monkeypatch, no_io):
+def test_build_runs_build_command(factory, source_with_build, no_io):
     source_with_build.build()
     build_cmd = source_with_build.test_info.container_info.build.strip()
     container = factory.get_container(source_with_build)

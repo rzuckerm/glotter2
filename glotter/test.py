@@ -3,7 +3,7 @@ import sys
 
 import pytest
 
-from glotter.settings import Settings
+from glotter.settings import get_settings
 from glotter.source import filter_sources, get_sources
 from glotter.test_generator import generate_tests
 from glotter.utils import error_and_exit
@@ -16,7 +16,7 @@ def test(args):
         _run_pytest_and_exit(*test_args)
 
     all_tests = _collect_tests()
-    sources_by_type = filter_sources(args, get_sources(Settings().source_root))
+    sources_by_type = filter_sources(args, get_sources(get_settings().source_root))
     for project_type, sources in sources_by_type.items():
         for source in sources:
             test_args += _get_tests(project_type, all_tests, source)
@@ -28,7 +28,7 @@ def test(args):
 
 
 def _get_tests(project_type, all_tests, src=None):
-    test_functions = Settings().get_test_mapping_name(project_type)
+    test_functions = get_settings().get_test_mapping_name(project_type)
     tests = []
     for test_func in test_functions:
         if src is not None:

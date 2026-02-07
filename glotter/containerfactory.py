@@ -2,23 +2,28 @@ import os
 import shutil
 import tempfile
 from datetime import datetime, timedelta
+from functools import cache
 from uuid import uuid4 as uuid
 
 import docker
 
-from glotter.singleton import Singleton
+
+@cache
+def get_container_factory():
+    """
+    Get ContainerFactory as a singleton
+    """
+    return ContainerFactory()
 
 
-class ContainerFactory(metaclass=Singleton):
-    def __init__(self, docker_client=None):
+class ContainerFactory:
+    def __init__(self):
         """
-        Initialize a ContainerFactory. This class is a singleton.
-
-        :param docker_client: optionally set the docker client. Defaults to setting from the environment
+        Initialize a ContainerFactory
         """
         self._containers = {}
         self._volume_dis = {}
-        self._client = docker_client or docker.from_env()
+        self._client = docker.from_env()
         self._api_client = self._client.api
 
     def get_container(self, source):

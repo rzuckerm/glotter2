@@ -1,7 +1,7 @@
 from concurrent.futures import ThreadPoolExecutor
 
-from glotter.containerfactory import ContainerFactory
-from glotter.settings import Settings
+from glotter.containerfactory import get_container_factory
+from glotter.settings import get_settings
 from glotter.source import filter_sources, get_sources
 
 
@@ -9,7 +9,7 @@ def download(args):
     def get_key(source):
         return f"{source.test_info.container_info.image}:{source.test_info.container_info.tag}"
 
-    sources_by_type = filter_sources(args, get_sources(Settings().source_root))
+    sources_by_type = filter_sources(args, get_sources(get_settings().source_root))
     containers = {
         get_key(source): source.test_info.container_info
         for sources in sources_by_type.values()
@@ -29,13 +29,13 @@ def download(args):
 
 
 def _download_image_from_source(container_info, parallel=False):
-    ContainerFactory().get_image(container_info, parallel=parallel)
+    get_container_factory().get_image(container_info, parallel=parallel)
 
 
 def remove_images(containers, parallel):
     if parallel:
         with ThreadPoolExecutor(max_workers=4) as executor:
-            executor.map(ContainerFactory().remove_image, containers.values())
+            executor.map(get_container_factory().remove_image, containers.values())
     else:
         for container_info in containers.values():
-            ContainerFactory().remove_image(container_info)
+            get_container_factory().remove_image(container_info)

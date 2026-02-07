@@ -74,7 +74,7 @@ def mock_thread_pool_executor():
 
 @pytest.fixture
 def mock_container_factory():
-    with patch("glotter.download.ContainerFactory") as mock:
+    with patch("glotter.download.get_container_factory") as mock:
         yield mock
 
 

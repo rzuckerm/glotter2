@@ -2,7 +2,7 @@ import argparse
 import sys
 
 from glotter.download import download, remove_images
-from glotter.settings import Settings
+from glotter.settings import get_settings
 from glotter.source import get_sources
 from glotter.test import test
 from glotter.utils import error_and_exit
@@ -17,7 +17,7 @@ def batch(args):
         error_and_exit(f"Batch number must be from 1 to {args.num_batches}")
 
     # Get all of the languages
-    all_sources = get_sources(Settings().source_root)
+    all_sources = get_sources(get_settings().source_root)
     languages = sorted(
         {source.language.lower() for sources in all_sources.values() for source in sources}
     )

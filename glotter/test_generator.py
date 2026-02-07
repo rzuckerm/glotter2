@@ -3,7 +3,7 @@ import shutil
 import subprocess
 import tempfile
 
-from glotter.settings import Settings
+from glotter.settings import get_settings
 
 AUTO_GEN_TEST_PATH = os.path.join("test", "generated")
 
@@ -14,7 +14,7 @@ def generate_tests():
     """
 
     shutil.rmtree(AUTO_GEN_TEST_PATH, ignore_errors=True)
-    settings = Settings()
+    settings = get_settings()
     test_generators = {
         project_name: TestGenerator(project_name, project)
         for project_name, project in settings.projects.items()

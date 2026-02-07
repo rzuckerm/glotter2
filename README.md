@@ -25,6 +25,11 @@ If you'd like to contribute to Glotter2, read our [contributing guidelines](./CO
 
 ### Glotter2 releases
 
+* Future
+  * Remove `Singleton` class. This affects the `Settings` and `ContainerFactory`
+    classes:
+    * Instead of `Settings()`, use `get_settings()`.
+    * Instead of `ContainerFactory()`, use `get_container_factory()`.
 * 0.14.0:
   * Add support for common test strings to reduce duplication in tests
 * 0.13.0:

@@ -2,13 +2,13 @@ import functools
 
 import pytest
 
-from glotter.settings import Settings
+from glotter.settings import get_settings
 from glotter.source import get_sources
 
 
 def project_test(project_type):
     def decorator(func):
-        Settings().add_test_mapping(project_type, func)
+        get_settings().add_test_mapping(project_type, func)
 
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
@@ -20,7 +20,7 @@ def project_test(project_type):
 
 
 def project_fixture(project_type):
-    sources = get_sources(Settings().source_root).get(project_type)
+    sources = get_sources(get_settings().source_root).get(project_type)
     return pytest.fixture(
         scope="module",
         params=sources,

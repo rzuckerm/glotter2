@@ -1,6 +1,6 @@
 import csv
 
-from glotter.settings import Settings
+from glotter.settings import get_settings
 from glotter.source import get_sources
 
 
@@ -15,17 +15,17 @@ def report(args):
 
 class Reporter:
     def __init__(self):
-        self._projects = sorted([p.display_name for p in Settings().projects.values()])
+        self._projects = sorted([p.display_name for p in get_settings().projects.values()])
         self._language_stats = self._collect_language_stats()
         self._languages = sorted(self._language_stats.keys())
 
     @staticmethod
     def _get_project_display_name(key):
-        return Settings().projects[key].display_name
+        return get_settings().projects[key].display_name
 
     def _collect_language_stats(self):
         language_stats = {}
-        sources_by_type = get_sources(Settings().source_root)
+        sources_by_type = get_sources(get_settings().source_root)
 
         for project, sources in sources_by_type.items():
             display_name = self._get_project_display_name(project)

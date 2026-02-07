@@ -1,9 +1,9 @@
-from glotter.settings import Settings
+from glotter.settings import get_settings
 from glotter.source import filter_sources, get_sources
 
 
 def run(args):
-    sources_by_type = filter_sources(args, get_sources(Settings().source_root))
+    sources_by_type = filter_sources(args, get_sources(get_settings().source_root))
     for project_type, sources in sources_by_type.items():
         params = _prompt_params(project_type)
         for source in sources:
@@ -11,7 +11,7 @@ def run(args):
 
 
 def _prompt_params(project_type):
-    if not Settings().projects[project_type].requires_parameters:
+    if not get_settings().projects[project_type].requires_parameters:
         return ""
     return input(f'input parameters for "{project_type}": ')
 

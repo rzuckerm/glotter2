@@ -6,8 +6,7 @@ import pytest
 from pydantic import ValidationError
 
 from glotter.project import AcronymScheme
-from glotter.settings import Settings, SettingsParser
-from glotter.singleton import Singleton
+from glotter.settings import SettingsParser, get_settings
 
 TEST_DATA_PATH = os.path.abspath(os.path.join("test", "integration", "data"))
 
@@ -437,12 +436,12 @@ projects:
         ),
     ],
 )
-def test_bad_glotter_yml(src_filename, expected_errors, tmp_dir_chdir, clear_singleton, capsys):
+def test_bad_glotter_yml(src_filename, expected_errors, tmp_dir_chdir, clear_settings, capsys):
     src_path = os.path.join(TEST_DATA_PATH, src_filename)
     shutil.copy(src_path, ".glotter.yml")
 
     with pytest.raises(SystemExit) as e:
-        Settings()
+        get_settings()
 
     assert e.value.code != 0
 
@@ -452,7 +451,9 @@ def test_bad_glotter_yml(src_filename, expected_errors, tmp_dir_chdir, clear_sin
 
 
 @pytest.fixture()
-def clear_singleton():
-    Singleton.clear()
-    yield
-    Singleton.clear()
+def clear_settings():
+    get_settings.cache_clear()
+    try:
+        yield
+    finally:
+        get_settings.cache_clear()
