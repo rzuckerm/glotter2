@@ -83,8 +83,10 @@ def tmp_dir():
 def tmp_dir_chdir(tmp_dir):
     curr_cwd = os.getcwd()
     os.chdir(tmp_dir)
-    yield tmp_dir
-    os.chdir(curr_cwd)
+    try:
+        yield tmp_dir
+    finally:
+        os.chdir(curr_cwd)
 
 
 @pytest.fixture
