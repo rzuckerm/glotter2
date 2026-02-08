@@ -1,0 +1,49 @@
+settings:
+    source_root: "./archive"
+
+projects:
+    helloworld:
+        words:
+            - "hello"
+            - "world"
+        requires_parameters: false
+        tests:
+            hello_world:
+                params:
+                    - expected: "Hello, World!"
+                transformations:
+                    - "strip"
+                    - strip:
+                        - '"'
+    rot13:
+        words:
+            - "rot13"
+        requires_parameters: true
+        strings:
+            usage: "Usage: please provide a string to encrypt"
+        tests:
+            rot13_valid:
+                params:
+                    -   name: "sample input lower case"
+                        input: '"the quick brown fox jumped over the lazy dog"'
+                        expected: "gur dhvpx oebja sbk whzcrq bire gur ynml qbt"
+                    -   name: "sample input upper case"
+                        input: '"THE QUICK BROWN FOX JUMPED OVER THE LAZY DOG"'
+                        expected: "GUR DHVPX OEBJA SBK WHZCRQ BIRE GUR YNML QBT"
+                    -   name: "sample input punctuation"
+                        input: '"The quick brown fox jumped. Was it over the lazy dog?"'
+                        expected: "Gur dhvpx oebja sbk whzcrq. Jnf vg bire gur ynml qbt?"
+                transformations:
+                    - "strip"
+            rot13_invalid:
+                params:
+                    -   name: "no input"
+                        input: null
+                        expected:
+                            string: "usage"
+                    -   name: "empty input"
+                        input: '""'
+                        expected:
+                            string: "usage"
+                transformations:
+                    - "strip"
