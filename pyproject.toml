@@ -61,6 +61,7 @@ module-root = ""
 [tool.ruff]
 target-version = "py39"
 line-length = 100
+exclude = ["test/integration/data/system-test/**"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "PL", "RUF", "T10", "W"]
