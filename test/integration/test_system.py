@@ -4,6 +4,7 @@ import json
 import os
 import shutil
 import subprocess
+import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -13,7 +14,8 @@ import yaml
 TEST_DATA_DIR = Path("test/integration/data/system-test").resolve()
 
 pytestmark = pytest.mark.skipif(
-    shutil.which("docker") is None, reason="docker executable is not found"
+    shutil.which("docker") is None or sys.platform != "linux",
+    reason="docker executable is not found",
 )
 
 
