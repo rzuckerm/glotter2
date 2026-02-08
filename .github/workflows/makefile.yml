@@ -72,7 +72,7 @@ jobs:
 
     - name: Install OpenSSL (if MacOS)
       run: brew install openssl
-      if: "${{ matrix.os == 'mac-os-latest' }}"
+      if: "${{ matrix.os == 'macos-latest' }}"
 
     - uses: astral-sh/setup-uv@v6
       with:
