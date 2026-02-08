@@ -13,10 +13,18 @@ import yaml
 
 TEST_DATA_DIR = Path("test/integration/data/system-test").resolve()
 
-pytestmark = pytest.mark.skipif(
-    shutil.which("docker") is None or sys.platform != "linux",
-    reason="docker executable is not found",
-)
+
+def get_pytest_skip() -> dict[str, str | bool]:
+    if shutil.which("docker") is None:
+        return {"condition": True, "reason": "'docker' not found"}
+
+    if sys.platform != "linux":
+        return {"condition": True, "reason": "Platform is not Linux"}
+
+    return {"condition": False, "reason": ""}
+
+
+pytestmark = pytest.mark.skipif(**get_pytest_skip())
 
 
 @dataclass
