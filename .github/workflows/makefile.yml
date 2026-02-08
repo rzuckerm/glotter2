@@ -70,10 +70,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install OpenSSL (if MacOS)
-      run: brew install openssl
-      if: "${{ matrix.os == 'macos-latest' }}"
-
     - uses: astral-sh/setup-uv@v6
       with:
         version: "${{ needs.read-config.outputs.uv-version }}"
