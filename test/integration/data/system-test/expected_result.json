@@ -1,0 +1,9 @@
+{
+    "helloworld": {
+        "expected_output": "Hello, World!"
+    },
+    "rot13": {
+        "input": "'Hello!'",
+        "expected_output": "Uryyb!"
+    }
+}
