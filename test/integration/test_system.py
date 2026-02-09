@@ -56,7 +56,7 @@ def get_docker_info_list() -> list[DockerInfo]:
     return docker_info_list
 
 
-def get_language_params() -> list:
+def get_language_run_params() -> list:
     docker_info_list = get_docker_info_list()
     projects = json.loads(Path(TEST_DATA_DIR, "expected_result.json").read_text(encoding="utf-8"))
     return [
@@ -75,7 +75,15 @@ def _filename_to_project(filename: str) -> str:
     return Path(filename).stem.lower().replace("_", "").replace("-", "")
 
 
-@pytest.mark.parametrize(("language", "filename", "project_info"), get_language_params())
+def get_language_test_params() -> list:
+    return [
+        pytest.param(docker_info.language, filename, id=f"{docker_info.language}/{filename}")
+        for docker_info in get_docker_info_list()
+        for filename in docker_info.filenames
+    ]
+
+
+@pytest.mark.parametrize(("language", "filename", "project_info"), get_language_run_params())
 def test_run(language: str, filename: str, project_info: dict[str, str], project_dir: str):
     cmd = ["glotter", "run", "-l", language, "-s", filename]
     if "input" in project_info:
@@ -91,16 +99,35 @@ def test_run(language: str, filename: str, project_info: dict[str, str], project
     assert project_info["expected_output"] in stdout
 
 
-def test_test_pass(project_dir: str):
-    result = subprocess.run(["glotter", "test"], capture_output=True, check=False, encoding="utf-8")
+@pytest.mark.parametrize(("language", "filename"), get_language_test_params())
+def test_test(language: str, filename: str, project_dir: str):
+    cmd = ["glotter", "test", "-l", language, "-s", filename]
+    stdout = subprocess.run(cmd, capture_output=True, check=True, encoding="utf-8").stdout
+
+    assert f"{language}/{filename}" in stdout
+    assert "FAIL" not in stdout
+
+
+@pytest.mark.parametrize(
+    "options", [pytest.param([], id="serial"), pytest.param(["--parallel"], id="parallel")]
+)
+def test_test_all_pass(options: list[str], project_dir: str):
+    result = subprocess.run(
+        ["glotter", "test"] + options, capture_output=True, check=True, encoding="utf-8"
+    )
 
     assert result.returncode == 0
-    for param in get_language_params():
-        language, filename, _ = param.values
+    for param in get_language_test_params():
+        language, filename = param.values
         assert f"{language}/{filename}" in result.stdout
 
+    assert "FAIL" not in result.stdout
 
-def test_test_fail(project_dir: str):
+
+@pytest.mark.parametrize(
+    "options", [pytest.param([], id="serial"), pytest.param(["--parallel"], id="parallel")]
+)
+def test_test_all_fail(options: list[str], project_dir: str):
     for root, _, files in os.walk(project_dir):
         if "testinfo.yml" in files:
             for filename in files:
@@ -109,7 +136,9 @@ def test_test_fail(project_dir: str):
                     contents = path.read_text(encoding="utf-8")
                     path.write_text(contents.replace("Hello", "Goodbye"), encoding="utf-8")
 
-    result = subprocess.run(["glotter", "test"], capture_output=True, check=False, encoding="utf-8")
+    result = subprocess.run(
+        ["glotter", "test"] + options, capture_output=True, check=False, encoding="utf-8"
+    )
 
     assert result.returncode != 0
     assert "FAIL" in result.stdout
