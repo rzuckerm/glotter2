@@ -29,15 +29,15 @@ If you'd like to contribute to Glotter2, read our [contributing guidelines](./CO
   * Remove `Singleton` class. This affects the `Settings` and `ContainerFactory`
     classes:
     * Instead of `Settings()`, use `get_settings()`
-    * Instead of `ContainerFactory()`, use `get_container_factory()`.
+    * Instead of `ContainerFactory()`, use `get_container_factory()`
   * Use [glotter2-core](https://github.com/rzuckerm/glotter2) for the following:
     * Parse settings (`CoreSettingsParser`)
     * Provide common source information (`CoreSource`)
     * Provide common project mixin (`CoreProjectMixin`)
   * `TestInfo` class is no part of `glotter2-core`. This adds the following:
     * Language display name (e.g., `PHP`, `C++`, etc.)
-    * Allows for untestable languages by allowing `container` to be empty
-    * Add notes for the language
+    * Allow for untestable languages by allowing `container` to be empty
+    * Add notes for a language
 * 0.14.0:
   * Add support for common test strings to reduce duplication in tests
 * 0.13.0:
