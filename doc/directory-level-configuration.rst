@@ -166,4 +166,4 @@ such as Mathematica.
       naming: "hyphen"
 
     notes:
-      - "Mathematica is untestable because there it requires a commercial license"
+      - "Mathematica is untestable because it requires a commercial license"
