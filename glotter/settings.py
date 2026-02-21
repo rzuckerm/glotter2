@@ -1,9 +1,10 @@
 import os
+from dataclasses import dataclass
 from functools import cache
 from typing import Dict, Optional
-from warnings import warn
 
-import yaml
+from glotter_core.project import AcronymScheme
+from glotter_core.settings import CoreSettingsParser
 from pydantic import (
     BaseModel,
     Field,
@@ -14,7 +15,7 @@ from pydantic import (
 )
 
 from glotter.errors import get_error_details, raise_simple_validation_error, raise_validation_errors
-from glotter.project import AcronymScheme, Project
+from glotter.project import Project
 from glotter.utils import error_and_exit, indent
 
 
@@ -206,63 +207,15 @@ class SettingsConfig(BaseModel):
         return self
 
 
-class SettingsParser:
+@dataclass(frozen=True)
+class SettingsParser(CoreSettingsParser):
     def __init__(self, project_root):
-        self._project_root = project_root
-        self._yml_path = None
-        self._acronym_scheme = None
-        self._projects = None
-        self._source_root = None
-        self._yml_path = self._locate_yml()
+        try:
+            super().__init__(project_root)
+        except ValueError as exc:
+            error_and_exit(str(exc))
 
-        yml = None
-        if self._yml_path is not None:
-            yml = self._parse_yml()
-        else:
-            self._yml_path = project_root
-            warn(f'.glotter.yml not found in directory "{project_root}"')
-
-        if yml is None:
-            yml = {}
-
-        if not isinstance(yml, dict):
-            error_and_exit(".glotter.yml does not contain a dict")
-
-        config = SettingsConfig(**yml, yml_path=self._yml_path)
-        self._acronym_scheme = config.settings.acronym_scheme
-        self._source_root = config.settings.source_root
-        self._projects = config.projects
-
-    @property
-    def project_root(self):
-        return self._project_root
-
-    @property
-    def yml_path(self):
-        return self._yml_path
-
-    @property
-    def source_root(self):
-        return self._source_root
-
-    @property
-    def acronym_scheme(self):
-        return self._acronym_scheme
-
-    @property
-    def projects(self):
-        return self._projects
-
-    def _parse_yml(self):
-        with open(self._yml_path, "r", encoding="utf-8") as f:
-            contents = f.read()
-
-        return yaml.safe_load(contents)
-
-    def _locate_yml(self):
-        for root, _, files in os.walk(self._project_root):
-            if ".glotter.yml" in files:
-                path = os.path.abspath(root)
-                return os.path.join(path, ".glotter.yml")
-
-        return None
+        config = SettingsConfig(**self.yml, yml_path=self.yml_path)
+        object.__setattr__(self, "acronym_scheme", config.settings.acronym_scheme)
+        object.__setattr__(self, "source_root", config.settings.source_root)
+        object.__setattr__(self, "projects", config.projects)

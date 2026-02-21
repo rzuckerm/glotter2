@@ -3,9 +3,9 @@ import platform
 import shutil
 
 import pytest
+from glotter_core.project import AcronymScheme
 from pydantic import ValidationError
 
-from glotter.project import AcronymScheme
 from glotter.settings import SettingsParser, get_settings
 
 TEST_DATA_PATH = os.path.abspath(os.path.join("test", "integration", "data"))

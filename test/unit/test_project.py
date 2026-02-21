@@ -1,9 +1,10 @@
 import string
 
 import pytest
+from glotter_core.project import AcronymScheme, NamingScheme
 from pydantic import ValidationError
 
-from glotter.project import AcronymScheme, NamingScheme, Project
+from glotter.project import Project
 
 VALID_CHARS = string.ascii_letters + string.digits
 BAD_WORDS = ["a#xyz", "z_x blah", "yoo-hoo"]
@@ -146,7 +147,7 @@ def test_get_project_name_by_scheme(words, acronyms, scheme, expected):
 
 def test_get_project_name_by_scheme_bad():
     project = Project(words=["blah"])
-    with pytest.raises(KeyError):
+    with pytest.raises(ValueError):
         project.get_project_name_by_scheme("junk")
 
 

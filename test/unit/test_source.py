@@ -1,9 +1,9 @@
 import os
 
 import pytest
+from glotter_core.testinfo import TestInfo
 
 from glotter.source import Source, filter_sources
-from glotter.testinfo import TestInfo
 
 
 def test_full_path(test_info_string_no_build):
@@ -33,7 +33,7 @@ def test_repr(test_info_string_no_build):
 
 @pytest.mark.parametrize(
     ("name", "expected"),
-    [("name", ""), ("name.ext", ".ext"), ("name.name2.ext", ".ext")],
+    [("name", ""), ("name.ext", ".ext"), ("name.name2.ext", ".name2.ext")],
 )
 def test_name(name, expected, test_info_string_no_build):
     src = Source(

@@ -250,34 +250,34 @@ def mock_sources_batch(mock_sources, test_info_string_no_build):
         "baklava": mock_sources["baklava"]
         + [
             Source(
-                name="baklava.d",
+                filename="baklava.d",
                 language="d",
                 path=os.path.join("archive", "d", "d", "baklava.d"),
-                test_info_string=test_info_string_no_build,
+                test_info=test_info_string_no_build,
             ),
             Source(
-                name="baklava.e",
+                filename="baklava.e",
                 language="eiffel",
                 path=os.path.join("archive", "e", "eiffel", "baklava.e"),
-                test_info_string=test_info_string_no_build,
+                test_info=test_info_string_no_build,
             ),
         ],
         "fileinputoutput": mock_sources["fileinputoutput"]
         + [
             Source(
-                name="file-input-output.d",
+                filename="file-input-output.d",
                 language="d",
                 path=os.path.join("archive", "d", "d", "file-input-output.d"),
-                test_info_string=test_info_string_no_build,
+                test_info=test_info_string_no_build,
             ),
         ],
         "quine": mock_sources["quine"]
         + [
             Source(
-                name="quine.e",
+                filename="quine.e",
                 language="eiffel",
                 path=os.path.join("archive", "e", "eiffel", "quine.e"),
-                test_info_string=test_info_string_no_build,
+                test_info=test_info_string_no_build,
             ),
         ],
     }

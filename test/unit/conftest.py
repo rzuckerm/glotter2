@@ -4,12 +4,12 @@ from unittest.mock import patch
 from uuid import uuid4 as uuid
 
 import pytest
+from glotter_core.testinfo import ContainerInfo
 
 from glotter import containerfactory
 from glotter.project import Project
 from glotter.settings import get_settings
 from glotter.source import Source
-from glotter.testinfo import ContainerInfo
 
 from .mockdocker import DockerMock
 
@@ -70,10 +70,10 @@ container:
 def source_no_build(test_info_string_no_build):
     iid = uuid().hex
     return Source(
-        name=f"sourcename_{iid}",
+        filename=f"sourcename_{iid}",
         language="python",
         path=f"sourcepath_{iid}",
-        test_info_string=test_info_string_no_build,
+        test_info=test_info_string_no_build,
     )
 
 
@@ -81,10 +81,10 @@ def source_no_build(test_info_string_no_build):
 def source_with_build(test_info_string_with_build):
     iid = uuid().hex
     return Source(
-        name=f"sourcename_{iid}",
+        filename=f"sourcename_{iid}",
         language="go",
         path=f"sourcepath_{iid}",
-        test_info_string=test_info_string_with_build,
+        test_info=test_info_string_with_build,
     )
 
 
@@ -119,44 +119,44 @@ def mock_sources(test_info_string_no_build):
     yield {
         "baklava": [
             Source(
-                name="baklava.b",
+                filename="baklava.b",
                 language="bar",
                 path=os.path.join("archive", "b", "bar", "baklava.b"),
-                test_info_string=test_info_string_no_build,
+                test_info=test_info_string_no_build,
             ),
             Source(
-                name="baklava.b",
+                filename="baklava.b",
                 language="bart",
                 path=os.path.join("archive", "b", "bart", "baklava.b"),
-                test_info_string=test_info_string_no_build,
+                test_info=test_info_string_no_build,
             ),
         ],
         "fileinputoutput": [
             Source(
-                name="file-input-output.b",
+                filename="file-input-output.b",
                 language="bart",
                 path=os.path.join("archive", "b", "bart", "file-input-output.b"),
-                test_info_string=test_info_string_no_build,
+                test_info=test_info_string_no_build,
             ),
         ],
         "quine": [
             Source(
-                name="quine.b",
+                filename="quine.b",
                 language="bar",
                 path=os.path.join("archive", "b", "bar", "quine.b"),
-                test_info_string=test_info_string_no_build,
+                test_info=test_info_string_no_build,
             ),
             Source(
-                name="quine.b",
+                filename="quine.b",
                 language="bart",
                 path=os.path.join("archive", "b", "bart", "quine.b"),
-                test_info_string=test_info_string_no_build,
+                test_info=test_info_string_no_build,
             ),
             Source(
-                name="Quine.cl",
+                filename="Quine.cl",
                 language="cool",
                 path=os.path.join("archive", "c", "cool", "Quine.cl"),
-                test_info_string=test_info_string_no_build,
+                test_info=test_info_string_no_build,
             ),
         ],
     }
