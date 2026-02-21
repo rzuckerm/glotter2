@@ -5,7 +5,25 @@ Directory Level Configuration
 Each directory that contains code that you want Glotter2 to recognize requires a file named ``testinfo.yml``.
 This file contains settings pertinent only to the current directory but does not affect child directories.
 
-There are two root level sections.
+There are these root level sections.
+
+Language Display Name
+=====================
+
+``language_display_name`` is the actual name of the language. If omitted, this field is derived from the
+name of the directory. For example:
+
+================  =====================
+Directory Name    Language Display Name
+================  =====================
+``python``        ``Python``
+``go``            ``Go``
+``objective-c``   ``Objective C``
+``visual-basic``   ``Visual Basic``
+``c-plus-plus``   ``C++``
+``c-sharp``       ``C#``
+``c-star``        ``C*``
+================  =====================
 
 Folder
 ======
@@ -40,6 +58,7 @@ Container
 =========
 
 ``container`` contains settings that help Glotter2 know how to build and run sources in this directory.
+If omitted, then this indicates that the language is untestable.
 
 It has the following settings.
 
@@ -83,10 +102,15 @@ Jinja Format          Description
 ``source.full_path``  The full path to the source file including its name and extension
 ====================  ===========
 
+Notes
+=====
+
+``notes`` is a list of notes for the language.
+
 Example
 =======
 
-The following is an example ``testinfo.yml`` file for a directory containing sources in go.
+The following is an example ``testinfo.yml`` file for a directory containing sources in ``go``.
 
 .. code-block:: yaml
 
@@ -99,3 +123,47 @@ The following is an example ``testinfo.yml`` file for a directory containing sou
       tag: "1.12-alpine"
       build: "go build -o {{ source.name }} {{ source.name }}{{ source.extension }}"
       cmd: "./{{ source.name }}"
+
+The following is an example ``testinfo.yml`` for a directory containing sources in ``php``.
+
+.. code-block:: yaml
+
+    language_display_name: "PHP"
+    folder:
+      extension: ".php"
+      naming: "hyphen"
+
+    container:
+      image: "php"
+      tag: "8.4-alpine"
+      cmd: "php {{ source.name }}{{ source.extension }}"
+
+The following is an example ``testinfo.yml`` for a directory containing sources in ``m4``.
+
+.. code-block:: yaml
+
+    language_display_name: "m4"
+
+    folder:
+      extension: ".m4"
+      naming: "hyphen"
+
+    container:
+      image: "m4"
+      tag: "latest-alpine"
+      cmd: "run-m4 {{ source.name }}{{ source.extension }}"
+
+    notes:
+      - "m4 takes all of the command-line arguments and encloses them in a backtick (`) and single quote (')"
+
+The following is an example ``testinfo.yml`` for a directory containing sources for an untestable language
+such as Mathematica.
+
+.. code-block:: yaml
+
+    folder:
+      extension: ".nb"
+      naming: "hyphen"
+
+    notes:
+      - "Mathematica is untestable because there it requires a commercial license"
