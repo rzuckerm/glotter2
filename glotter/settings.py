@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from functools import cache
 from typing import Dict, Optional
 
+from glotter_core.project import AcronymScheme
 from glotter_core.settings import CoreSettingsParser
 from pydantic import (
     BaseModel,
@@ -14,7 +15,7 @@ from pydantic import (
 )
 
 from glotter.errors import get_error_details, raise_simple_validation_error, raise_validation_errors
-from glotter.project import AcronymScheme, Project
+from glotter.project import Project
 from glotter.utils import error_and_exit, indent
 
 

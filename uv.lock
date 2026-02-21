@@ -516,7 +516,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "docker", specifier = ">=7.1.0,<8.0" },
-    { name = "glotter2-core", editable = "../glotter2-core" },
+    { name = "glotter2-core", specifier = ">=0.1.0,<0.2.0" },
     { name = "jinja2", specifier = ">=3.1.2,<4.0" },
     { name = "pydantic", specifier = ">=2.12,<3" },
     { name = "pydantic-core", specifier = ">=2.33.2,<3.0.0" },
@@ -538,27 +538,14 @@ dev = [
 [[package]]
 name = "glotter2-core"
 version = "0.1.0"
-source = { editable = "../glotter2-core" }
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "jinja2" },
     { name = "pyyaml" },
 ]
-
-[package.metadata]
-requires-dist = [
-    { name = "jinja2", specifier = ">=3.1.6,<4.0.0" },
-    { name = "pyyaml", specifier = ">=6.0.3,<7.0.0" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "coverage", specifier = ">=7.10.7,<8.0.0" },
-    { name = "genbadge", extras = ["coverage"], specifier = ">=1.1.3,<2.0.0" },
-    { name = "pytest", specifier = ">=8.4.2,<9.0.0" },
-    { name = "pytest-cov", specifier = ">=7.0.0,<8.0.0" },
-    { name = "ruff", specifier = ">=0.15.0,<0.16.0" },
-    { name = "sphinx", specifier = ">=7.4.7,<8.0.0" },
-    { name = "sphinx-rtd-theme", specifier = ">=3.1.0,<4.0.0" },
+sdist = { url = "https://files.pythonhosted.org/packages/d9/02/61bf775190f3e1368b15ceb0c544ee8304ddbac5da6fb51d93f1e64e3686/glotter2_core-0.1.0.tar.gz", hash = "sha256:be9ab3e3b2647c3dbcef06e42f2bbc36ba8774dffd8a96ce6c77143dacec7776", size = 6364, upload-time = "2026-02-21T20:06:48.692Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/08/9b/f4b945e37ac5f07a687ab0048f8c34cd8c578858579e745db8bf0a0bd354/glotter2_core-0.1.0-py3-none-any.whl", hash = "sha256:a427855e31a2b6e80ecdc9a58462aa921523ef8a9a1862b66a9f6e7ae1bd0bbc", size = 8422, upload-time = "2026-02-21T20:06:47.659Z" },
 ]
 
 [[package]]

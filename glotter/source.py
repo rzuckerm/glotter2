@@ -1,9 +1,7 @@
-import os
 from functools import lru_cache
 
-import yaml
+from glotter_core.source import CoreSource, categorize_sources
 
-from glotter import testinfo
 from glotter.containerfactory import get_container_factory
 from glotter.settings import get_settings
 from glotter.utils import error_and_exit
@@ -11,52 +9,8 @@ from glotter.utils import error_and_exit
 BAD_SOURCES = "__bad_sources__"
 
 
-class Source:
+class Source(CoreSource):
     """Metadata about a source file"""
-
-    def __init__(self, name, language, path, test_info_string):
-        """Initialize source
-
-        :param name: filename including extension
-        :param path: path to the file excluding name
-        :param language: the language of the source
-        :param test_info_string: a string in yaml format containing testinfo for a directory
-        """
-        self._name = name
-        self._language = language
-        self._path = path
-
-        self._test_info = testinfo.TestInfo.from_string(test_info_string, self)
-
-    @property
-    def full_path(self):
-        """Returns the full path to the source including filename and extension"""
-        return os.path.join(self._path, self._name)
-
-    @property
-    def path(self):
-        """Returns the path to the source excluding name"""
-        return self._path
-
-    @property
-    def name(self):
-        """Returns the name of the source excluding the extension"""
-        return os.path.splitext(self._name)[0]
-
-    @property
-    def language(self):
-        """Returns the language of the source"""
-        return self._language
-
-    @property
-    def extension(self):
-        """Returns the extension of the source"""
-        return os.path.splitext(self._name)[1]
-
-    @property
-    def test_info(self):
-        """Returns parsed TestInfo object"""
-        return self._test_info
 
     def __repr__(self):
         return f"Source(name: {self.name}, path: {self.path})"
@@ -123,31 +77,11 @@ def get_sources(path, check_bad_sources=False):
         the BAD_SOURCES key contains a list of invalid paths relative to the current
         working directory
     """
-    sources = {k: [] for k in get_settings().projects}
-    orig_path = path
+
+    categories = categorize_sources(path, get_settings().projects, Source)
+    sources = categories.testable_by_project
     if check_bad_sources:
-        sources[BAD_SOURCES] = []
-
-    for root, _, files in os.walk(path):
-        path = os.path.abspath(root)
-        if "testinfo.yml" in files:
-            with open(os.path.join(path, "testinfo.yml"), "r", encoding="utf-8") as file:
-                test_info_string = file.read()
-            folder_info = testinfo.FolderInfo.from_dict(yaml.safe_load(test_info_string)["folder"])
-            folder_project_names = folder_info.get_project_mappings(include_extension=True)
-            for project_type, project_name in folder_project_names.items():
-                if project_name in files:
-                    source = Source(project_name, os.path.basename(path), path, test_info_string)
-                    sources[project_type].append(source)
-
-            if check_bad_sources:
-                invalid_filenames = set(files) - (
-                    set(folder_project_names.values()) | {"testinfo.yml", "README.md"}
-                )
-                sources[BAD_SOURCES] += [
-                    os.path.join(os.path.relpath(path, orig_path), filename)
-                    for filename in invalid_filenames
-                ]
+        sources[BAD_SOURCES] = categories.bad_sources
 
     return sources
 

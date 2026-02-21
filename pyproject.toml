@@ -30,7 +30,7 @@ dependencies = [
     "pydantic>=2.12,<3",
     "pydantic-core>=2.33.2,<3.0.0",
     "ruff>=0.15.0,<0.16.0",
-    "glotter2-core",
+    "glotter2-core>=0.1.0,<0.2.0",
 ]
 
 [project.urls]
@@ -55,12 +55,12 @@ dev = [
 requires = ["uv_build>=0.10.0,<0.11.0"]
 build-backend = "uv_build"
 
+[tool.uv]
+add-bounds = "major"
+
 [tool.uv.build-backend]
 module-name = "glotter"
 module-root = ""
-
-[tool.uv.sources]
-glotter2-core = { path = "../glotter2-core", editable = true }
 
 [tool.ruff]
 target-version = "py39"
