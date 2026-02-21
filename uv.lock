@@ -493,6 +493,7 @@ version = "0.15.0"
 source = { editable = "." }
 dependencies = [
     { name = "docker" },
+    { name = "glotter2-core" },
     { name = "jinja2" },
     { name = "pydantic" },
     { name = "pydantic-core" },
@@ -515,6 +516,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "docker", specifier = ">=7.1.0,<8.0" },
+    { name = "glotter2-core", editable = "../glotter2-core" },
     { name = "jinja2", specifier = ">=3.1.2,<4.0" },
     { name = "pydantic", specifier = ">=2.12,<3" },
     { name = "pydantic-core", specifier = ">=2.33.2,<3.0.0" },
@@ -531,6 +533,32 @@ dev = [
     { name = "pytest-cov", specifier = ">=4.0.0,<5" },
     { name = "sphinx", specifier = ">=6.1.3,<7" },
     { name = "sphinx-rtd-theme", specifier = ">=1.2.0,<2" },
+]
+
+[[package]]
+name = "glotter2-core"
+version = "0.1.0"
+source = { editable = "../glotter2-core" }
+dependencies = [
+    { name = "jinja2" },
+    { name = "pyyaml" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "jinja2", specifier = ">=3.1.6,<4.0.0" },
+    { name = "pyyaml", specifier = ">=6.0.3,<7.0.0" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "coverage", specifier = ">=7.10.7,<8.0.0" },
+    { name = "genbadge", extras = ["coverage"], specifier = ">=1.1.3,<2.0.0" },
+    { name = "pytest", specifier = ">=8.4.2,<9.0.0" },
+    { name = "pytest-cov", specifier = ">=7.0.0,<8.0.0" },
+    { name = "ruff", specifier = ">=0.15.0,<0.16.0" },
+    { name = "sphinx", specifier = ">=7.4.7,<8.0.0" },
+    { name = "sphinx-rtd-theme", specifier = ">=3.1.0,<4.0.0" },
 ]
 
 [[package]]
