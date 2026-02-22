@@ -30,7 +30,7 @@ dependencies = [
     "pydantic>=2.12,<3",
     "pydantic-core>=2.33.2,<3.0.0",
     "ruff>=0.15.0,<0.16.0",
-    "glotter2-core>=0.1.0,<0.2.0",
+    "glotter2-core>=0.1.1,<0.2.0",
 ]
 
 [project.urls]
