@@ -8,10 +8,11 @@ from glotter.source import Source, filter_sources
 
 def test_full_path(test_info_string_no_build):
     src = Source(
-        "name",
-        "python",
-        os.path.join("this", "is", "a", "path"),
-        test_info_string_no_build,
+        filename="name",
+        language="python",
+        path=os.path.join("this", "is", "a", "path"),
+        test_info=test_info_string_no_build,
+        project_type="someproject",
     )
     expected = os.path.join("this", "is", "a", "path", "name")
     actual = src.full_path
@@ -20,10 +21,11 @@ def test_full_path(test_info_string_no_build):
 
 def test_repr(test_info_string_no_build):
     src = Source(
-        "name",
-        "python",
-        os.path.join("this", "is", "a", "path"),
-        test_info_string_no_build,
+        filename="name",
+        language="python",
+        path=os.path.join("this", "is", "a", "path"),
+        test_info=test_info_string_no_build,
+        project_type="someproject",
     )
     actual = repr(src)
     expected_path = os.path.join("this", "is", "a", "path")
@@ -37,10 +39,11 @@ def test_repr(test_info_string_no_build):
 )
 def test_name(name, expected, test_info_string_no_build):
     src = Source(
-        name,
-        "python",
-        os.path.join("this", "is", "a", "path"),
-        test_info_string_no_build,
+        filename=name,
+        language="python",
+        path=os.path.join("this", "is", "a", "path"),
+        test_info=test_info_string_no_build,
+        project_type="someproject",
     )
     actual = src.extension
     assert actual == expected
@@ -48,10 +51,11 @@ def test_name(name, expected, test_info_string_no_build):
 
 def test_test_info_matches_test_info_string(test_info_string_no_build):
     src = Source(
-        "name",
-        "python",
-        os.path.join("this", "is", "a", "path"),
-        test_info_string_no_build,
+        filename="name",
+        language="python",
+        path=os.path.join("this", "is", "a", "path"),
+        test_info=test_info_string_no_build,
+        project_type="someproject",
     )
     expected = TestInfo.from_string(test_info_string_no_build, src)
     actual = src.test_info
@@ -64,10 +68,11 @@ def test_build_does_nothing_when_build_is_empty(test_info_string_no_build, monke
         lambda *args, **kwargs: pytest.fail("get_container was called"),
     )
     src = Source(
-        "name",
-        "python",
-        os.path.join("this", "is", "a", "path"),
-        test_info_string_no_build,
+        filename="name",
+        language="python",
+        path=os.path.join("this", "is", "a", "path"),
+        test_info=test_info_string_no_build,
+        project_type="someproject",
     )
     src.build()
 

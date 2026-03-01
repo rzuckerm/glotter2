@@ -530,7 +530,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "docker", specifier = ">=7.1.0,<8.0" },
-    { name = "glotter2-core", specifier = ">=0.1.1,<0.2.0" },
+    { name = "glotter2-core", specifier = ">=0.1.2,<0.2.0" },
     { name = "jinja2", specifier = ">=3.1.2,<4.0" },
     { name = "pydantic", specifier = ">=2.12,<3" },
     { name = "pydantic-core", specifier = ">=2.33.2,<3.0.0" },
@@ -551,15 +551,15 @@ dev = [
 
 [[package]]
 name = "glotter2-core"
-version = "0.1.1"
+version = "0.1.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "jinja2" },
     { name = "pyyaml" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/5d/10/d3eaa4370e8d7fc80cae3e541a81972aa341c7b20d8cc34070adc6c19375/glotter2_core-0.1.1.tar.gz", hash = "sha256:8e3abb05c7f7c38df258bc9992907a50fafc06e73cfd60aad6522f3244dc60e4", size = 6733, upload-time = "2026-02-22T16:21:11.482Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b4/ed/808752c5e4e20cc4ff07f9ca5508cda2234500d61008d6da4a933ab99424/glotter2_core-0.1.2.tar.gz", hash = "sha256:01940f58b92fdf68955b119ad31a103fe1b615085b8ed146e1f16ae341eda636", size = 6922, upload-time = "2026-03-01T19:09:45.143Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ae/25/ac11805d1ac41672db84deb3c6e9b7171d53b220086976501041de043c53/glotter2_core-0.1.1-py3-none-any.whl", hash = "sha256:80ea6bd067aa6b6c1d05fa5962d113b82eb821a97aa60dc46b0924f824121264", size = 8821, upload-time = "2026-02-22T16:21:10.655Z" },
+    { url = "https://files.pythonhosted.org/packages/9c/be/36b35ee9c46a5d9dcca574ab98a07318d24f1678fbbc7ef8a4620b5ce7e1/glotter2_core-0.1.2-py3-none-any.whl", hash = "sha256:5fb069ad0a2cf205099752831bbd20d359529b4e0cbc37de3413fcb6fc7b418b", size = 9026, upload-time = "2026-03-01T19:09:45.973Z" },
 ]
 
 [[package]]
