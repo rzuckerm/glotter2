@@ -94,6 +94,9 @@ jobs:
           fi
 
   doc:
+    permissions:
+      contents: write
+
     name: Doc
     runs-on: ubuntu-latest
     needs: read-config
