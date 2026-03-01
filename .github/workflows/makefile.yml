@@ -125,5 +125,5 @@ jobs:
       uses: JamesIves/github-pages-deploy-action@v4
       with:
         folder: .meta/doc
-        token: ${{ secrets.REPO_TOKEN }}
+        token: ${{ secrets.GITHUB_TOKEN }}
       if: ${{ github.ref == 'refs/heads/main' }}
