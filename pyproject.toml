@@ -30,7 +30,7 @@ dependencies = [
     "pydantic>=2.12,<3",
     "pydantic-core>=2.33.2,<3.0.0",
     "ruff>=0.15.0,<0.16.0",
-    "glotter2-core>=0.1.1,<0.2.0",
+    "glotter2-core>=0.1.2,<0.2.0",
 ]
 
 [project.urls]
@@ -52,7 +52,7 @@ dev = [
 ]
 
 [build-system]
-requires = ["uv_build>=0.10.0,<0.11.0"]
+requires = ["uv_build>=0.10.7,<0.11.0"]
 build-backend = "uv_build"
 
 [tool.uv]

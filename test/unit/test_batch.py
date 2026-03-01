@@ -254,12 +254,14 @@ def mock_sources_batch(mock_sources, test_info_string_no_build):
                 language="d",
                 path=os.path.join("archive", "d", "d", "baklava.d"),
                 test_info=test_info_string_no_build,
+                project_type="baklava",
             ),
             Source(
                 filename="baklava.e",
                 language="eiffel",
                 path=os.path.join("archive", "e", "eiffel", "baklava.e"),
                 test_info=test_info_string_no_build,
+                project_type="baklava",
             ),
         ],
         "fileinputoutput": mock_sources["fileinputoutput"]
@@ -269,6 +271,7 @@ def mock_sources_batch(mock_sources, test_info_string_no_build):
                 language="d",
                 path=os.path.join("archive", "d", "d", "file-input-output.d"),
                 test_info=test_info_string_no_build,
+                project_type="baklava",
             ),
         ],
         "quine": mock_sources["quine"]
@@ -278,6 +281,7 @@ def mock_sources_batch(mock_sources, test_info_string_no_build):
                 language="eiffel",
                 path=os.path.join("archive", "e", "eiffel", "quine.e"),
                 test_info=test_info_string_no_build,
+                project_type="quine",
             ),
         ],
     }

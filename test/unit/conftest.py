@@ -74,6 +74,7 @@ def source_no_build(test_info_string_no_build):
         language="python",
         path=f"sourcepath_{iid}",
         test_info=test_info_string_no_build,
+        project_type="someproject",
     )
 
 
@@ -85,6 +86,7 @@ def source_with_build(test_info_string_with_build):
         language="go",
         path=f"sourcepath_{iid}",
         test_info=test_info_string_with_build,
+        project_type="someproject",
     )
 
 
@@ -123,12 +125,14 @@ def mock_sources(test_info_string_no_build):
                 language="bar",
                 path=os.path.join("archive", "b", "bar", "baklava.b"),
                 test_info=test_info_string_no_build,
+                project_type="baklava",
             ),
             Source(
                 filename="baklava.b",
                 language="bart",
                 path=os.path.join("archive", "b", "bart", "baklava.b"),
                 test_info=test_info_string_no_build,
+                project_type="baklava",
             ),
         ],
         "fileinputoutput": [
@@ -137,6 +141,7 @@ def mock_sources(test_info_string_no_build):
                 language="bart",
                 path=os.path.join("archive", "b", "bart", "file-input-output.b"),
                 test_info=test_info_string_no_build,
+                project_type="fileinputoutput",
             ),
         ],
         "quine": [
@@ -145,18 +150,21 @@ def mock_sources(test_info_string_no_build):
                 language="bar",
                 path=os.path.join("archive", "b", "bar", "quine.b"),
                 test_info=test_info_string_no_build,
+                project_type="quine",
             ),
             Source(
                 filename="quine.b",
                 language="bart",
                 path=os.path.join("archive", "b", "bart", "quine.b"),
                 test_info=test_info_string_no_build,
+                project_type="quine",
             ),
             Source(
                 filename="Quine.cl",
                 language="cool",
                 path=os.path.join("archive", "c", "cool", "Quine.cl"),
                 test_info=test_info_string_no_build,
+                project_type="quine",
             ),
         ],
     }
