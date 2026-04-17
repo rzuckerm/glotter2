@@ -25,6 +25,9 @@ If you'd like to contribute to Glotter2, read our [contributing guidelines](./CO
 
 ### Glotter2 releases
 
+* 0.16.0
+  * Drop support for python 3.9
+  * Update to `pytest` 9.x
 * 0.15.0
   * Remove `Singleton` class. This affects the `Settings` and `ContainerFactory`
     classes:
