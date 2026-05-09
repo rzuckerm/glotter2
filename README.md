@@ -25,6 +25,8 @@ If you'd like to contribute to Glotter2, read our [contributing guidelines](./CO
 
 ### Glotter2 releases
 
+* 0.17.0
+  * Add repeat specified tests a specified number of times
 * 0.16.0
   * Drop support for python 3.9
   * Update to `pytest` 9.x

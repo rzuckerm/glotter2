@@ -217,6 +217,7 @@ def test_auto_gen_params_get_constant_variable_name(value, expected_constant_var
                 "strings": {},
                 "params": [{"name": "some-name", "input": None, "expected": "some-str"}],
                 "transformations": ["strip"],
+                "repeat": 1,
             },
             id=f"name_{char}-single_param-single_transformation",
         )
@@ -232,6 +233,7 @@ def test_auto_gen_params_get_constant_variable_name(value, expected_constant_var
                 "strings": {},
                 "params": [{"name": "", "input": None, "expected": "foo"}],
                 "transformations": [],
+                "repeat": 1,
             },
             id="no_param_name",
         )
@@ -250,6 +252,7 @@ def test_auto_gen_params_get_constant_variable_name(value, expected_constant_var
                 "strings": {},
                 "params": [{"name": "some-name", "input": None, "expected": "some-str"}],
                 "transformations": ["strip"],
+                "repeat": 1,
             },
             id=f"name_foo_{char}_bar-single_param-single_transformation",
         )
@@ -292,6 +295,7 @@ def test_auto_gen_params_get_constant_variable_name(value, expected_constant_var
                     },
                 ],
                 "transformations": ["strip", "splitlines"],
+                "repeat": 1,
             },
             id="muli_param-multi_transformation",
         ),
@@ -322,6 +326,7 @@ def test_auto_gen_params_get_constant_variable_name(value, expected_constant_var
                     }
                 ],
                 "transformations": [],
+                "repeat": 1,
             },
             id="has_inputs",
         ),
@@ -352,8 +357,32 @@ def test_auto_gen_params_get_constant_variable_name(value, expected_constant_var
                     }
                 ],
                 "transformations": [],
+                "repeat": 1,
             },
             id="has_strings",
+        ),
+        pytest.param(
+            {
+                "name": "test_name5",
+                "requires_parameters": True,
+                "inputs": ["Input1", "Input2"],
+                "params": [
+                    {"name": "some-name5", "input": "some-input5", "expected": "some-expected5"}
+                ],
+                "repeat": 5,
+            },
+            {
+                "name": "test_name5",
+                "requires_parameters": True,
+                "inputs": ["Input1", "Input2"],
+                "strings": {},
+                "params": [
+                    {"name": "some-name5", "input": "some-input5", "expected": "some-expected5"}
+                ],
+                "transformations": [],
+                "repeat": 5,
+            },
+            id="has-repeat",
         ),
     ],
 )
@@ -809,6 +838,28 @@ def test_auto_gen_test_get_constant_variables(value, expected_constant_variables
 """,
             id="pytest-params-with-strings",
         ),
+        pytest.param(
+            {
+                "name": "name2",
+                "requires_parameters": True,
+                "params": [
+                    {"name": "some name 1", "input": "hello", "expected": "Hello"},
+                    {"name": "some name 2", "input": "Goodbye", "expected": "Goodbye"},
+                ],
+                "repeat": 4,
+            },
+            """\
+@pytest.mark.parametrize(
+    ("in_params", "expected"),
+    [
+        pytest.param("hello", "Hello", id="some name 1"),
+        pytest.param("Goodbye", "Goodbye", id="some name 2"),
+    ]
+)
+@pytest.mark.parametrize("repeat", range(1, 5), ids=lambda x: f"repeat{x}")
+""",
+            id="pytest-params-with-repeat",
+        ),
     ],
 )
 def test_auto_gen_test_get_pytest_params(value, expected_pytest_params):
@@ -840,6 +891,20 @@ def test_something(in_params, expected, some_project):
     actual = some_project.run(params=in_params)
 """,
             id="requires-params",
+        ),
+        pytest.param(
+            {
+                "name": "something",
+                "requires_parameters": True,
+                "params": [{"name": "blah", "input": "foo", "expected": "bar"}],
+                "repeat": 3,
+            },
+            "some_project",
+            """\
+def test_something(repeat, in_params, expected, some_project):
+    actual = some_project.run(params=in_params)
+""",
+            id="repeat-and-requires-params",
         ),
     ],
 )
@@ -986,6 +1051,28 @@ def test_auto_gen_test_get_expected_output(value, project_name_underscores, expe
             },
             "requires_params_with_string",
             id="project-params-with-string",
+        ),
+        pytest.param(
+            {
+                "name": "sleep_sort_valid",
+                "requires_parameters": True,
+                "params": [
+                    {
+                        "name": "sample input",
+                        "input": '"4, 5, 3, 1, 2"',
+                        "expected": "1, 2, 3, 4, 5",
+                    },
+                    {
+                        "name": "sample input: with duplicate",
+                        "input": '"4, 5, 3, 1, 4, 2"',
+                        "expected": "1, 2, 3, 4, 4, 5",
+                    },
+                ],
+                "transformations": [{"remove": ["[", "]"]}, "strip"],
+                "repeat": 10,
+            },
+            "requires_params_with_repeat",
+            id="project-params-with-repeat",
         ),
     ],
 )

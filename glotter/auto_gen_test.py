@@ -141,6 +141,7 @@ class AutoGenTest(BaseModel):
     )
     strings: Dict[str, str] = {}
     transformations: List[Any] = []
+    repeat: int = 1
 
     SCALAR_TRANSFORMATION_FUNCS: ClassVar[Dict[str, TransformationScalarFuncT]] = {
         "strip": partial(_append_method_to_actual, "strip"),
@@ -365,7 +366,7 @@ class AutoGenTest(BaseModel):
         pytest_params = "".join(
             indent(param.get_pytest_param(), 8) for param in self.params
         ).strip()
-        return f"""\
+        test_code = f"""\
 @pytest.mark.parametrize(
     ("in_params", "expected"),
     [
@@ -373,6 +374,12 @@ class AutoGenTest(BaseModel):
     ]
 )
 """
+        if self.repeat > 1:
+            test_code += f"""\
+@pytest.mark.parametrize("repeat", range(1, {self.repeat + 1}), ids=lambda x: f"repeat{{x}}")
+"""
+
+        return test_code
 
     def get_test_function_and_run(self, project_name_underscores: str) -> str:
         """
@@ -384,9 +391,12 @@ class AutoGenTest(BaseModel):
 
         func_params = ""
         run_param = ""
+        if self.repeat > 1:
+            func_params += "repeat, "
+
         if self.requires_parameters:
-            func_params = "in_params, expected, "
-            run_param = "params=in_params"
+            func_params += "in_params, expected, "
+            run_param += "params=in_params"
 
         return f"""\
 def test_{self.name}({func_params}{project_name_underscores}):
