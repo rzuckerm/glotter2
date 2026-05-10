@@ -187,6 +187,43 @@ ROT13_PROJECT = {
         },
     },
 }
+REPEAT_PROJECT = {
+    "words": ["do", "it", "again"],
+    "requires_parameters": True,
+    "tests": {
+        "valid_do_it_again": {
+            "params": [
+                {
+                    "name": "input1",
+                    "input": "123",
+                    "expected": "234",
+                },
+                {
+                    "name": "input2",
+                    "input": "234",
+                    "expected": "345",
+                },
+            ]
+        },
+        "invalid_do_it_again": {
+            "name": "no input",
+            "params": [
+                {
+                    "name": "no input",
+                    "input": None,
+                    "expected": "No input",
+                },
+                {
+                    "name": "empty input",
+                    "input": '""',
+                    "expected": "Empty input",
+                },
+            ],
+            "transformations": ["strip"],
+        },
+    },
+    "repeat": {"valid_do_it_again": 3},
+}
 
 UNIT_TEST_DATA_PATH = os.path.abspath(os.path.join("test", "unit", "data", "test_doc_generator"))
 
@@ -213,6 +250,7 @@ def test_test_doc_generator_with_no_tests():
         ),
         pytest.param(EXTRA_INPUTS_PROJECT, id="extra-input"),
         pytest.param(ROT13_PROJECT, id="strings"),
+        pytest.param(REPEAT_PROJECT, id="repeat"),
     ],
 )
 def test_test_generator_with_tests(value):
@@ -262,6 +300,7 @@ def mock_settings():
                 DUPLICATE_CHARACTER_COUNTER_PROJECT,
                 EXTRA_INPUTS_PROJECT,
                 ROT13_PROJECT,
+                REPEAT_PROJECT,
             ]
         }
         yield mock
