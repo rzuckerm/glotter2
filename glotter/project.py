@@ -91,14 +91,18 @@ class Project(BaseModel, CoreProjectMixin):
             for test_name, test in value.items()
         }
 
-    def set_tests(self, project: "Project") -> List[InitErrorDetails]:
+    def set_tests(
+        self, project: "Project", loc_prefix: Optional[tuple] = None
+    ) -> List[InitErrorDetails]:
         """
         If there is a "use_tests" item, then set the specified tests, renaming them
         according to the "use_tests" item. The "use_tests" item is then removed
 
         :params tests: Project with tests to use
+        :params loc_prefix: Optional prefix to apply to validation error locations
         """
 
+        loc = loc_prefix or ()
         errors = []
         if self.use_tests:
             self.tests = {}
@@ -113,20 +117,23 @@ class Project(BaseModel, CoreProjectMixin):
             self.requires_parameters = project.requires_parameters
             self.use_tests = None
             errors += _validate_test_keys(
-                self.__class__, self.tests, self.repeat, raise_exc=False
+                self.__class__, self.tests, self.repeat, raise_exc=False, loc_prefix=loc
             )
 
         return errors
 
 
-def _validate_test_keys(cls, tests, repeat, raise_exc: bool = True) -> List[InitErrorDetails]:
+def _validate_test_keys(
+    cls, tests, repeat, raise_exc: bool = True, loc_prefix: Optional[tuple] = None
+) -> List[InitErrorDetails]:
+    loc = loc_prefix or ()
     errors = []
     for test_name in repeat:
         if isinstance(test_name, str) and test_name not in tests:
             errors.append(
                 get_error_details(
-                    "Refers to a non-existent test name",
-                    ("repeat", test_name),
+                    f"Refers to a non-existent test name {test_name}",
+                    loc + ("repeat", test_name),
                     test_name,
                 )
             )

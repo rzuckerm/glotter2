@@ -101,6 +101,67 @@ def _format_location_item(location) -> str:
     return str(location)
 
 
+def _validate_use_tests_repeat(projects: object) -> list:
+    errors = []
+
+    if not isinstance(projects, dict):
+        return errors
+
+    for project_name, project in projects.items():
+        if not isinstance(project, dict):
+            continue
+
+        use_tests = project.get("use_tests")
+        repeat = project.get("repeat")
+        if not isinstance(use_tests, dict) or not isinstance(repeat, dict):
+            continue
+
+        use_tests_name = use_tests.get("name")
+        target_project = projects.get(use_tests_name)
+        if not isinstance(use_tests_name, str) or not isinstance(target_project, dict):
+            continue
+
+        tests = target_project.get("tests")
+        if not isinstance(tests, dict):
+            continue
+
+        search = use_tests.get("search")
+        replace = use_tests.get("replace")
+        if not isinstance(search, str) or not isinstance(replace, str):
+            continue
+
+        valid_test_names = {
+            test_name.replace(search, replace)
+            for test_name in tests.keys()
+            if isinstance(test_name, str)
+        }
+
+        for repeat_name in repeat:
+            if isinstance(repeat_name, str) and repeat_name not in valid_test_names:
+                errors.append(
+                    get_error_details(
+                        f"Refers to a non-existent test name {repeat_name}",
+                        ("projects", project_name, "repeat", repeat_name),
+                        repeat_name,
+                    )
+                )
+
+    return errors
+
+
+def _convert_validation_error_to_error_details(validation_error: ValidationError) -> list:
+    errors = []
+    for error in validation_error.errors():
+        errors.append(
+            get_error_details(
+                error["msg"],
+                tuple(error.get("loc", ())),
+                error.get("input"),
+            )
+        )
+    return errors
+
+
 class SettingsConfigSettings(BaseModel):
     acronym_scheme: AcronymScheme = Field(AcronymScheme.two_letter_limit, validate_default=True)
     yml_path: str
@@ -199,7 +260,9 @@ class SettingsConfig(BaseModel):
                 )
             # Otherwise, set the tests that the "use_tests" item refers to with the tests renamed
             else:
-                errors += project.set_tests(projects[use_tests_name])
+                errors += project.set_tests(
+                    projects[use_tests_name], loc_prefix=("projects", project_name)
+                )
 
         if errors:
             raise_validation_errors(self.__class__, errors)
@@ -215,7 +278,18 @@ class SettingsParser(CoreSettingsParser):
         except ValueError as exc:
             error_and_exit(str(exc))
 
-        config = SettingsConfig(**self.yml, yml_path=self.yml_path)
+        try:
+            config = SettingsConfig(**self.yml, yml_path=self.yml_path)
+        except ValidationError as exc:
+            extra_errors = _validate_use_tests_repeat(self.yml.get("projects", {}))
+            if extra_errors:
+                combined_errors = _convert_validation_error_to_error_details(exc) + extra_errors
+                raise ValidationError.from_exception_data(
+                    title=SettingsConfig.__name__,
+                    line_errors=combined_errors,
+                )
+            raise
+
         object.__setattr__(self, "acronym_scheme", config.settings.acronym_scheme)
         object.__setattr__(self, "source_root", config.settings.source_root)
         object.__setattr__(self, "projects", config.projects)

@@ -240,6 +240,16 @@ projects:
             name: "bubblesort"
             search: "bubble_sort"
             replace: "merge_sort"
+    sleepsort:
+        words:
+            - "sleep"
+            - "sort"
+        use_tests:
+            name: "bubblesort"
+            search: "bubble_sort"
+            replace: "sleep_sort"
+        repeat:
+            sleep_sort_valid: 10
 """
 
     path = os.path.join(tmp_dir, ".glotter.yml")
@@ -271,6 +281,16 @@ projects:
         tests:
             merge_sort_valid:{valid_yml}
             merge_sort_invalid:{invalid_yml}
+    sleepsort:
+        words:
+            - "sleep"
+            - "sort"
+        requires_parameters: true
+        tests:
+            sleep_sort_valid:{valid_yml}
+            sleep_sort_invalid:{invalid_yml}
+        repeat:
+            sleep_sort_valid: 10
 """
     expected_settings_parser = setup_settings_parser(tmp_dir, path, yml)
     assert settings_parser.projects == expected_settings_parser.projects
@@ -313,6 +333,120 @@ projects:
     ]
     for expected_error in expected_errors:
         assert expected_error in str(e.value)
+
+
+def test_use_tests_with_missing_target_tests(tmp_dir):
+    """Test use_tests when target project has no 'tests' field"""
+    yml = """\
+projects:
+    base:
+        words:
+            - "base"
+    derived:
+        words:
+            - "derived"
+        use_tests:
+            name: "base"
+            search: "base"
+            replace: "derived"
+"""
+    path = os.path.join(tmp_dir, ".glotter.yml")
+    with pytest.raises(ValidationError) as e:
+        setup_settings_parser(tmp_dir, path, yml)
+    assert 'no "tests" item' in str(e.value)
+
+
+def test_validate_use_tests_repeat_with_type_mismatches(tmp_dir):
+    """Test _validate_use_tests_repeat guard clauses with malformed YAML"""
+    yml = """\
+projects:
+    valid:
+        words:
+            - "valid"
+        tests:
+            valid_test:
+                params:
+                    - name: "test1"
+                      input: "in"
+                      expected: "out"
+    bad_use_tests_type:
+        words:
+            - "bad"
+        use_tests: "not_a_dict"
+        repeat: "not_a_dict"
+    bad_repeat_type:
+        words:
+            - "bad2"
+        use_tests:
+            name: "valid"
+        repeat: "should_be_dict"
+    bad_target_type:
+        words:
+            - "bad3"
+        use_tests:
+            name: 123
+        repeat:
+            valid_test: 2
+    no_tests_in_target:
+        words:
+            - "bad4"
+        use_tests:
+            name: "valid"
+            search: "valid"
+            replace: "no_tests_in_target"
+        repeat:
+            no_tests_in_target_test: 2
+"""
+    path = os.path.join(tmp_dir, ".glotter.yml")
+    with pytest.raises(ValidationError):
+        setup_settings_parser(tmp_dir, path, yml)
+
+
+def test_use_tests_repeat_guards_with_mixed_valid_invalid(tmp_dir):
+    """Test guard clauses by mixing valid and invalid projects in one config"""
+    yml = """\
+projects:
+    target:
+        words:
+            - "target"
+        tests:
+            target_test:
+                params:
+                    - name: "t1"
+                      input: "i"
+                      expected: "e"
+    project_with_name_as_int:
+        words:
+            - "proj1"
+        use_tests:
+            name: 999
+        repeat:
+            test: 1
+    project_with_tests_as_string:
+        words:
+            - "proj2"
+        use_tests:
+            name: "target"
+        repeat:
+            test: 1
+    target_not_dict:
+        words:
+            - "proj3"
+        use_tests:
+            name: "not_exists_because_it_is_not_a_string"
+        repeat:
+            test: 1
+    missing_search_replace:
+        words:
+            - "proj4"
+        use_tests:
+            name: "target"
+        repeat:
+            test: 1
+"""
+    path = os.path.join(tmp_dir, ".glotter.yml")
+    with pytest.raises(ValidationError):
+        setup_settings_parser(tmp_dir, path, yml)
 
 
 @pytest.mark.parametrize(

@@ -907,7 +907,6 @@ def test_set_tests_invalid_repeat():
                 "search": "bubble_sort",
                 "replace": "sleep_sort",
             },
-            "use_tests": {"name": "bubblesort", "search": "bubble_sort", "replace": "sleep_sort"},
             "repeat": {
                 "sleep_sort_valib": 10,
                 "sleep_sort_invalib": 1,
