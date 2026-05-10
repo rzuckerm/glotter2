@@ -122,9 +122,6 @@ def _validate_use_tests_repeat(projects: object) -> list:
             continue
 
         tests = target_project.get("tests")
-        if not isinstance(tests, dict):
-            continue
-
         search = use_tests.get("search")
         replace = use_tests.get("replace")
         if not isinstance(search, str) or not isinstance(replace, str):
@@ -219,9 +216,6 @@ class SettingsConfig(BaseModel):
     @model_validator(mode="after")
     def validate_projects(self):
         projects = self.projects
-        if not isinstance(projects, dict):
-            return self
-
         projects_with_use_tests = {
             project_name: project for project_name, project in projects.items() if project.use_tests
         }
