@@ -131,7 +131,9 @@ def _unique_sort(actual_var, expected_var):
 class AutoGenTest(BaseModel):
     """Object used to auto-generated a test"""
 
-    name: Annotated[str, Field(strict=True, min_length=1, pattern="^[a-zA-Z][0-9a-zA-Z_]*$")]
+    VALID_NAME_REGEX: ClassVar[str] = "^[a-zA-Z][0-9a-zA-Z_]*$"
+
+    name: Annotated[str, Field(strict=True, min_length=1, pattern=VALID_NAME_REGEX)]
     requires_parameters: bool = False
     inputs: Annotated[List[str], Field(strict=True, min_length=1)] = Field(
         ["Input"], validate_default=True

@@ -1,0 +1,13 @@
+@project_test(PROJECT_NAME)
+@pytest.mark.parametrize(
+    ("in_params", "expected"),
+    [
+        pytest.param('"4, 5, 3, 1, 2"', "1, 2, 3, 4, 5", id="sample input"),
+        pytest.param('"4, 5, 3, 1, 4, 2"', "1, 2, 3, 4, 4, 5", id="sample input: with duplicate"),
+    ]
+)
+@pytest.mark.parametrize("repeat", range(1, 11), ids=lambda x: f"repeat{x}")
+def test_sleep_sort_valid(repeat, in_params, expected, requires_params_with_repeat):
+    actual = requires_params_with_repeat.run(params=in_params)
+    actual = actual.replace("[", "").replace("]", "").strip()
+    assert actual == expected
