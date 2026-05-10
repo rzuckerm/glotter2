@@ -147,6 +147,15 @@ class TestDocSectionGenerator:
 
             doc.append(_cells_to_table_line(cells))
 
+        if self.test_obj.repeat > 1:
+            doc += [
+                "",
+                (
+                    f"This test suite is repeated {self.test_obj.repeat} times to ensure that "
+                    "the results are consistent."
+                ),
+            ]
+
         if not has_output_column:
             doc += [
                 "",

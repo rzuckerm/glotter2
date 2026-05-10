@@ -9,6 +9,32 @@ from glotter.project import Project
 VALID_CHARS = string.ascii_letters + string.digits
 BAD_WORDS = ["a#xyz", "z_x blah", "yoo-hoo"]
 
+VALID_TESTS = {
+    "inputs": ["Input List"],
+    "params": [
+        {
+            "name": "not sorted",
+            "input": '"3, 4, 1, 2"',
+            "expected": "1, 2, 3, 4",
+        },
+        {
+            "name": "sorted",
+            "input": '"1, 2, 3"',
+            "expected": "1, 2, 3",
+        },
+    ],
+    "transformations": ["strip"],
+}
+INVALID_TESTS = {
+    "inputs": ["Input List"],
+    "params": [
+        {"name": "no input", "input": None, "expected": "usage"},
+        {"name": "empty input", "input": '""', "expected": "usage"},
+    ],
+    "transformations": ["strip"],
+}
+
+
 project_scheme_permutation_map = [
     {
         "id": "single_word_no_acronym",
@@ -164,6 +190,7 @@ def test_get_project_name_by_scheme_bad():
                 "acronym_scheme": AcronymScheme.two_letter_limit,
                 "use_tests": None,
                 "tests": {},
+                "repeat": {},
             },
             id=f"just-words-{char1}{char2}-{char2}{char1}",
         )
@@ -180,6 +207,7 @@ def test_get_project_name_by_scheme_bad():
                 "acronym_scheme": AcronymScheme.two_letter_limit,
                 "use_tests": None,
                 "tests": {},
+                "repeat": {},
             },
             id="requires-parameters",
         )
@@ -215,6 +243,7 @@ def test_get_project_name_by_scheme_bad():
                 "acronym_scheme": AcronymScheme.two_letter_limit,
                 "use_tests": None,
                 "tests": {},
+                "repeat": {},
             },
             id=f"has-acronyms-{char1}{char2}-{char2}{char1}",
         )
@@ -231,6 +260,7 @@ def test_get_project_name_by_scheme_bad():
                 "acronym_scheme": acronym_scheme,
                 "use_tests": None,
                 "tests": {},
+                "repeat": {},
             },
             id=f"has-acronym-scheme-{acronym_scheme.name}",
         )
@@ -283,6 +313,7 @@ def test_get_project_name_by_scheme_bad():
                             {"name": "two", "input": "2", "expected": "prime"},
                         ],
                         "transformations": ["strip", "lower"],
+                        "repeat": 1,
                     },
                     "prime_number_invalid": {
                         "name": "prime_number_invalid",
@@ -302,9 +333,11 @@ def test_get_project_name_by_scheme_bad():
                             },
                         ],
                         "transformations": ["strip"],
+                        "repeat": 1,
                     },
                 },
                 "use_tests": None,
+                "repeat": {},
             },
             id="tests",
         ),
@@ -355,6 +388,7 @@ def test_get_project_name_by_scheme_bad():
                             {"name": "two", "input": "2", "expected": "prime"},
                         ],
                         "transformations": ["strip", "lower"],
+                        "repeat": 1,
                     },
                     "prime_number_invalid": {
                         "name": "prime_number_invalid",
@@ -374,11 +408,111 @@ def test_get_project_name_by_scheme_bad():
                             },
                         ],
                         "transformations": ["strip"],
+                        "repeat": 1,
                     },
                 },
                 "use_tests": None,
+                "repeat": {},
             },
             id="tests-with-strings",
+        ),
+        pytest.param(
+            {
+                "words": ["something"],
+                "requires_parameters": True,
+                "tests": {
+                    "something_valid": {
+                        "inputs": ["Input"],
+                        "params": [
+                            {
+                                "name": "input1",
+                                "input": "abc",
+                                "expected": "cab",
+                            },
+                            {
+                                "name": "input2",
+                                "input": "xyzw",
+                                "expected": "wxyz",
+                            },
+                        ],
+                    },
+                    "something_invalid": {
+                        "inputs": ["Input"],
+                        "strings": {},
+                        "params": [
+                            {
+                                "name": "input1",
+                                "input": "xxx",
+                                "expected": "Bad",
+                            },
+                            {
+                                "name": "input2",
+                                "input": "yyy",
+                                "expected": "Bad",
+                            },
+                        ],
+                    },
+                },
+                "repeat": {
+                    "something_valid": 3,
+                    "something_invalid": 2,
+                },
+            },
+            {
+                "words": ["something"],
+                "acronyms": [],
+                "acronym_scheme": AcronymScheme.two_letter_limit,
+                "requires_parameters": True,
+                "strings": {},
+                "tests": {
+                    "something_valid": {
+                        "name": "something_valid",
+                        "requires_parameters": True,
+                        "inputs": ["Input"],
+                        "strings": {},
+                        "params": [
+                            {
+                                "name": "input1",
+                                "input": "abc",
+                                "expected": "cab",
+                            },
+                            {
+                                "name": "input2",
+                                "input": "xyzw",
+                                "expected": "wxyz",
+                            },
+                        ],
+                        "transformations": [],
+                        "repeat": 3,
+                    },
+                    "something_invalid": {
+                        "name": "something_invalid",
+                        "requires_parameters": True,
+                        "inputs": ["Input"],
+                        "strings": {},
+                        "params": [
+                            {
+                                "name": "input1",
+                                "input": "xxx",
+                                "expected": "Bad",
+                            },
+                            {
+                                "name": "input2",
+                                "input": "yyy",
+                                "expected": "Bad",
+                            },
+                        ],
+                        "transformations": [],
+                        "repeat": 2,
+                    },
+                },
+                "use_tests": None,
+                "repeat": {
+                    "something_valid": 3,
+                    "something_invalid": 2,
+                },
+            },
+            id="tests-with-repeats",
         ),
     ],
 )
@@ -577,6 +711,61 @@ def test_good_project(value, expected_value):
             ],
             id="non-existent-string-items",
         ),
+        pytest.param(
+            {
+                "words": ["foo"],
+                "requires_parameters": True,
+                "tests": {
+                    "blah": {
+                        "inputs": ["Input1"],
+                        "params": [{"name": "whatever", "input": "bar", "expected": "stuff"}],
+                    }
+                },
+                "repeat": None,
+            },
+            ["repeat\n  Input should be a valid dictionary"],
+            id="invalid-repeat-type",
+        ),
+        pytest.param(
+            {
+                "words": ["foo"],
+                "requires_parameters": True,
+                "tests": {
+                    "blah": {
+                        "inputs": ["Input1"],
+                        "params": [{"name": "whatever", "input": "bar", "expected": "stuff"}],
+                    }
+                },
+                "repeat": {
+                    42: "hello",
+                    "foo": 0,
+                },
+            },
+            [
+                "repeat.42\n  Key should be a valid string",
+                "repeat.42\n  Value should be a valid integer",
+                "repeat.foo\n  Value should be at least 1",
+            ],
+            id="invalid-repeat-items",
+        ),
+        pytest.param(
+            {
+                "words": ["foo"],
+                "requires_parameters": True,
+                "tests": {
+                    "valid": {
+                        "inputs": ["Input1"],
+                        "params": [{"name": "whatever", "input": "bar", "expected": "stuff"}],
+                    }
+                },
+                "repeat": {"blah": 5, "whatever": 2},
+            },
+            [
+                "repeat.blah\n  Refers to a non-existent test name",
+                "repeat.whatever\n  Refers to a non-existent test name",
+            ],
+            id="invalid-repeat-test-name",
+        ),
     ],
 )
 def test_bad_project(value, expected_errors):
@@ -621,38 +810,24 @@ def test_get_display_name(value, expected_display_name):
     assert project.display_name == expected_display_name
 
 
-def test_set_tests():
-    valid_tests = {
-        "inputs": ["Input List"],
-        "params": [
-            {
-                "name": "not sorted",
-                "input": '"3, 4, 1, 2"',
-                "expected": "1, 2, 3, 4",
-            },
-            {
-                "name": "sorted",
-                "input": '"1, 2, 3"',
-                "expected": "1, 2, 3",
-            },
-        ],
-        "transformations": ["strip"],
-    }
-    invalid_tests = {
-        "inputs": ["Input List"],
-        "params": [
-            {"name": "no input", "input": None, "expected": "usage"},
-            {"name": "empty input", "input": '""', "expected": "usage"},
-        ],
-        "transformations": ["strip"],
-    }
+@pytest.mark.parametrize(
+    "use_test_items",
+    [
+        pytest.param({"words": ["selection", "sort"]}, id="no-repeat"),
+        pytest.param({"words": ["sleep", "sort"], "repeat": {"sleep_sort_valid": 10}}),
+    ],
+)
+def test_set_tests(use_test_items):
+    words = use_test_items["words"]
+    repeat = use_test_items.get("repeat", {})
+    test_name_base = "_".join(words)
     use_tests_project = Project(
         **{
-            "words": ["selection", "sort"],
+            **use_test_items,
             "use_tests": {
                 "name": "bubblesort",
                 "search": "bubble_sort",
-                "replace": "selection_sort",
+                "replace": test_name_base,
             },
         },
     )
@@ -661,35 +836,40 @@ def test_set_tests():
             "words": ["bubble", "sort"],
             "requires_parameters": True,
             "tests": {
-                "bubble_sort_valid": valid_tests,
-                "bubble_sort_invalid": invalid_tests,
+                "bubble_sort_valid": VALID_TESTS,
+                "bubble_sort_invalid": INVALID_TESTS,
             },
         }
     )
 
-    use_tests_project.set_tests(project)
+    assert use_tests_project.set_tests(project) == []
 
+    valid_test_name = f"{test_name_base}_valid"
+    invalid_test_name = f"{test_name_base}_invalid"
     expected_project = {
-        "words": ["selection", "sort"],
+        "words": words,
         "requires_parameters": True,
         "strings": {},
         "acronyms": [],
         "acronym_scheme": AcronymScheme.two_letter_limit,
         "tests": {
-            "selection_sort_valid": {
-                **valid_tests,
-                "name": "selection_sort_valid",
+            valid_test_name: {
+                **VALID_TESTS,
+                "name": valid_test_name,
                 "requires_parameters": True,
                 "strings": {},
+                "repeat": repeat.get(valid_test_name, 1),
             },
-            "selection_sort_invalid": {
-                **invalid_tests,
-                "name": "selection_sort_invalid",
+            invalid_test_name: {
+                **INVALID_TESTS,
+                "name": invalid_test_name,
                 "requires_parameters": True,
                 "strings": {},
+                "repeat": repeat.get(invalid_test_name, 1),
             },
         },
         "use_tests": None,
+        "repeat": repeat,
     }
     assert use_tests_project.model_dump() == expected_project
 
@@ -706,3 +886,39 @@ def test_set_tests_no_use_tests():
     )
     project.set_tests(other_project)
     assert project == expected_project
+
+
+def test_set_tests_invalid_repeat():
+    project = Project(
+        **{
+            "words": ["bubble", "sort"],
+            "requires_parameters": True,
+            "tests": {
+                "bubble_sort_valid": VALID_TESTS,
+                "bubble_sort_invalid": INVALID_TESTS,
+            },
+        }
+    )
+    use_tests_project = Project(
+        **{
+            "words": ["sleep", "sort"],
+            "use_tests": {
+                "name": "bubblesort",
+                "search": "bubble_sort",
+                "replace": "sleep_sort",
+            },
+            "repeat": {
+                "sleep_sort_valib": 10,
+                "sleep_sort_invalib": 1,
+            },
+        },
+    )
+
+    errors = use_tests_project.set_tests(project)
+    assert len(errors) == 2
+
+    errors_dict = {error["loc"]: str(error["type"]) for error in errors}
+    for key in ("sleep_sort_valib", "sleep_sort_invalib"):
+        loc = ("repeat", key)
+        assert loc in errors_dict
+        assert "Refers to a non-existent test name" in errors_dict[loc]

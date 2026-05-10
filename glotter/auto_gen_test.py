@@ -131,7 +131,9 @@ def _unique_sort(actual_var, expected_var):
 class AutoGenTest(BaseModel):
     """Object used to auto-generated a test"""
 
-    name: Annotated[str, Field(strict=True, min_length=1, pattern="^[a-zA-Z][0-9a-zA-Z_]*$")]
+    VALID_NAME_REGEX: ClassVar[str] = "^[a-zA-Z][0-9a-zA-Z_]*$"
+
+    name: Annotated[str, Field(strict=True, min_length=1, pattern=VALID_NAME_REGEX)]
     requires_parameters: bool = False
     inputs: Annotated[List[str], Field(strict=True, min_length=1)] = Field(
         ["Input"], validate_default=True
@@ -141,6 +143,7 @@ class AutoGenTest(BaseModel):
     )
     strings: Dict[str, str] = {}
     transformations: List[Any] = []
+    repeat: int = 1
 
     SCALAR_TRANSFORMATION_FUNCS: ClassVar[Dict[str, TransformationScalarFuncT]] = {
         "strip": partial(_append_method_to_actual, "strip"),
@@ -365,7 +368,7 @@ class AutoGenTest(BaseModel):
         pytest_params = "".join(
             indent(param.get_pytest_param(), 8) for param in self.params
         ).strip()
-        return f"""\
+        test_code = f"""\
 @pytest.mark.parametrize(
     ("in_params", "expected"),
     [
@@ -373,6 +376,12 @@ class AutoGenTest(BaseModel):
     ]
 )
 """
+        if self.repeat > 1:
+            test_code += f"""\
+@pytest.mark.parametrize("repeat", range(1, {self.repeat + 1}), ids=lambda x: f"repeat{{x}}")
+"""
+
+        return test_code
 
     def get_test_function_and_run(self, project_name_underscores: str) -> str:
         """
@@ -384,9 +393,12 @@ class AutoGenTest(BaseModel):
 
         func_params = ""
         run_param = ""
+        if self.repeat > 1:
+            func_params += "repeat, "
+
         if self.requires_parameters:
-            func_params = "in_params, expected, "
-            run_param = "params=in_params"
+            func_params += "in_params, expected, "
+            run_param += "params=in_params"
 
         return f"""\
 def test_{self.name}({func_params}{project_name_underscores}):
