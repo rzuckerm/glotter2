@@ -149,7 +149,7 @@ class SettingsConfig(BaseModel):
         acronym_scheme = info.data["settings"].acronym_scheme
         for project_name, item in value.items():
             if not isinstance(item, dict):
-                break
+                continue
 
             value[project_name] = {**item, "acronym_scheme": acronym_scheme}
 
@@ -199,7 +199,7 @@ class SettingsConfig(BaseModel):
                 )
             # Otherwise, set the tests that the "use_tests" item refers to with the tests renamed
             else:
-                project.set_tests(projects[use_tests_name])
+                errors += project.set_tests(projects[use_tests_name])
 
         if errors:
             raise_validation_errors(self.__class__, errors)

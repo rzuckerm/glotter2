@@ -110,11 +110,11 @@ class Project(BaseModel, CoreProjectMixin):
                     repeat=self.repeat.get(test_name, 1),
                 )
 
+            self.requires_parameters = project.requires_parameters
+            self.use_tests = None
             errors += _validate_test_keys(
                 self.__class__, self.tests, self.repeat, raise_exc=False
             )
-            self.requires_parameters = project.requires_parameters
-            self.use_tests = None
 
         return errors
 

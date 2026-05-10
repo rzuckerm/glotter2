@@ -431,6 +431,14 @@ projects:
                     "- projects.selectionsort.use_tests:\n"
                     '    "replace" item specified without "search" item'
                 ),
+                (
+                    "- projects.sleepsort.repeat.sleep_sort_valib:\n"
+                    "    Refers to a non-existent test name sleep_sort_valib"
+                ),
+                (
+                    "- projects.sleepsort.repeat.sleep_sort_invalib:\n"
+                    "    Refers to a non-existent test name sleep_sort_invalib"
+                ),
             ],
             id="bad-projects",
         ),
