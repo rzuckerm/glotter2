@@ -87,6 +87,11 @@
 <li class="toctree-l4"><a class="reference internal" href="#id13">Values</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#repeat">Repeat</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id14">Description</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id15">Values</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#format">Format</a></li>
 </ul>
 </li>
@@ -414,6 +419,32 @@ values – e.g., a list of <code class="docutils literal notranslate"><span clas
 be specified.</p>
 </section>
 </section>
+<section id="repeat">
+<h3>Repeat<a class="headerlink" href="#repeat" title="Permalink to this heading"></a></h3>
+<ul>
+<li><p><strong>Optional</strong></p></li>
+<li><p><strong>Format</strong>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">repeat</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">test_name1</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">num_repeats1</span>
+<span class="w">  </span><span class="nt">test_name2</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">num_repeats2</span>
+<span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<section id="id14">
+<h4>Description<a class="headerlink" href="#id14" title="Permalink to this heading"></a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">repeat</span></code> allows specified tests to be repeated a specified number of times.</p>
+</section>
+<section id="id15">
+<h4>Values<a class="headerlink" href="#id15" title="Permalink to this heading"></a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">repeat</span></code> is a dictionary whose key is the name of the test to repeat, and
+whose value is the number of times to repeat the test. This must be greater
+than or equal to one. If one is specified this is ignored. If this is used
+with <code class="docutils literal notranslate"><span class="pre">use_tests</span></code>, then the test name must take into account the
+search/replace strings.</p>
+</section>
+</section>
 <section id="format">
 <h3>Format<a class="headerlink" href="#format" title="Permalink to this heading"></a></h3>
 <p>The format for a project is as follows:</p>
@@ -459,12 +490,16 @@ be specified.</p>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;projectkey&quot;</span>
 <span class="w">      </span><span class="nt">search</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;search_value&quot;</span>
 <span class="w">      </span><span class="nt">replace</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;replace_value&quot;</span>
+<span class="w">  </span><span class="nt">repeat</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">testkey1</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">num_repeats1</span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span>
 </pre></div>
 </div>
 <p>So for example. Let’s say I have three projects named FileIO, Factorial, HelloWorld,
-Quine, BubbleSort, and MergeSort.</p>
+Quine, BubbleSort, MergeSort, and SleepSort.</p>
 <p>FileIO contains an acronym. Both Factorial and BubbleSort requires parameters.
-MergeSort uses tests from BubbleSort.</p>
+MergeSort and SleepSort use tests from BubbleSort. SleepSort repeats the valid
+tests 10 times.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">projects</span></code> section would look like this:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">projects</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">fileio</span><span class="p">:</span>
@@ -564,6 +599,16 @@ MergeSort uses tests from BubbleSort.</p>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;bubblesort&quot;</span>
 <span class="w">        </span><span class="nt">search</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;bubble_sort&quot;</span>
 <span class="w">        </span><span class="nt">replace</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;merge_sort&quot;</span>
+<span class="w">  </span><span class="nt">sleepsort</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">words</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;sleep&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;sort&quot;</span>
+<span class="w">    </span><span class="nt">use_tests</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;bubblesort&quot;</span>
+<span class="w">        </span><span class="nt">search</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;bubble_sort&quot;</span>
+<span class="w">        </span><span class="nt">replace</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;sleep_sort&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">repeat</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">sleep_sort_valid</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
 </pre></div>
 </div>
 </section>
@@ -677,6 +722,16 @@ MergeSort uses tests from BubbleSort.</p>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;bubblesort&quot;</span>
 <span class="w">        </span><span class="nt">search</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;bubble_sort&quot;</span>
 <span class="w">        </span><span class="nt">replace</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;merge_sort&quot;</span>
+<span class="w">  </span><span class="nt">sleepsort</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">words</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;sleep&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;sort&quot;</span>
+<span class="w">    </span><span class="nt">use_tests</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;bubblesort&quot;</span>
+<span class="w">        </span><span class="nt">search</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;bubble_sort&quot;</span>
+<span class="w">        </span><span class="nt">replace</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;sleep_sort&quot;</span>
+<span class="w">    </span><span class="nt">repeat</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">sleep_sort_valid</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
 </pre></div>
 </div>
 <p>If you’d like to see a full working example of a <code class="docutils literal notranslate"><span class="pre">.glotter.yml</span></code>, see the

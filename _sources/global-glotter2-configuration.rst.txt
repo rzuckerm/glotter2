@@ -308,6 +308,33 @@ Values
 Both ``search`` and ``replace`` is optional, but it one is specified, then other must also
 be specified.
 
+Repeat
+------
+
+- **Optional**
+- **Format**:
+
+  .. code-block:: yaml
+
+    repeat:
+      test_name1: num_repeats1
+      test_name2: num_repeats2
+      ...
+
+Description
+^^^^^^^^^^^
+
+``repeat`` allows specified tests to be repeated a specified number of times.
+
+Values
+^^^^^^
+
+``repeat`` is a dictionary whose key is the name of the test to repeat, and
+whose value is the number of times to repeat the test. This must be greater
+than or equal to one. If one is specified this is ignored. If this is used
+with ``use_tests``, then the test name must take into account the
+search/replace strings.
+
 Format
 ------
 
@@ -357,12 +384,16 @@ The format for a project is as follows:
         - name: "projectkey"
           search: "search_value"
           replace: "replace_value"
+      repeat:
+        testkey1: num_repeats1
+        ...
 
 So for example. Let's say I have three projects named FileIO, Factorial, HelloWorld,
-Quine, BubbleSort, and MergeSort.
+Quine, BubbleSort, MergeSort, and SleepSort.
 
 FileIO contains an acronym. Both Factorial and BubbleSort requires parameters.
-MergeSort uses tests from BubbleSort.
+MergeSort and SleepSort use tests from BubbleSort. SleepSort repeats the valid
+tests 10 times.
 
 The ``projects`` section would look like this:
 
@@ -466,6 +497,16 @@ The ``projects`` section would look like this:
           - name: "bubblesort"
             search: "bubble_sort"
             replace: "merge_sort"
+      sleepsort:
+        words:
+          - "sleep"
+          - "sort"
+        use_tests:
+          - name: "bubblesort"
+            search: "bubble_sort"
+            replace: "sleep_sort"
+          - repeat:
+            sleep_sort_valid: 10
 
 Example
 =======
@@ -580,6 +621,16 @@ The following is an example of a full ``.glotter.yml``
           - name: "bubblesort"
             search: "bubble_sort"
             replace: "merge_sort"
+      sleepsort:
+        words:
+          - "sleep"
+          - "sort"
+        use_tests:
+          - name: "bubblesort"
+            search: "bubble_sort"
+            replace: "sleep_sort"
+        repeat:
+          sleep_sort_valid: 10
 
 If you'd like to see a full working example of a ``.glotter.yml``, see the
 one in `sample-programs <https://github.com/TheRenegadeCoder/sample-programs/blob/main/.glotter.yml>`_.
