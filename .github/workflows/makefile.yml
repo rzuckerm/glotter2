@@ -48,7 +48,7 @@ jobs:
     steps:
     - uses: actions/checkout@v7
 
-    - uses: astral-sh/setup-uv@v10
+    - uses: astral-sh/setup-uv@v10.3.3
       with:
         version: "${{ needs.read-config.outputs.uv-version }}"
         python-version: "${{ needs.read-config.outputs.first-python-version }}"
@@ -70,7 +70,7 @@ jobs:
     steps:
     - uses: actions/checkout@v7
 
-    - uses: astral-sh/setup-uv@v10
+    - uses: astral-sh/setup-uv@v10.3.3
       with:
         version: "${{ needs.read-config.outputs.uv-version }}"
         python-version: "${{ matrix.python-version }}"
@@ -104,7 +104,7 @@ jobs:
     steps:
     - uses: actions/checkout@v7
 
-    - uses: astral-sh/setup-uv@v10
+    - uses: astral-sh/setup-uv@v10.3.3
       with:
         version: "${{ needs.read-config.outputs.uv-version }}"
         python-version: "${{ needs.read-config.outputs.first-python-version }}"

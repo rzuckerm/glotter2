@@ -27,7 +27,7 @@ jobs:
             "first-python-version" \
             "${{ steps.repo-config.outputs['python-versions'] }}" >>"$GITHUB_OUTPUT"
   
-      - uses: astral-sh/setup-uv@v10
+      - uses: astral-sh/setup-uv@v10.3.3
         with:
           version: "${{ steps.repo-config.outputs['uv-version'] }}"
           python-version: "${{ steps.first-python-version.outputs.first-python-version }}"
