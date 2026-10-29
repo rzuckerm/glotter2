@@ -52,6 +52,7 @@ class ContainerFactory:
                 volumes=volume_info,
                 detach=True,
                 entrypoint="",
+                security_opt=["seccomp=unconfined"],
             )
         return self._containers[key]
 

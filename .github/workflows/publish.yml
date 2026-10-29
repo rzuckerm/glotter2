@@ -12,10 +12,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Read repo config
-        uses: pietrobolcato/action-read-yaml@1.1.0
+        uses: Elisity/action-read-yaml@v0.2
         id: repo-config
         with:
           config: repo-config.yml
@@ -27,7 +27,7 @@ jobs:
             "first-python-version" \
             "${{ steps.repo-config.outputs['python-versions'] }}" >>"$GITHUB_OUTPUT"
   
-      - uses: astral-sh/setup-uv@v7
+      - uses: astral-sh/setup-uv@v10.3.3
         with:
           version: "${{ steps.repo-config.outputs['uv-version'] }}"
           python-version: "${{ steps.first-python-version.outputs.first-python-version }}"
