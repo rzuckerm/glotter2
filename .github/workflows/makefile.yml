@@ -17,7 +17,7 @@ jobs:
       uv-version: "${{ steps.repo-config.outputs['uv-version'] }}"
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
   
       - name: Read repo config
         uses: pietrobolcato/action-read-yaml@1.1.0
@@ -46,9 +46,9 @@ jobs:
     needs: read-config
 
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
 
-    - uses: astral-sh/setup-uv@v7
+    - uses: astral-sh/setup-uv@v10
       with:
         version: "${{ needs.read-config.outputs.uv-version }}"
         python-version: "${{ needs.read-config.outputs.first-python-version }}"
@@ -68,9 +68,9 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
 
-    - uses: astral-sh/setup-uv@v7
+    - uses: astral-sh/setup-uv@v10
       with:
         version: "${{ needs.read-config.outputs.uv-version }}"
         python-version: "${{ matrix.python-version }}"
@@ -102,9 +102,9 @@ jobs:
     needs: read-config
 
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
 
-    - uses: astral-sh/setup-uv@v7
+    - uses: astral-sh/setup-uv@v10
       with:
         version: "${{ needs.read-config.outputs.uv-version }}"
         python-version: "${{ needs.read-config.outputs.first-python-version }}"
