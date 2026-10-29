@@ -27,7 +27,6 @@ If you'd like to contribute to Glotter2, read our [contributing guidelines](./CO
 
 * 0.17.1
   * Add security option `seccomp=unconfined` to support wine in Ubuntu 26.04
-  * Add support for python 3.15
 * 0.17.0
   * Add ability to repeat specified tests a specified number of times
 * 0.16.0
